@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Search, ChevronDown, Check } from 'lucide-react';
+import { brandsApi } from '../../api/brands';
 
 export interface FilterState {
   categories: string[];
@@ -24,7 +26,7 @@ const CATEGORIES_LIST = [
   { slug: 'dupattas', name: 'Dupattas & Shawls' },
 ];
 
-const BRANDS_LIST = [
+const FALLBACK_BRANDS_LIST = [
   'NiaKylie Signature',
   'Biba',
   'Ritu Kumar',
@@ -59,6 +61,14 @@ export function FilterSidebar({ filters, onFilterChange }: FilterSidebarProps) {
     rating: true,
   });
 
+  const { data: brandsResponse } = useQuery({
+    queryKey: ['filter-brands-list'],
+    queryFn: () => brandsApi.getBrands({ limit: 50 }),
+  });
+
+  const apiBrandsList = brandsResponse?.data?.map((b) => b.name) || [];
+  const activeBrandsList = apiBrandsList.length > 0 ? apiBrandsList : FALLBACK_BRANDS_LIST;
+
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
@@ -84,7 +94,7 @@ export function FilterSidebar({ filters, onFilterChange }: FilterSidebarProps) {
     onFilterChange({ ...filters, colors: updated });
   };
 
-  const filteredBrands = BRANDS_LIST.filter((b) =>
+  const filteredBrands = activeBrandsList.filter((b) =>
     b.toLowerCase().includes(brandSearch.toLowerCase())
   );
 

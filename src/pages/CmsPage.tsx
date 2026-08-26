@@ -7,6 +7,7 @@ interface CmsPageProps {
 }
 
 const SLUG_LABELS: Record<string, string> = {
+  'contact-us': 'Contact Us',
   'about-us': 'About Us',
   'privacy-policy': 'Privacy Policy',
   'terms-and-conditions': 'Terms & Conditions',

@@ -30,6 +30,21 @@ export interface FaqItem {
 }
 
 const MOCK_PAGES: Record<string, CmsPage> = {
+  'contact-us': {
+    slug: 'contact-us',
+    title: 'Contact Us - NiaKylie Official Support',
+    lastUpdated: '2026-08-26',
+    content: `
+      <h2 id="get-in-touch">Get in Touch</h2>
+      <p>Have a question about an order, custom measurements, or return requests? Our dedicated NiaKylie customer care team is here to assist you.</p>
+      <h2 id="store-address">Store Address</h2>
+      <p><strong>NiaKylie Fashion Pvt. Ltd.</strong><br />Sarora, Raipur, Chhattisgarh, India</p>
+      <h2 id="phone-whatsapp">Phone & WhatsApp</h2>
+      <p>Phone: <a href="tel:+919589928337">+91 95899 28337</a><br />WhatsApp: <a href="https://wa.me/919589928337" target="_blank">+91 95899 28337</a></p>
+      <h2 id="email-social">Email & Social Media</h2>
+      <p>Email: <a href="mailto:niakylieofficial@gmail.com">niakylieofficial@gmail.com</a><br />Instagram: <a href="https://www.instagram.com/niakylie_women_collection" target="_blank">@niakylie_women_collection</a></p>
+    `,
+  },
   'about-us': {
     slug: 'about-us',
     title: 'About NiaKylie Fashion',
@@ -82,8 +97,8 @@ const MOCK_PAGES: Record<string, CmsPage> = {
     title: 'Refund & Return Policy',
     lastUpdated: '2026-07-01',
     content: `
-      <h2 id="return-window">14-Day Easy Return Window</h2>
-      <p>We offer a hassle-free 14-day return policy for most products. To initiate a return, navigate to My Orders in your account dashboard and click "Return Item" within 14 days of delivery.</p>
+      <h2 id="return-window">7-Day Easy Return Window</h2>
+      <p>We offer a hassle-free 7-day return policy for most products. To initiate a return, navigate to My Orders in your account dashboard and click "Return Item" within 7 days of delivery.</p>
       <h2 id="eligibility">Return Eligibility</h2>
       <p>Items must be returned in original, unworn condition with all tags intact. Products that have been altered, customized, or dry-cleaned are not eligible for returns. Sale items are final sale.</p>
       <h2 id="refund-timeline">Refund Timeline</h2>
@@ -116,7 +131,7 @@ const MOCK_FAQS: FaqItem[] = [
   { id: 'f4', category: 'Orders', question: 'Where can I track my order status?', answer: 'Log in to your account, go to My Orders, and click "View Details" on any order to see the real-time tracking timeline and courier partner information.' },
   { id: 'f5', category: 'Shipping', question: 'How long does standard delivery take?', answer: 'Standard delivery takes 5-7 business days across India. Express delivery (1-2 business days) is available at ₹149. Free standard shipping on orders above ₹999.' },
   { id: 'f6', category: 'Shipping', question: 'Do you ship internationally?', answer: 'We currently ship within India only. International shipping to USA, UK, UAE, Canada, and Australia is planned for Q4 2026. Join our international waitlist at international@niakylie.com.' },
-  { id: 'f7', category: 'Returns', question: 'What is your return policy?', answer: 'We offer 14-day hassle-free returns for all unworn, unaltered products with original tags. Initiate a return from My Account → My Orders. Refunds are processed within 5-7 business days.' },
+  { id: 'f7', category: 'Returns', question: 'What is your return policy?', answer: 'We offer 7-day hassle-free returns for all unworn, unaltered products with original tags. Initiate a return from My Account → My Orders. Refunds are processed within 5-7 business days.' },
   { id: 'f8', category: 'Returns', question: 'Are customized or sale items returnable?', answer: 'Customized items (altered measurements or embroidery) and sale/clearance items are marked as final sale and are not eligible for returns or exchanges.' },
   { id: 'f9', category: 'Payments', question: 'What payment methods do you accept?', answer: 'We accept UPI, Google Pay, PhonePe (via Razorpay), Credit/Debit Cards (Visa, Mastercard, AmEx via Stripe), NetBanking, and Cash on Delivery (COD) for orders up to ₹10,000.' },
   { id: 'f10', category: 'Payments', question: 'Is my payment information secure?', answer: 'Absolutely. NiaKylie does not store any card or UPI credentials. All payments are processed via Razorpay and Stripe, which are PCI-DSS Level 1 certified payment gateways with 256-bit SSL encryption.' },

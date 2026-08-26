@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
+import { categoriesApi } from '../../api/categories';
+import { Category } from '../../types/category';
 
 export interface MegamenuCategory {
   title: string;
@@ -18,7 +21,7 @@ export interface MegamenuCategory {
   };
 }
 
-const MENU_DATA: MegamenuCategory[] = [
+const FALLBACK_MENU_DATA: MegamenuCategory[] = [
   {
     title: 'WOMEN',
     slug: 'women',
@@ -191,9 +194,51 @@ const MENU_DATA: MegamenuCategory[] = [
 export function Megamenu() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
+  const { data: categoriesResponse } = useQuery({
+    queryKey: ['megamenu-categories'],
+    queryFn: () => categoriesApi.getCategories({ limit: 100 }),
+  });
+
+  const allCategories: Category[] = categoriesResponse?.data || [];
+  const rootCategories = allCategories.filter((c) => !c.parentId || (typeof c.parentId === 'object' && !(c.parentId as any)?._id));
+
+  const menuDataToDisplay: MegamenuCategory[] = rootCategories.length > 0
+    ? rootCategories.map((root) => {
+        const rootId = root._id || (root as any).id;
+        const subCats = allCategories.filter((c) => {
+          const pId = typeof c.parentId === 'object' && c.parentId ? ((c.parentId as any)._id || (c.parentId as any).id) : c.parentId;
+          return pId === rootId;
+        });
+
+        return {
+          title: root.name.toUpperCase(),
+          slug: root.slug,
+          columns: [
+            {
+              heading: `${root.name} Categories`,
+              items: subCats.length > 0
+                ? subCats.map((s) => ({ name: s.name, slug: s.slug }))
+                : [{ name: `All ${root.name}`, slug: root.slug }],
+            },
+          ],
+          featuredCard: (root.banner || root.image)
+            ? {
+                title: root.name,
+                subtitle: root.description || 'Exclusive Ethnic Edition',
+                imageUrl: (root.banner || root.image)!.startsWith('http')
+                  ? (root.banner || root.image)!
+                  : `http://localhost:3000${root.banner || root.image}`,
+                linkUrl: `/category/${root.slug}`,
+                discountTag: 'EXPLORE',
+              }
+            : undefined,
+        };
+      })
+    : FALLBACK_MENU_DATA;
+
   return (
     <nav className="relative flex items-center space-x-1 sm:space-x-4 lg:space-x-8 font-sans font-semibold text-xs sm:text-sm tracking-wider">
-      {MENU_DATA.map((menu) => (
+      {menuDataToDisplay.map((menu) => (
         <div
           key={menu.slug}
           className="relative py-4"

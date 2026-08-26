@@ -23,6 +23,7 @@ import { productsApi } from '../../api/products';
 import { adminProductsApi } from '../../api/adminProducts';
 import { adminApi } from '../../api/admin';
 import { categoriesApi } from '../../api/categories';
+import { brandsApi } from '../../api/brands';
 import { AdminProduct, ProductVariant } from '../../types/adminProduct';
 
 interface ProductVariantInput {
@@ -111,6 +112,12 @@ export function AdminProductManagement() {
     : Array.isArray(categoriesResponse?.data)
     ? categoriesResponse.data
     : [];
+
+  const { data: brandsResponse } = useQuery({
+    queryKey: ['admin-brands-select'],
+    queryFn: () => brandsApi.getBrands({ limit: 100 }),
+  });
+  const liveBrands = brandsResponse?.data || [];
 
   // 2. Fetch Admin Products List via GET /products with query parameters
   const {
@@ -1153,16 +1160,24 @@ export function AdminProductManagement() {
 
                 <div>
                   <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                    Brand ID <span className="text-[10px] font-normal text-slate-400">(Optional 24-character Mongo ObjectId)</span>
+                    Brand Partner <span className="text-[10px] font-normal text-slate-400">(Optional)</span>
                   </label>
-                  <input
-                    type="text"
+                  <select
                     name="brandId"
                     value={formData.brandId}
                     onChange={handleInputChange}
-                    placeholder="64f1a2b3c4d5e6f7a8b9c002"
-                    className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold outline-none focus:border-brand-crimson"
-                  />
+                    className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  >
+                    <option value="">None / House Brand (NiaKylie)</option>
+                    {liveBrands.map((b) => {
+                      const idVal = b._id || b.id || '';
+                      return (
+                        <option key={idVal} value={idVal}>
+                          {b.name} ({idVal})
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

@@ -73,7 +73,7 @@ export function CheckoutSidebar({ totals, appliedCoupon, shippingType }: Checkou
         </div>
         <div className="flex flex-col items-center space-y-1">
           <RotateCcw className="w-5 h-5 text-brand-crimson" />
-          <span>14 Days Return</span>
+          <span>7 Days Return</span>
         </div>
       </div>
     </div>

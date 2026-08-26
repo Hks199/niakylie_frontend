@@ -78,7 +78,7 @@ export function ProductAccordion({ product }: ProductAccordionProps) {
         )}
       </div>
 
-      {/* 3. Easy 14-Day Returns & Guarantee */}
+      {/* 3. Easy 7-Day Returns & Guarantee */}
       <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
         <button
           onClick={() => toggle('returns')}
@@ -86,7 +86,7 @@ export function ProductAccordion({ product }: ProductAccordionProps) {
         >
           <div className="flex items-center space-x-2">
             <RefreshCw className="w-4 h-4 text-brand-crimson" />
-            <span>14-DAY EASY RETURN & EXCHANGE</span>
+            <span>7-DAY EASY RETURN & EXCHANGE</span>
           </div>
           <ChevronDown className={`w-4 h-4 transition-transform ${openSection === 'returns' ? 'rotate-180' : ''}`} />
         </button>
@@ -94,7 +94,7 @@ export function ProductAccordion({ product }: ProductAccordionProps) {
         {openSection === 'returns' && (
           <div className="p-4 text-xs text-slate-600 leading-relaxed border-t border-gray-100 space-y-2">
             <p>
-              Easy 14 days return and exchange. Return policies may vary for customized items.
+              Easy 7 days return and exchange. Return policies may vary for customized items.
             </p>
             <p className="font-bold text-emerald-700">✓ 100% Genuine Certified Handloom Product Guarantee</p>
           </div>

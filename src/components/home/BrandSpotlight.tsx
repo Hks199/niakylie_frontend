@@ -1,6 +1,8 @@
+import { useQuery } from '@tanstack/react-query';
 import { Sparkles, ArrowRight } from 'lucide-react';
+import { brandsApi } from '../../api/brands';
 
-const FEATURED_BRANDS = [
+const FALLBACK_BRANDS = [
   {
     name: 'NiaKylie Signature',
     tagline: 'Pure Zari Handloom Heritage',
@@ -32,6 +34,23 @@ const FEATURED_BRANDS = [
 ];
 
 export function BrandSpotlight() {
+  const { data: brandsResponse } = useQuery({
+    queryKey: ['brand-spotlight'],
+    queryFn: () => brandsApi.getBrands({ limit: 4 }),
+  });
+
+  const apiBrands = brandsResponse?.data || [];
+  const displayBrands = apiBrands.length > 0
+    ? apiBrands.map((b, idx) => ({
+        name: b.name,
+        tagline: b.description || 'Exclusive Handcrafted Couture',
+        discount: 'DESIGNER EDIT',
+        imageUrl: b.logo
+          ? (b.logo.startsWith('http') ? b.logo : `http://localhost:3000${b.logo}`)
+          : FALLBACK_BRANDS[idx % FALLBACK_BRANDS.length].imageUrl,
+        slug: b.slug,
+      }))
+    : FALLBACK_BRANDS;
   return (
     <section className="bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -49,7 +68,7 @@ export function BrandSpotlight() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FEATURED_BRANDS.map((brand, idx) => (
+          {displayBrands.map((brand, idx) => (
             <a
               key={idx}
               href={`/category/${brand.slug}`}
