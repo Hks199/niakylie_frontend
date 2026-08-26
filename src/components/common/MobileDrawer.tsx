@@ -12,16 +12,8 @@ interface MobileDrawerProps {
 
 const CATEGORY_ACCORDIONS = [
   {
-    title: 'WOMEN',
-    items: ['Kurta Sets & Salwars', 'Sarees', 'Anarkali Suits', 'Lehenga Cholis', 'Fusion Dresses'],
-  },
-  {
-    title: 'ETHNIC WEAR',
-    items: ['Banarasi Silk Sarees', 'Kanjeevaram Sarees', 'Organza Sarees', 'Sharara Sets', 'Dupattas'],
-  },
-  {
-    title: 'DRESSES',
-    items: ['Maxi Dresses', 'Indo-Western Gowns', 'Cocktail Dresses'],
+    title: 'SAREES',
+    items: ['Banarasi Silk Sarees', 'Kanjeevaram Silk', 'Organza Sarees', 'Chiffon & Georgette', 'Handloom Cotton'],
   },
   {
     title: 'BRANDS',
@@ -59,14 +51,13 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
         <div>
           {/* Top Drawer Header */}
           <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-brand-slate-dark text-white">
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-extrabold font-display tracking-tight text-brand-crimson">
-                NiaKylie
-              </span>
-              <span className="text-[10px] bg-brand-crimson text-white px-2 py-0.5 rounded-full font-bold uppercase">
-                Fashion
-              </span>
-            </div>
+            <a href="/" onClick={onClose} className="flex items-center space-x-2">
+              <img
+                src="/asset/niakylie_logo.png"
+                alt="NiaKylie Fashion"
+                className="h-9 w-auto object-contain rounded-lg bg-white p-0.5"
+              />
+            </a>
             <button
               onClick={onClose}
               className="p-1 rounded-full text-slate-300 hover:text-white hover:bg-white/10"

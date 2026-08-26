@@ -42,18 +42,6 @@ export interface Product {
   createdAt?: string;
 }
 
-export interface Banner {
-  id: string;
-  _id?: string;
-  title: string;
-  subtitle?: string;
-  imageUrl: string;
-  mobileImageUrl?: string;
-  linkUrl: string;
-  type: 'HOMEPAGE' | 'OFFER' | 'CATEGORY' | 'SIDEBAR';
-  discountBadge?: string;
-  ctaText?: string;
-}
 
 export interface BlogPost {
   id: string;

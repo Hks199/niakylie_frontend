@@ -205,10 +205,12 @@ export function Footer() {
 
         {/* 3. Bottom Bar: Payment Logos & Copyright */}
         <div className="mt-12 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div className="flex items-center space-x-2">
-            <span className="font-extrabold text-brand-slate-dark text-sm font-display tracking-tight">
-              NiaKylie
-            </span>
+          <div className="flex items-center space-x-3">
+            <img
+              src="/asset/niakylie_logo.png"
+              alt="NiaKylie Fashion"
+              className="h-8 w-auto object-contain rounded-lg"
+            />
             <span>© 2026 NiaKylie Fashion Pvt. Ltd. All rights reserved.</span>
             <span className="text-slate-300">|</span>
             <a href="/admin" className="text-slate-500 hover:text-brand-crimson font-semibold flex items-center space-x-1">

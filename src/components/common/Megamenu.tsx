@@ -23,89 +23,6 @@ export interface MegamenuCategory {
 
 const FALLBACK_MENU_DATA: MegamenuCategory[] = [
   {
-    title: 'WOMEN',
-    slug: 'women',
-    columns: [
-      {
-        heading: 'Indian & Ethnic Wear',
-        items: [
-          { name: 'Kurta Sets & Suits', slug: 'kurta-sets', isHot: true },
-          { name: 'Sarees', slug: 'sarees' },
-          { name: 'Anarkali Dresses', slug: 'anarkalis' },
-          { name: 'Lehenga Cholis', slug: 'lehengas', isNew: true },
-          { name: 'Palazzo & Sharara Sets', slug: 'palazzos' },
-          { name: 'Dupattas & Shawls', slug: 'dupattas' },
-        ],
-      },
-      {
-        heading: 'Western Wear',
-        items: [
-          { name: 'Dresses & Gowns', slug: 'dresses' },
-          { name: 'Tops & Shirts', slug: 'tops' },
-          { name: 'Jumpsuits & Playsuits', slug: 'jumpsuits' },
-          { name: 'Jackets & Shrugs', slug: 'jackets' },
-          { name: 'Skirts & Palazzos', slug: 'skirts' },
-        ],
-      },
-      {
-        heading: 'Trending Collections',
-        items: [
-          { name: 'Diwali Festive Edit', slug: 'festive-edit', isHot: true },
-          { name: 'Silk Royale Saree Edit', slug: 'silk-royale' },
-          { name: 'Bridal Trousseau', slug: 'bridal' },
-          { name: 'Indo-Western Fusion', slug: 'indo-western' },
-        ],
-      },
-    ],
-    featuredCard: {
-      title: 'Festive Velvet Lehengas',
-      subtitle: 'Flat 40% Off on Designer Wear',
-      imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80',
-      linkUrl: '/category/lehengas',
-      discountTag: '40% OFF',
-    },
-  },
-  {
-    title: 'ETHNIC WEAR',
-    slug: 'ethnic-wear',
-    columns: [
-      {
-        heading: 'Sarees By Fabric',
-        items: [
-          { name: 'Banarasi Silk Sarees', slug: 'banarasi-silk', isHot: true },
-          { name: 'Kanjeevaram Silk', slug: 'kanjeevaram' },
-          { name: 'Organza & Net Sarees', slug: 'organza', isNew: true },
-          { name: 'Chiffon & Georgette', slug: 'chiffon' },
-          { name: 'Cotton Handloom', slug: 'cotton-handloom' },
-        ],
-      },
-      {
-        heading: 'Ethnic Suits',
-        items: [
-          { name: 'Straight Suit Sets', slug: 'straight-suits' },
-          { name: 'Sharara & Gharara Sets', slug: 'sharara-sets', isHot: true },
-          { name: 'Angrakha Style Suits', slug: 'angrakha' },
-          { name: 'Plus Size Suits', slug: 'plus-size' },
-        ],
-      },
-      {
-        heading: 'Occasion Wear',
-        items: [
-          { name: 'Wedding Guest Specials', slug: 'wedding-guest' },
-          { name: 'Haldi & Mehendi Looks', slug: 'haldi-mehendi' },
-          { name: 'Sangeet Party Wear', slug: 'sangeet' },
-        ],
-      },
-    ],
-    featuredCard: {
-      title: 'Pure Silk Heritage Sarees',
-      subtitle: 'Handcrafted by Master Weavers',
-      imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=400&q=80',
-      linkUrl: '/category/sarees',
-      discountTag: 'NEW ARRIVALS',
-    },
-  },
-  {
     title: 'SAREES',
     slug: 'sarees',
     columns: [
@@ -134,27 +51,6 @@ const FALLBACK_MENU_DATA: MegamenuCategory[] = [
       imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80',
       linkUrl: '/category/sarees',
       discountTag: 'UP TO 50% OFF',
-    },
-  },
-  {
-    title: 'DRESSES',
-    slug: 'dresses',
-    columns: [
-      {
-        heading: 'Fusion Dresses',
-        items: [
-          { name: 'Layered Maxi Gowns', slug: 'maxi-gowns' },
-          { name: 'Ethnic Jacket Dresses', slug: 'jacket-dresses', isHot: true },
-          { name: 'Asymmetric Tunics', slug: 'asymmetric' },
-          { name: 'Cape Style Dresses', slug: 'cape-dresses' },
-        ],
-      },
-    ],
-    featuredCard: {
-      title: 'Contemporary Fusion Gowns',
-      subtitle: 'Modern Silhouette, Traditional Aesthetics',
-      imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=400&q=80',
-      linkUrl: '/category/dresses',
     },
   },
   {
@@ -200,7 +96,14 @@ export function Megamenu() {
   });
 
   const allCategories: Category[] = categoriesResponse?.data || [];
-  const rootCategories = allCategories.filter((c) => !c.parentId || (typeof c.parentId === 'object' && !(c.parentId as any)?._id));
+  const excludedSlugs = ['women', 'ethnic-wear', 'ethnic wear', 'dresses'];
+  const rootCategories = allCategories.filter((c) => {
+    const isRoot = !c.parentId || (typeof c.parentId === 'object' && !(c.parentId as any)?._id);
+    if (!isRoot) return false;
+    const slugLower = c.slug?.toLowerCase() || '';
+    const nameLower = c.name?.toLowerCase() || '';
+    return !excludedSlugs.includes(slugLower) && !excludedSlugs.includes(nameLower);
+  });
 
   const menuDataToDisplay: MegamenuCategory[] = rootCategories.length > 0
     ? rootCategories.map((root) => {

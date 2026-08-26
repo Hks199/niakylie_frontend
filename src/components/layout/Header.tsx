@@ -36,12 +36,11 @@ export function Header() {
               </button>
 
               <a href="/" className="flex items-center space-x-2 group">
-                <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-brand-crimson font-display group-hover:scale-105 transition-transform">
-                  NiaKylie
-                </span>
-                <span className="text-[10px] sm:text-xs uppercase tracking-widest bg-brand-crimson/10 text-brand-crimson px-2 py-0.5 rounded-full font-extrabold hidden sm:inline-block">
-                  Fashion
-                </span>
+                <img
+                  src="/asset/niakylie_logo.png"
+                  alt="NiaKylie Fashion"
+                  className="h-10 sm:h-12 w-auto object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
+                />
               </a>
             </div>
 

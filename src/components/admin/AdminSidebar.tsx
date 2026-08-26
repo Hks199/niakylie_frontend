@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingCart, Users, AlertTriangle, MessageSquare, Image, Shield, LogOut, FolderTree, Award, X } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, AlertTriangle, MessageSquare, Image, LogOut, FolderTree, Award, X } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 interface AdminSidebarProps {
@@ -38,11 +38,13 @@ export function AdminSidebar({ activeTab, onSelectTab, onCloseMobile }: AdminSid
       {/* Brand Header */}
       <div className="flex items-center justify-between pb-4 border-b border-slate-800">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-brand-crimson text-white rounded-2xl flex items-center justify-center font-extrabold shadow-lg flex-shrink-0">
-            <Shield className="w-5 h-5" />
-          </div>
+          <img
+            src="/asset/niakylie_logo.png"
+            alt="NiaKylie Admin Logo"
+            className="h-10 w-auto object-contain rounded-xl bg-white p-0.5 shadow-md flex-shrink-0"
+          />
           <div>
-            <h2 className="font-extrabold text-sm font-display tracking-wide">NiaKylie Admin</h2>
+            <h2 className="font-extrabold text-sm font-display tracking-wide text-white">NiaKylie Admin</h2>
             <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Management Control</p>
           </div>
         </div>

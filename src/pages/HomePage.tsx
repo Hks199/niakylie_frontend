@@ -7,12 +7,13 @@ import { BrandSpotlight } from '../components/home/BrandSpotlight';
 import { TestimonialsSection } from '../components/home/TestimonialsSection';
 import { FashionBlogFeed } from '../components/home/FashionBlogFeed';
 import { bannersApi, productsApi, cmsApi } from '../api';
+import { BannerType } from '../types/banner';
 
 export function HomePage() {
   // 1. Fetch Banners
   const { data: banners = [] } = useQuery({
     queryKey: ['banners', 'HOMEPAGE'],
-    queryFn: () => bannersApi.getBanners('HOMEPAGE'),
+    queryFn: () => bannersApi.getActiveBanners({ type: BannerType.HOMEPAGE }),
   });
 
   // 2. Fetch All Products (General Catalog)

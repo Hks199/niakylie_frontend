@@ -31,6 +31,11 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
     setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
   };
 
+  const resolveBannerImg = (path?: string) => {
+    if (!path) return '';
+    return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+  };
+
   return (
     <div
       className="relative w-full h-[450px] sm:h-[550px] lg:h-[620px] bg-slate-950 overflow-hidden group"
@@ -48,14 +53,14 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
         >
           {/* Desktop Image */}
           <img
-            src={currentBanner.imageUrl}
+            src={resolveBannerImg(currentBanner.imageUrl)}
             alt={currentBanner.title}
             className="hidden sm:block w-full h-full object-cover object-center"
           />
 
           {/* Mobile Image */}
           <img
-            src={currentBanner.mobileImageUrl || currentBanner.imageUrl}
+            src={resolveBannerImg(currentBanner.mobileImageUrl || currentBanner.imageUrl)}
             alt={currentBanner.title}
             className="block sm:hidden w-full h-full object-cover object-center"
           />

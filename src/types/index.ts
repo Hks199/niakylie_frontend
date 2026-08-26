@@ -4,6 +4,7 @@ export * from './cart';
 export * from './wishlist';
 export * from './product';
 export * from './category';
+export * from './banner';
 export * from './admin';
 export type {
   AdminProductVariant,
