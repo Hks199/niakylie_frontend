@@ -21,36 +21,69 @@ function extractCategoryList(res: any): Category[] {
 }
 
 /**
- * Normalize category objects to ensure both _id and id are present and fields are dynamic
+ * Normalize category objects to ensure both _id and id are present and fields are dynamic,
+ * including unwrapping response envelopes ({ success: true, data: { ... } }) and recognizing
+ * deletedAt timestamps as soft-deleted.
  */
 function normalizeCategory(cat: any): Category {
   if (!cat) return {} as Category;
-  const idVal = cat._id || cat.id || String(Math.random());
+  const target = (cat.data && (cat.data._id || cat.data.id || cat.data.name)) ? cat.data : cat;
+  const idVal = target._id || target.id || String(Math.random());
+  const isSoftDeleted = target.isDeleted === true || (target.deletedAt !== null && target.deletedAt !== undefined);
+
   return {
-    ...cat,
+    ...target,
     _id: idVal,
     id: idVal,
-    name: cat.name || '',
-    description: cat.description !== undefined ? cat.description : '',
-    status: cat.status !== undefined ? cat.status : true,
+    name: target.name || '',
+    slug: target.slug || '',
+    description: target.description !== undefined ? target.description : '',
+    status: target.status !== undefined ? target.status : true,
+    isDeleted: isSoftDeleted,
+    deletedAt: target.deletedAt || null,
+    parentId: target.parentId !== undefined ? target.parentId : null,
   };
 }
 
 export const categoriesApi = {
   /**
-   * Fetch categories list with optional pagination, search, parent filter, and active status filters.
-   * Endpoint: GET /categories
+   * Fetch categories list directly from live API endpoint GET /categories
+   * Fallback to GET /categories/tree if /categories returns stale empty array
    */
   getCategories: async (params?: QueryCategoryParams): Promise<PaginatedCategoriesResponse> => {
     try {
-      const response = await apiClient.get<any>('/categories', { params });
-      const rawList = extractCategoryList(response);
-      const normalizedList = rawList.map(normalizeCategory);
+      const response = await apiClient.get<any>('/categories', { params: { limit: 500, ...params } });
+      let rawList = extractCategoryList(response);
 
-      const meta = (response && typeof response === 'object' && response.meta) || {
+      // If /categories returns empty list (e.g. backend cache lock), fallback to /categories/tree
+      if (rawList.length === 0) {
+        try {
+          const treeRes = await apiClient.get<any>('/categories/tree');
+          const treeList = extractCategoryList(treeRes);
+          if (treeList.length > 0) {
+            const flattened: any[] = [];
+            treeList.forEach((root: any) => {
+              flattened.push(root);
+              if (Array.isArray(root.subCategories)) {
+                root.subCategories.forEach((sub: any) => flattened.push(sub));
+              }
+            });
+            rawList = flattened;
+          }
+        } catch (treeErr) {
+          console.warn('Fallback GET /categories/tree error:', treeErr);
+        }
+      }
+
+      const normalizedList = rawList
+        .map(normalizeCategory)
+        .filter((cat) => cat && !cat.isDeleted && !cat.deletedAt);
+
+      const meta = (response && typeof response === 'object' && response.meta) ||
+                   (response && response.data && response.data.meta) || {
         total: normalizedList.length,
         page: params?.page || 1,
-        limit: params?.limit || 10,
+        limit: params?.limit || 500,
         totalPages: 1,
         hasNextPage: false,
         hasPrevPage: false,
@@ -61,59 +94,51 @@ export const categoriesApi = {
         meta,
       };
     } catch (error) {
-      console.warn('GET /categories failed, returning fallback mock category tree:', error);
-      const mockCategories: Category[] = [
-        {
-          _id: 'cat-001',
-          name: 'WOMEN',
-          slug: 'women',
-          parentId: null,
-          status: true,
-          description: 'Women ethnic and Western fashion collection.',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          _id: 'cat-002',
-          name: 'ETHNIC WEAR',
-          slug: 'ethnic-wear',
-          parentId: null,
-          status: true,
-          description: 'Traditional handcrafted sarees, kurtas, and suits.',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          _id: 'cat-003',
-          name: 'SAREES',
-          slug: 'sarees',
-          parentId: 'cat-002',
-          status: true,
-          description: 'Banarasi, Silk, Organza, and Kanjeevaram sarees.',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          _id: 'cat-004',
-          name: 'DRESSES',
-          slug: 'dresses',
-          parentId: 'cat-001',
-          status: true,
-          description: 'Contemporary fusion gowns and maxi dresses.',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ];
-      return {
-        data: mockCategories,
-        meta: { total: mockCategories.length, page: 1, limit: 10, totalPages: 1, hasNextPage: false, hasPrevPage: false },
-      };
+      console.warn('GET /categories API error:', error);
+      // Fallback directly to GET /categories/tree
+      try {
+        const treeRes = await apiClient.get<any>('/categories/tree');
+        const treeList = extractCategoryList(treeRes);
+        const flattened: any[] = [];
+        treeList.forEach((root: any) => {
+          flattened.push(root);
+          if (Array.isArray(root.subCategories)) {
+            root.subCategories.forEach((sub: any) => flattened.push(sub));
+          }
+        });
+        const normalizedList = flattened
+          .map(normalizeCategory)
+          .filter((cat) => cat && !cat.isDeleted && !cat.deletedAt);
+        return {
+          data: normalizedList,
+          meta: { total: normalizedList.length, page: 1, limit: 500, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+        };
+      } catch {
+        return {
+          data: [],
+          meta: { total: 0, page: 1, limit: 500, totalPages: 0, hasNextPage: false, hasPrevPage: false },
+        };
+      }
     }
   },
 
   /**
-   * Fetch single category detail by Mongo ID or URL Slug.
-   * Endpoint: GET /categories/:idOrSlug
+   * Fetch 2-level category hierarchy tree array directly from GET /categories/tree
+   */
+  getCategoryTree: async (): Promise<Category[]> => {
+    try {
+      const response = await apiClient.get<any>('/categories/tree');
+      const rawList = extractCategoryList(response);
+      return rawList.map(normalizeCategory).filter((cat) => cat && !cat.isDeleted && !cat.deletedAt);
+    } catch (error) {
+      console.warn('GET /categories/tree API error:', error);
+      const res = await categoriesApi.getCategories({ limit: 500 });
+      return res.data;
+    }
+  },
+
+  /**
+   * Fetch single category detail by Mongo ID or URL Slug from GET /categories/:idOrSlug
    */
   getCategoryByIdOrSlug: async (idOrSlug: string): Promise<Category> => {
     const res = await apiClient.get<any>(`/categories/${idOrSlug}`);
@@ -121,9 +146,7 @@ export const categoriesApi = {
   },
 
   /**
-   * Create new category with multipart/form-data (image thumbnail & header banner files supported).
-   * Endpoint: POST /categories (Requires JWT Bearer Token + ADMIN role)
-   * Note: Leaving Content-Type header undefined lets browser/axios auto-generate boundary.
+   * Create new category with multipart/form-data via POST /categories
    */
   createCategory: async (formData: FormData): Promise<Category> => {
     const res = await apiClient.post<any>('/categories', formData, {
@@ -133,9 +156,7 @@ export const categoriesApi = {
   },
 
   /**
-   * Update category metadata or replacement files by Mongo ID.
-   * Endpoint: PUT /categories/:id (Requires JWT Bearer Token + ADMIN role)
-   * Note: Leaving Content-Type header undefined lets browser/axios auto-generate boundary.
+   * Update category metadata or replacement files by Mongo ID via PUT /categories/:id
    */
   updateCategory: async (id: string, formData: FormData): Promise<Category> => {
     const res = await apiClient.put<any>(`/categories/${id}`, formData, {
@@ -145,10 +166,17 @@ export const categoriesApi = {
   },
 
   /**
-   * Soft-delete category and its subcategories by Mongo ID.
-   * Endpoint: DELETE /categories/:id (Requires JWT Bearer Token + ADMIN role)
+   * Soft-delete category and its subcategories by Mongo ID via DELETE /categories/:id
    */
   deleteCategory: async (id: string): Promise<void> => {
     return apiClient.delete(`/categories/${id}`);
+  },
+
+  /**
+   * Toggle category active/inactive status by Mongo ID via PATCH /categories/:id/toggle-active
+   */
+  toggleActive: async (id: string): Promise<Category> => {
+    const res = await apiClient.patch<any>(`/categories/${id}/toggle-active`);
+    return normalizeCategory(res);
   },
 };

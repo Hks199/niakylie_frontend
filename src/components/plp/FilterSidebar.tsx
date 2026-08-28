@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, ChevronDown, Check } from 'lucide-react';
 import { brandsApi } from '../../api/brands';
+import { useCategories } from '../../hooks/useCategories';
 
 export interface FilterState {
   categories: string[];
@@ -17,14 +18,6 @@ interface FilterSidebarProps {
   filters: FilterState;
   onFilterChange: (newFilters: FilterState) => void;
 }
-
-const CATEGORIES_LIST = [
-  { slug: 'sarees', name: 'Silk & Banarasi Sarees' },
-  { slug: 'kurta-sets', name: 'Kurta Sets & Suits' },
-  { slug: 'lehengas', name: 'Bridal Lehengas' },
-  { slug: 'dresses', name: 'Indo-Western Fusion' },
-  { slug: 'dupattas', name: 'Dupattas & Shawls' },
-];
 
 const FALLBACK_BRANDS_LIST = [
   'NiaKylie Signature',
@@ -60,6 +53,12 @@ export function FilterSidebar({ filters, onFilterChange }: FilterSidebarProps) {
     discount: true,
     rating: true,
   });
+
+  const { allCategories, isLoading: isCategoriesLoading } = useCategories({ limit: 500, status: true });
+
+  const categoriesList = allCategories
+    .filter((c) => c.status !== false && !c.isDeleted && !c.deletedAt)
+    .map((c) => ({ slug: c.slug, name: c.name }));
 
   const { data: brandsResponse } = useQuery({
     queryKey: ['filter-brands-list'],
@@ -110,29 +109,35 @@ export function FilterSidebar({ filters, onFilterChange }: FilterSidebarProps) {
           onClick={() => toggleSection('categories')}
           className="w-full flex items-center justify-between py-1 text-xs font-bold uppercase text-brand-slate-dark"
         >
-          <span>Categories</span>
+          <span>Categories ({categoriesList.length})</span>
           <ChevronDown className={`w-4 h-4 transition-transform ${expandedSections.categories ? 'rotate-180' : ''}`} />
         </button>
 
         {expandedSections.categories && (
-          <div className="mt-3 space-y-2">
-            {CATEGORIES_LIST.map((cat) => {
-              const isChecked = filters.categories.includes(cat.slug);
-              return (
-                <label
-                  key={cat.slug}
-                  className="flex items-center space-x-2 text-xs text-slate-600 hover:text-brand-crimson cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => handleCategoryToggle(cat.slug)}
-                    className="w-4 h-4 rounded text-brand-crimson focus:ring-brand-crimson/20 border-gray-300"
-                  />
-                  <span>{cat.name}</span>
-                </label>
-              );
-            })}
+          <div className="mt-3 space-y-2 max-h-48 overflow-y-auto no-scrollbar">
+            {isCategoriesLoading ? (
+              <p className="text-xs text-slate-400">Loading categories...</p>
+            ) : categoriesList.length === 0 ? (
+              <p className="text-xs text-slate-400 font-medium">No active categories</p>
+            ) : (
+              categoriesList.map((cat) => {
+                const isChecked = filters.categories.includes(cat.slug);
+                return (
+                  <label
+                    key={cat.slug}
+                    className="flex items-center space-x-2 text-xs text-slate-600 hover:text-brand-crimson cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => handleCategoryToggle(cat.slug)}
+                      className="w-4 h-4 rounded text-brand-crimson focus:ring-brand-crimson/20 border-gray-300"
+                    />
+                    <span>{cat.name}</span>
+                  </label>
+                );
+              })
+            )}
           </div>
         )}
       </div>

@@ -44,15 +44,17 @@ export function AdminCategoriesPanel() {
   const { data: categoriesResponse, isLoading, refetch } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: async () => {
-      return await categoriesApi.getCategories({ limit: 100 });
+      return await categoriesApi.getCategories({ limit: 500 });
     },
   });
 
-  const categories: Category[] = Array.isArray(categoriesResponse)
+  const rawCategoriesList: Category[] = Array.isArray(categoriesResponse)
     ? categoriesResponse
     : Array.isArray(categoriesResponse?.data)
     ? categoriesResponse.data
     : [];
+
+  const categories: Category[] = rawCategoriesList.filter((c) => !c.isDeleted);
 
   // Filter root parent categories (parentId is null or empty)
   const parentCategories = categories.filter((c) => !c.parentId || (typeof c.parentId === 'object' && !(c.parentId as any)?._id));
@@ -188,14 +190,35 @@ export function AdminCategoriesPanel() {
       setIsModalOpen(false);
       setFormData(DEFAULT_FORM);
       setEditingCategory(null);
-      queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
-      await refetch();
+      await invalidateAllCaches();
     } catch (err: any) {
       const rawMsg = err?.message || err?.error;
       const msg = Array.isArray(rawMsg) ? rawMsg.join(' · ') : typeof rawMsg === 'string' ? rawMsg : 'Failed to save category.';
       setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const invalidateAllCaches = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['admin-categories'], exact: false }),
+      queryClient.invalidateQueries({ queryKey: ['categories-list'], exact: false }),
+      queryClient.invalidateQueries({ queryKey: ['megamenu-categories'], exact: false }),
+      queryClient.invalidateQueries({ queryKey: ['filter-categories-list'], exact: false }),
+      queryClient.invalidateQueries({ queryKey: ['category-tree'], exact: false }),
+    ]);
+    await refetch();
+  };
+
+  const handleToggleActive = async (id: string) => {
+    try {
+      await categoriesApi.toggleActive(id);
+      await invalidateAllCaches();
+    } catch (err: any) {
+      const rawMsg = err?.message || err?.error || err?.response?.data?.message || 'Failed to toggle active status';
+      const msg = Array.isArray(rawMsg) ? rawMsg.join(' · ') : String(rawMsg);
+      setErrorMessage(msg);
     }
   };
 
@@ -206,10 +229,11 @@ export function AdminCategoriesPanel() {
       await categoriesApi.deleteCategory(id);
       setSuccessMessage('Category deleted successfully!');
       setTimeout(() => setSuccessMessage(''), 4000);
-      queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
-      refetch();
+      await invalidateAllCaches();
     } catch (err: any) {
-      alert(err?.message || 'Failed to delete category');
+      const rawMsg = err?.message || err?.error || err?.response?.data?.message || 'Failed to delete category';
+      const msg = Array.isArray(rawMsg) ? rawMsg.join(' · ') : String(rawMsg);
+      setErrorMessage(msg);
     } finally {
       setDeletingId(null);
     }
@@ -403,14 +427,16 @@ export function AdminCategoriesPanel() {
                         )}
                       </td>
 
-                      <td className="py-3.5">
-                        <span
-                          className={`text-[9px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
-                            cat.status !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
+                      <td className="py-3.5 px-2">
+                        <button
+                          onClick={() => handleToggleActive(catId)}
+                          className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all hover:scale-105 cursor-pointer ${
+                            cat.status !== false ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                           }`}
+                          title="Click to toggle Active / Inactive status"
                         >
                           {cat.status !== false ? 'ACTIVE' : 'INACTIVE'}
-                        </span>
+                        </button>
                       </td>
 
                       <td className="py-3.5 pr-2 text-right">

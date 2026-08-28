@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { ChevronRight } from 'lucide-react';
-import { categoriesApi } from '../../api/categories';
-import { Category } from '../../types/category';
+import { useCategories } from '../../hooks/useCategories';
 
 export interface MegamenuCategory {
   title: string;
@@ -21,123 +19,59 @@ export interface MegamenuCategory {
   };
 }
 
-const FALLBACK_MENU_DATA: MegamenuCategory[] = [
-  {
-    title: 'SAREES',
-    slug: 'sarees',
-    columns: [
-      {
-        heading: 'Shop By Craft',
-        items: [
-          { name: 'Zari Embroidery', slug: 'zari' },
-          { name: 'Gotapatti Work', slug: 'gotapatti', isHot: true },
-          { name: 'Hand Block Print', slug: 'block-print' },
-          { name: 'Chanderi Brocade', slug: 'chanderi' },
-        ],
-      },
-      {
-        heading: 'Shop By Color',
-        items: [
-          { name: 'Crimson Red & Maroon', slug: 'red-sarees' },
-          { name: 'Royal Gold & Mustard', slug: 'gold-sarees' },
-          { name: 'Emerald Green', slug: 'green-sarees' },
-          { name: 'Pastel Pinks & Blues', slug: 'pastel-sarees' },
-        ],
-      },
-    ],
-    featuredCard: {
-      title: 'Royal Banarasi Collection',
-      subtitle: 'Graceful Drapery for Celebrations',
-      imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80',
-      linkUrl: '/category/sarees',
-      discountTag: 'UP TO 50% OFF',
-    },
-  },
-  {
-    title: 'BRANDS',
-    slug: 'brands',
-    columns: [
-      {
-        heading: 'Featured Luxury Brands',
-        items: [
-          { name: 'NiaKylie Signature', slug: 'niakylie-signature', isHot: true },
-          { name: 'Biba & Aurelia', slug: 'biba' },
-          { name: 'Ritu Kumar Edit', slug: 'ritu-kumar' },
-          { name: 'Anita Dongre Grassroot', slug: 'anita-dongre' },
-          { name: 'FabIndia Select', slug: 'fabindia' },
-        ],
-      },
-    ],
-  },
-  {
-    title: 'SALE',
-    slug: 'sale',
-    isSale: true,
-    columns: [
-      {
-        heading: 'Festival Steals',
-        items: [
-          { name: 'Flat 50% Off Clearance', slug: 'clearance-50', isHot: true },
-          { name: 'Under ₹1,499 Store', slug: 'under-1499' },
-          { name: 'Buy 1 Get 1 Free', slug: 'bogo' },
-          { name: 'Saree Mega Mela', slug: 'saree-sale' },
-        ],
-      },
-    ],
-  },
-];
-
 export function Megamenu() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
-  const { data: categoriesResponse } = useQuery({
-    queryKey: ['megamenu-categories'],
-    queryFn: () => categoriesApi.getCategories({ limit: 100 }),
+  const { allCategories, rootCategories, isLoading } = useCategories({ limit: 500, status: true });
+
+  const activeRoots = rootCategories.filter((r) => r.status !== false && !r.isDeleted && !r.deletedAt);
+
+  if (isLoading) {
+    return (
+      <div className="flex space-x-6 animate-pulse py-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-4 w-20 bg-slate-200 rounded"></div>
+        ))}
+      </div>
+    );
+  }
+
+  if (activeRoots.length === 0) {
+    return null;
+  }
+
+  const menuDataToDisplay: MegamenuCategory[] = activeRoots.map((root) => {
+    const rootId = root._id || (root as any).id;
+    const subCats = allCategories.filter((c) => {
+      if (c.status === false || c.isDeleted || c.deletedAt) return false;
+      const pId = typeof c.parentId === 'object' && c.parentId ? ((c.parentId as any)._id || (c.parentId as any).id) : c.parentId;
+      return String(pId) === String(rootId);
+    });
+
+    return {
+      title: root.name.toUpperCase(),
+      slug: root.slug,
+      columns: [
+        {
+          heading: `${root.name} Categories`,
+          items: subCats.length > 0
+            ? subCats.map((s) => ({ name: s.name, slug: s.slug }))
+            : [{ name: `All ${root.name}`, slug: root.slug }],
+        },
+      ],
+      featuredCard: (root.banner || root.image)
+        ? {
+            title: root.name,
+            subtitle: root.description || 'Exclusive Collection',
+            imageUrl: (root.banner || root.image)!.startsWith('http')
+              ? (root.banner || root.image)!
+              : `http://localhost:3000${root.banner || root.image}`,
+            linkUrl: `/category/${root.slug}`,
+            discountTag: 'EXPLORE',
+          }
+        : undefined,
+    };
   });
-
-  const allCategories: Category[] = categoriesResponse?.data || [];
-  const excludedSlugs = ['women', 'ethnic-wear', 'ethnic wear', 'dresses'];
-  const rootCategories = allCategories.filter((c) => {
-    const isRoot = !c.parentId || (typeof c.parentId === 'object' && !(c.parentId as any)?._id);
-    if (!isRoot) return false;
-    const slugLower = c.slug?.toLowerCase() || '';
-    const nameLower = c.name?.toLowerCase() || '';
-    return !excludedSlugs.includes(slugLower) && !excludedSlugs.includes(nameLower);
-  });
-
-  const menuDataToDisplay: MegamenuCategory[] = rootCategories.length > 0
-    ? rootCategories.map((root) => {
-        const rootId = root._id || (root as any).id;
-        const subCats = allCategories.filter((c) => {
-          const pId = typeof c.parentId === 'object' && c.parentId ? ((c.parentId as any)._id || (c.parentId as any).id) : c.parentId;
-          return pId === rootId;
-        });
-
-        return {
-          title: root.name.toUpperCase(),
-          slug: root.slug,
-          columns: [
-            {
-              heading: `${root.name} Categories`,
-              items: subCats.length > 0
-                ? subCats.map((s) => ({ name: s.name, slug: s.slug }))
-                : [{ name: `All ${root.name}`, slug: root.slug }],
-            },
-          ],
-          featuredCard: (root.banner || root.image)
-            ? {
-                title: root.name,
-                subtitle: root.description || 'Exclusive Ethnic Edition',
-                imageUrl: (root.banner || root.image)!.startsWith('http')
-                  ? (root.banner || root.image)!
-                  : `http://localhost:3000${root.banner || root.image}`,
-                linkUrl: `/category/${root.slug}`,
-                discountTag: 'EXPLORE',
-              }
-            : undefined,
-        };
-      })
-    : FALLBACK_MENU_DATA;
 
   return (
     <nav className="relative flex items-center space-x-1 sm:space-x-4 lg:space-x-8 font-sans font-semibold text-xs sm:text-sm tracking-wider">
@@ -151,19 +85,12 @@ export function Megamenu() {
           <a
             href={`/category/${menu.slug}`}
             className={`inline-flex items-center space-x-1 py-1 px-2.5 rounded-md transition-all duration-200 uppercase ${
-              menu.isSale
-                ? 'text-brand-crimson font-extrabold hover:bg-brand-crimson/10'
-                : activeMenu === menu.slug
+              activeMenu === menu.slug
                 ? 'text-brand-crimson bg-gray-50 font-bold'
                 : 'text-brand-slate hover:text-brand-crimson'
             }`}
           >
             <span>{menu.title}</span>
-            {menu.isSale && (
-              <span className="bg-brand-crimson text-white text-[9px] px-1.5 py-0.5 rounded font-extrabold animate-pulse">
-                50% OFF
-              </span>
-            )}
           </a>
 
           {/* Megamenu Dropdown Container */}
@@ -185,16 +112,6 @@ export function Megamenu() {
                               className="text-slate-600 hover:text-brand-crimson hover:translate-x-1 transition-all inline-flex items-center space-x-1.5 group"
                             >
                               <span className="group-hover:font-semibold">{item.name}</span>
-                              {item.isHot && (
-                                <span className="bg-amber-100 text-amber-800 text-[9px] font-bold px-1.5 py-0.5 rounded">
-                                  HOT
-                                </span>
-                              )}
-                              {item.isNew && (
-                                <span className="bg-emerald-100 text-emerald-800 text-[9px] font-bold px-1.5 py-0.5 rounded">
-                                  NEW
-                                </span>
-                              )}
                             </a>
                           </li>
                         ))}

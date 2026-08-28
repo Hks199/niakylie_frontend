@@ -7,6 +7,41 @@ import {
   ReorderBannerItem,
 } from '../types/banner';
 
+const DEFAULT_BANNERS: Banner[] = [
+  {
+    _id: 'banner-01',
+    title: 'Royal Banarasi Festive Edit',
+    subtitle: 'Unveil Handcrafted Silk Sarees with Pure Zari Drapery',
+    type: BannerType.HOMEPAGE,
+    position: BannerPosition.TOP,
+    imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80',
+    mobileImageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+    linkUrl: '/category/sarees',
+    linkLabel: 'Explore Royal Saree Edit',
+    displayOrder: 1,
+    isActive: true,
+    isDeleted: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    _id: 'banner-02',
+    title: 'Bridal Lehengas & Couture',
+    subtitle: 'Flat 30% Off on Signature Wedding Trousseau Specials',
+    type: BannerType.HOMEPAGE,
+    position: BannerPosition.TOP,
+    imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=80',
+    mobileImageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+    linkUrl: '/category/lehengas',
+    linkLabel: 'Shop Bridal Edit',
+    displayOrder: 2,
+    isActive: true,
+    isDeleted: false,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
 /**
  * Safely extract banner array from various backend response shapes
  */
@@ -55,44 +90,11 @@ export const bannersApi = {
     try {
       const response = await apiClient.get<any>('/banners', { params });
       const rawList = extractBannerList(response);
-      return rawList.map(normalizeBanner);
+      const normalized = rawList.map(normalizeBanner);
+      return normalized.length > 0 ? normalized : DEFAULT_BANNERS;
     } catch (error) {
       console.warn('GET /banners failed, using fallback mock banners:', error);
-      const mockBanners: Banner[] = [
-        {
-          _id: 'banner-01',
-          title: 'Royal Banarasi Festive Edit',
-          subtitle: 'Unveil Handcrafted Silk Sarees with Pure Zari Drapery',
-          type: BannerType.HOMEPAGE,
-          position: BannerPosition.TOP,
-          imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80',
-          mobileImageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
-          linkUrl: '/category/sarees',
-          linkLabel: 'Explore Royal Saree Edit',
-          displayOrder: 1,
-          isActive: true,
-          isDeleted: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-        {
-          _id: 'banner-02',
-          title: 'Bridal Lehengas & Couture',
-          subtitle: 'Flat 30% Off on Signature Wedding Trousseau Specials',
-          type: BannerType.HOMEPAGE,
-          position: BannerPosition.TOP,
-          imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=80',
-          mobileImageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
-          linkUrl: '/category/lehengas',
-          linkLabel: 'Shop Bridal Edit',
-          displayOrder: 2,
-          isActive: true,
-          isDeleted: false,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ];
-      return mockBanners;
+      return DEFAULT_BANNERS;
     }
   },
 
@@ -113,7 +115,8 @@ export const bannersApi = {
     try {
       const response = await apiClient.get<any>('/banners/admin/all', { params });
       const rawList = extractBannerList(response);
-      return rawList.map(normalizeBanner);
+      const normalized = rawList.map(normalizeBanner);
+      return normalized.length > 0 ? normalized : DEFAULT_BANNERS;
     } catch (error) {
       console.warn('GET /banners/admin/all failed, returning public active banners fallback:', error);
       return bannersApi.getActiveBanners(params);

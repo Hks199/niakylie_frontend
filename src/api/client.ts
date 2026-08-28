@@ -69,13 +69,10 @@ apiClient.interceptors.response.use(
       const requestUrl = (error.config as any)?.url || '';
       const storedToken = localStorage.getItem('access_token');
 
-      // Only fire auth:unauthorized if:
-      // 1. This is NOT the login endpoint itself (a wrong password ≠ expired session)
-      // 2. There IS an actual stored token (meaning the session expired, not a fresh login)
+      // Only fire auth:unauthorized if not on auth login endpoint itself
       const isLoginEndpoint = requestUrl.includes('/auth/login');
-      const isMockToken = storedToken === 'mock_admin_jwt_token_2026';
 
-      if (!isLoginEndpoint && storedToken && !isMockToken) {
+      if (!isLoginEndpoint && storedToken) {
         localStorage.removeItem('access_token');
         window.dispatchEvent(new CustomEvent('auth:unauthorized'));
       }
@@ -90,3 +87,5 @@ apiClient.interceptors.response.use(
     return Promise.reject(errorPayload);
   }
 );
+
+export default apiClient;
