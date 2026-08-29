@@ -29,7 +29,7 @@ function normalizeCategory(cat: any): Category {
   if (!cat) return {} as Category;
   const target = (cat.data && (cat.data._id || cat.data.id || cat.data.name)) ? cat.data : cat;
   const idVal = target._id || target.id || String(Math.random());
-  const isSoftDeleted = target.isDeleted === true || (target.deletedAt !== null && target.deletedAt !== undefined);
+  const isSoftDeleted = target.isDeleted === true || (Boolean(target.deletedAt) && target.deletedAt !== null);
 
   return {
     ...target,
@@ -45,6 +45,22 @@ function normalizeCategory(cat: any): Category {
   };
 }
 
+export interface CreateCategoryPayload {
+  name: string;
+  slug?: string;
+  parentId?: string | null;
+  description?: string;
+  displayOrder?: number;
+  status?: boolean;
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string | string[];
+  imageFile?: File | null;
+  bannerFile?: File | null;
+  image?: File | null;
+  banner?: File | null;
+}
+
 export const categoriesApi = {
   /**
    * Fetch categories list directly from live API endpoint GET /categories
@@ -52,7 +68,9 @@ export const categoriesApi = {
    */
   getCategories: async (params?: QueryCategoryParams): Promise<PaginatedCategoriesResponse> => {
     try {
-      const response = await apiClient.get<any>('/categories', { params: { limit: 500, ...params } });
+      const response = await apiClient.get<any>('/categories', {
+        params: { limit: 500, ...params },
+      });
       let rawList = extractCategoryList(response);
 
       // If /categories returns empty list (e.g. backend cache lock), fallback to /categories/tree
@@ -77,7 +95,7 @@ export const categoriesApi = {
 
       const normalizedList = rawList
         .map(normalizeCategory)
-        .filter((cat) => cat && !cat.isDeleted && !cat.deletedAt);
+        .filter((cat) => cat && cat._id && !cat.isDeleted);
 
       const meta = (response && typeof response === 'object' && response.meta) ||
                    (response && response.data && response.data.meta) || {
@@ -108,7 +126,7 @@ export const categoriesApi = {
         });
         const normalizedList = flattened
           .map(normalizeCategory)
-          .filter((cat) => cat && !cat.isDeleted && !cat.deletedAt);
+          .filter((cat) => cat && cat._id && !cat.isDeleted);
         return {
           data: normalizedList,
           meta: { total: normalizedList.length, page: 1, limit: 500, totalPages: 1, hasNextPage: false, hasPrevPage: false },
@@ -129,7 +147,7 @@ export const categoriesApi = {
     try {
       const response = await apiClient.get<any>('/categories/tree');
       const rawList = extractCategoryList(response);
-      return rawList.map(normalizeCategory).filter((cat) => cat && !cat.isDeleted && !cat.deletedAt);
+      return rawList.map(normalizeCategory).filter((cat) => cat && cat._id && !cat.isDeleted);
     } catch (error) {
       console.warn('GET /categories/tree API error:', error);
       const res = await categoriesApi.getCategories({ limit: 500 });
@@ -148,7 +166,32 @@ export const categoriesApi = {
   /**
    * Create new category with multipart/form-data via POST /categories
    */
-  createCategory: async (formData: FormData): Promise<Category> => {
+  createCategory: async (payload: CreateCategoryPayload | FormData): Promise<Category> => {
+    let formData: FormData;
+    if (payload instanceof FormData) {
+      formData = payload;
+    } else {
+      formData = new FormData();
+      formData.append('name', payload.name);
+      if (payload.slug) formData.append('slug', payload.slug);
+      if (payload.parentId) formData.append('parentId', payload.parentId);
+      if (payload.description) formData.append('description', payload.description);
+      if (payload.displayOrder !== undefined) formData.append('displayOrder', String(payload.displayOrder));
+      if (payload.status !== undefined) formData.append('status', String(payload.status));
+      if (payload.seoTitle) formData.append('seoTitle', payload.seoTitle);
+      if (payload.seoDescription) formData.append('seoDescription', payload.seoDescription);
+      if (payload.seoKeywords) {
+        const keywordsStr = Array.isArray(payload.seoKeywords)
+          ? payload.seoKeywords.join(', ')
+          : payload.seoKeywords;
+        formData.append('seoKeywords', keywordsStr);
+      }
+      const img = payload.imageFile || payload.image;
+      if (img) formData.append('image', img);
+      const bnr = payload.bannerFile || payload.banner;
+      if (bnr) formData.append('banner', bnr);
+    }
+
     const res = await apiClient.post<any>('/categories', formData, {
       headers: { 'Content-Type': undefined },
     });

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { categoriesApi } from '../api/categories';
 import { Category, QueryCategoryParams } from '../types/category';
@@ -7,13 +8,28 @@ export function useCategories(params?: QueryCategoryParams) {
     queryKey: ['categories-list', params],
     queryFn: () => categoriesApi.getCategories({ limit: 500, ...params }),
     staleTime: 0,
-    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: 'always',
+    refetchInterval: 5000,
   });
 
-  const rawCategories: Category[] = query.data?.data || [];
+  useEffect(() => {
+    query.refetch();
+  }, []);
+
+  const extractCategoriesArray = (data: any): Category[] => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.data)) return data.data;
+    if (Array.isArray(data.categories)) return data.categories;
+    if (data.data && Array.isArray(data.data.data)) return data.data.data;
+    return [];
+  };
+
+  const rawCategories: Category[] = extractCategoriesArray(query.data);
   
   // Filter out any soft-deleted categories
-  const allCategories = rawCategories.filter((cat) => !cat.isDeleted && !cat.deletedAt);
+  const allCategories = rawCategories.filter((cat) => cat && !cat.isDeleted);
 
   // Derived Root Parent Categories (parentId is null or 'null' or undefined)
   const rootCategories = allCategories.filter((cat) => {
