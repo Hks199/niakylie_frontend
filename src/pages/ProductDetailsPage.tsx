@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ShoppingBag, Heart, Star, Share2, Check } from 'lucide-react';
+import { ShoppingBag, Heart, Star, Share2, Check, ChevronRight } from 'lucide-react';
 import { ProductGallery } from '../components/pdp/ProductGallery';
 import { VariantSelector } from '../components/pdp/VariantSelector';
 import { PincodeChecker } from '../components/pdp/PincodeChecker';
@@ -10,6 +10,8 @@ import { SimilarProducts } from '../components/pdp/SimilarProducts';
 import { productsApi } from '../api/products';
 import { useCartStore, useWishlistStore } from '../store';
 import { ProductVariant } from '../types';
+import { useCategories } from '../hooks/useCategories';
+import { buildBreadcrumbTrail } from '../utils/breadcrumb';
 
 interface ProductDetailsPageProps {
   slug?: string;
@@ -20,6 +22,7 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
   const { addToCart } = useCartStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
+  const { allCategories } = useCategories();
 
   const { data: product } = useQuery({
     queryKey: ['product', slug],
@@ -81,8 +84,32 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     ? (activeProduct.brand as any).name
     : (activeProduct.brand || 'NiaKylie Signature');
 
+  const productCategory = (activeProduct as any).category || (activeProduct as any).categoryId;
+  const breadcrumbs = buildBreadcrumbTrail(productCategory, allCategories, activeProduct.title);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-in fade-in duration-300">
+      {/* Dynamic Product Breadcrumb Trail */}
+      <nav className="flex items-center space-x-1.5 text-xs text-slate-500 mb-6 overflow-x-auto no-scrollbar py-2 border-b border-gray-100">
+        {breadcrumbs.map((crumb, idx) => {
+          const isLast = idx === breadcrumbs.length - 1;
+          return (
+            <div key={idx} className="flex items-center space-x-1.5 flex-shrink-0">
+              {isLast ? (
+                <span className="font-bold text-brand-slate-dark truncate max-w-xs">{crumb.label}</span>
+              ) : (
+                <>
+                  <a href={crumb.href} className="hover:text-brand-crimson transition-colors font-medium text-slate-600">
+                    {crumb.label}
+                  </a>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
+                </>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
       {/* 2-Column Main Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Left Column: Product Gallery (7 cols) */}

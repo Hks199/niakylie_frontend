@@ -11,6 +11,8 @@ import { EmptyState } from '../components/plp/EmptyState';
 import { Pagination } from '../components/plp/Pagination';
 import { ProductCard } from '../components/home/ProductCard';
 import { productsApi } from '../api';
+import { useCategories } from '../hooks/useCategories';
+import { buildBreadcrumbTrail } from '../utils/breadcrumb';
 
 const initialFilterState: FilterState = {
   categories: [],
@@ -109,12 +111,15 @@ export function ProductListingPage() {
   const total = data?.total || 0;
   const totalPages = data?.totalPages || 1;
 
-  const currentTitle = filters.categories[0] || 'All Ethnic Couture';
+  const { allCategories } = useCategories();
+  const currentCategory = filters.categories[0];
+  const currentTitle = currentCategory || 'All Ethnic Couture';
+  const breadcrumbs = buildBreadcrumbTrail(currentCategory, allCategories);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Breadcrumb Header */}
-      <PLPBreadcrumbHeader title={currentTitle} totalItems={total} />
+      <PLPBreadcrumbHeader title={currentTitle} totalItems={total} breadcrumbs={breadcrumbs} />
 
       {/* Control Bar: Mobile Filter Trigger & Sort Dropdown */}
       <div className="flex items-center justify-between mb-4">

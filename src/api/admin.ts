@@ -309,15 +309,16 @@ export const adminApi = {
   // GET /admin/reviews (dashboard reviews listing — not in guide but needed for UI)
   getAllReviews: async (params?: { page?: number; limit?: number; status?: string }): Promise<{ reviews: any[]; total: number }> => {
     try {
-      return await apiClient.get('/admin/reviews', { params });
+      return await apiClient.get('/reviews/admin', { params });
     } catch {
-      return {
-        reviews: [
-          { _id: 'rev001', product: { _id: 'p1', title: 'Royal Banarasi Silk Saree', images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=60&q=80'] }, user: { _id: 'u1', firstName: 'Ananya', lastName: 'Roy', email: 'ananya.roy@example.com' }, rating: 5, comment: 'Absolutely stunning saree! The silk quality is superb.', status: 'PENDING', createdAt: '2026-08-18T08:20:00.000Z' },
-          { _id: 'rev002', product: { _id: 'p2', title: 'Zardozi Bridal Lehenga', images: [] }, user: { _id: 'u2', firstName: 'Priya', lastName: 'Sharma', email: 'priya.s@example.com' }, rating: 4, comment: 'Beautiful lehenga but slight delay in delivery.', status: 'PENDING', createdAt: '2026-08-19T11:00:00.000Z' },
-        ],
-        total: 2,
-      };
+      try {
+        return await apiClient.get('/admin/reviews', { params });
+      } catch {
+        return {
+          reviews: [],
+          total: 0,
+        };
+      }
     }
   },
 
