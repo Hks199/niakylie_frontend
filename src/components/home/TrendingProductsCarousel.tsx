@@ -6,12 +6,24 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 interface TrendingProductsCarouselProps {
   featuredProducts: Product[];
   trendingProducts: Product[];
+  bestSellerProducts?: Product[];
 }
 
-export function TrendingProductsCarousel({ featuredProducts, trendingProducts }: TrendingProductsCarouselProps) {
-  const [activeTab, setActiveTab] = useState<'featured' | 'trending'>('featured');
+export function TrendingProductsCarousel({
+  featuredProducts,
+  trendingProducts,
+  bestSellerProducts = [],
+}: TrendingProductsCarouselProps) {
+  const [activeTab, setActiveTab] = useState<'featured' | 'trending' | 'bestSellers'>('featured');
 
-  const currentProducts = activeTab === 'featured' ? featuredProducts : trendingProducts;
+  const currentProducts =
+    activeTab === 'featured'
+      ? featuredProducts
+      : activeTab === 'trending'
+      ? trendingProducts
+      : bestSellerProducts.length > 0
+      ? bestSellerProducts
+      : featuredProducts;
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -28,10 +40,10 @@ export function TrendingProductsCarousel({ featuredProducts, trendingProducts }:
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center space-x-2 bg-slate-100 p-1 rounded-2xl w-max">
+        <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl w-max flex-wrap">
           <button
             onClick={() => setActiveTab('featured')}
-            className={`px-5 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`px-4 sm:px-5 py-2 text-xs font-bold rounded-xl transition-all ${
               activeTab === 'featured'
                 ? 'bg-brand-crimson text-white shadow-md'
                 : 'text-slate-600 hover:text-brand-slate-dark'
@@ -41,13 +53,23 @@ export function TrendingProductsCarousel({ featuredProducts, trendingProducts }:
           </button>
           <button
             onClick={() => setActiveTab('trending')}
-            className={`px-5 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`px-4 sm:px-5 py-2 text-xs font-bold rounded-xl transition-all ${
               activeTab === 'trending'
                 ? 'bg-brand-crimson text-white shadow-md'
                 : 'text-slate-600 hover:text-brand-slate-dark'
             }`}
           >
             TRENDING NOW
+          </button>
+          <button
+            onClick={() => setActiveTab('bestSellers')}
+            className={`px-4 sm:px-5 py-2 text-xs font-bold rounded-xl transition-all ${
+              activeTab === 'bestSellers'
+                ? 'bg-brand-crimson text-white shadow-md'
+                : 'text-slate-600 hover:text-brand-slate-dark'
+            }`}
+          >
+            BEST SELLERS
           </button>
         </div>
       </div>

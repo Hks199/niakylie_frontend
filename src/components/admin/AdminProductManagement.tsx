@@ -47,6 +47,8 @@ interface ProductFormData {
   tags: string;
   tax: number;
   isFeatured: boolean;
+  isTrending: boolean;
+  isBestSeller: boolean;
   variants: ProductVariantInput[];
 }
 
@@ -71,6 +73,8 @@ const DEFAULT_FORM: ProductFormData = {
   tags: 'kurti, silk, ethnic',
   tax: 5,
   isFeatured: true,
+  isTrending: true,
+  isBestSeller: false,
   variants: [{ ...DEFAULT_VARIANT }],
 };
 
@@ -192,6 +196,8 @@ export function AdminProductManagement() {
       tags: Array.isArray(prod.tags) ? prod.tags.join(', ') : '',
       tax: prod.tax || 5,
       isFeatured: Boolean(prod.isFeatured),
+      isTrending: Boolean(prod.isTrending),
+      isBestSeller: Boolean(prod.isBestSeller),
       variants:
         Array.isArray(prod.variants) && prod.variants.length > 0
           ? prod.variants.map((v: any) => ({
@@ -345,6 +351,8 @@ export function AdminProductManagement() {
         : undefined,
       tax: Number(formData.tax || 0),
       isFeatured: formData.isFeatured,
+      isTrending: formData.isTrending,
+      isBestSeller: formData.isBestSeller,
       variants: formData.variants.map((v) => ({
         color: v.color.trim(),
         colorHex: v.colorHex.trim() || '#DC2626',
@@ -1267,8 +1275,8 @@ export function AdminProductManagement() {
                   />
                 </div>
 
-                <div>
-                  <label className="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  <label className="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer bg-white p-2.5 rounded-xl border border-gray-200 hover:border-brand-crimson transition-all">
                     <input
                       type="checkbox"
                       name="isFeatured"
@@ -1276,7 +1284,38 @@ export function AdminProductManagement() {
                       onChange={handleInputChange}
                       className="rounded border-gray-300 text-brand-crimson focus:ring-brand-crimson"
                     />
-                    <span>Mark as Featured Product</span>
+                    <div>
+                      <span className="block font-extrabold">Mark as Featured</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Shows in "FEATURED EDIT" tab</span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer bg-white p-2.5 rounded-xl border border-gray-200 hover:border-brand-crimson transition-all">
+                    <input
+                      type="checkbox"
+                      name="isTrending"
+                      checked={formData.isTrending}
+                      onChange={handleInputChange}
+                      className="rounded border-gray-300 text-brand-crimson focus:ring-brand-crimson"
+                    />
+                    <div>
+                      <span className="block font-extrabold">Mark as Trending</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Shows in "TRENDING NOW" tab</span>
+                    </div>
+                  </label>
+
+                  <label className="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer bg-white p-2.5 rounded-xl border border-gray-200 hover:border-brand-crimson transition-all">
+                    <input
+                      type="checkbox"
+                      name="isBestSeller"
+                      checked={formData.isBestSeller}
+                      onChange={handleInputChange}
+                      className="rounded border-gray-300 text-brand-crimson focus:ring-brand-crimson"
+                    />
+                    <div>
+                      <span className="block font-extrabold">Mark Best Seller</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Shows "Best Seller" badge</span>
+                    </div>
                   </label>
                 </div>
               </div>

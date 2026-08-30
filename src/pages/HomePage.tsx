@@ -39,13 +39,21 @@ export function HomePage() {
     queryFn: () => productsApi.getProducts({ isTrending: true, limit: 8 }),
   });
 
-  // Fallback to all products if specific flags (isFeatured / isTrending) return empty arrays
+  // 5. Fetch Best Seller Products
+  const { data: bestSellerData } = useQuery({
+    queryKey: ['products', 'bestseller'],
+    queryFn: () => productsApi.getProducts({ isBestSeller: true, limit: 8 }),
+  });
+
+  // Fallback to all products if specific flags (isFeatured / isTrending / isBestSeller) return empty arrays
   const featuredProducts =
     featuredData?.items && featuredData.items.length > 0 ? featuredData.items : allProducts;
   const trendingProducts =
     trendingData?.items && trendingData.items.length > 0 ? trendingData.items : allProducts;
+  const bestSellerProducts =
+    bestSellerData?.items && bestSellerData.items.length > 0 ? bestSellerData.items : allProducts;
 
-  // 5. Fetch Blogs
+  // 6. Fetch Blogs
   const { data: blogsRaw = [] } = useQuery({
     queryKey: ['cms', 'blogs'],
     queryFn: () => cmsApi.getBlogs(),
@@ -67,6 +75,7 @@ export function HomePage() {
       <TrendingProductsCarousel
         featuredProducts={featuredProducts}
         trendingProducts={trendingProducts}
+        bestSellerProducts={bestSellerProducts}
       />
 
       {/* 5. Brand Spotlight Grid */}

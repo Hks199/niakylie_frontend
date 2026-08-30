@@ -53,12 +53,19 @@ export function ProductCard({ product }: ProductCardProps) {
           />
         </a>
 
-        {/* Discount Badge */}
-        {discount > 0 && (
-          <span className="absolute top-2.5 left-2.5 bg-brand-crimson text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-sm">
-            {discount}% OFF
-          </span>
-        )}
+        {/* Badges Overlay */}
+        <div className="absolute top-2.5 left-2.5 flex flex-col space-y-1 z-10">
+          {product.isBestSeller && (
+            <span className="bg-amber-400 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-md shadow-md uppercase tracking-wider border border-amber-300 w-max">
+              🔥 BEST SELLER
+            </span>
+          )}
+          {discount > 0 && (
+            <span className="bg-brand-crimson text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-sm w-max">
+              {discount}% OFF
+            </span>
+          )}
+        </div>
 
         {/* Star Rating Badge */}
         {product.rating && (
