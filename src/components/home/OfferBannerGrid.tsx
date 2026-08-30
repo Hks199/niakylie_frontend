@@ -1,6 +1,20 @@
 import { Sparkles, Clock, ArrowRight, Tag } from 'lucide-react';
+import { Banner } from '../../types/banner';
 
-export function OfferBannerGrid() {
+interface OfferBannerGridProps {
+  banners?: Banner[];
+}
+
+export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
+  const resolveBannerImg = (path?: string) => {
+    if (!path) return 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80';
+    return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+  };
+
+  const hasDynamicBanners = banners && banners.length > 0;
+  const mainBanner = hasDynamicBanners ? banners[0] : null;
+  const secondaryBanner = hasDynamicBanners && banners.length > 1 ? banners[1] : null;
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex items-center justify-between mb-8">
@@ -24,22 +38,19 @@ export function OfferBannerGrid() {
         {/* Deal 1: Large Banner (Span 2) */}
         <div className="md:col-span-2 relative rounded-3xl overflow-hidden shadow-card group min-h-[260px] sm:min-h-[320px]">
           <img
-            src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80"
-            alt="Deal of the Day"
+            src={mainBanner ? resolveBannerImg(mainBanner.imageUrl) : "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80"}
+            alt={mainBanner?.title || "Deal of the Day"}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-900/60 to-transparent p-6 sm:p-10 flex flex-col justify-between text-white">
             <div className="space-y-2">
               <span className="bg-brand-crimson text-white text-xs font-extrabold px-3 py-1 rounded-full inline-block shadow-md uppercase tracking-wider">
-                DEAL OF THE DAY
+                {mainBanner?.type || 'DEAL OF THE DAY'}
               </span>
               <h3 className="text-2xl sm:text-4xl font-extrabold font-display leading-tight">
-                Banarasi Silk Sarees <br />
-                <span className="text-brand-gold">FLAT 50% OFF</span>
+                {mainBanner?.title || 'Banarasi Silk Sarees'} <br />
+                <span className="text-brand-gold">{mainBanner?.subtitle || 'FLAT 50% OFF'}</span>
               </h3>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-md">
-                Handcrafted Zari drapes from Varanasi weavers with free matching blouse piece.
-              </p>
             </div>
 
             <div className="pt-4 flex items-center justify-between">
@@ -48,10 +59,10 @@ export function OfferBannerGrid() {
                 <span className="text-xs font-bold">Use Code: FESTIVE50</span>
               </div>
               <a
-                href="/category/sarees"
+                href={mainBanner?.linkUrl || "/category/sarees"}
                 className="bg-white text-brand-slate-dark hover:bg-brand-crimson hover:text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow-lg transition-all flex items-center space-x-1.5 uppercase tracking-wider"
               >
-                <span>CLAIM DEAL</span>
+                <span>{mainBanner?.linkLabel || 'CLAIM DEAL'}</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
@@ -61,24 +72,26 @@ export function OfferBannerGrid() {
         {/* Deal 2: Vertical Card (Span 1) */}
         <div className="relative rounded-3xl overflow-hidden shadow-card group min-h-[260px] sm:min-h-[320px]">
           <img
-            src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80"
-            alt="Kurta Sets Offer"
+            src={secondaryBanner ? resolveBannerImg(secondaryBanner.imageUrl) : "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80"}
+            alt={secondaryBanner?.title || "Kurta Sets Offer"}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent p-6 flex flex-col justify-end text-white">
             <span className="bg-emerald-500 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full inline-block w-max mb-2 uppercase tracking-wider">
-              BUY 1 GET 1 FREE
+              {secondaryBanner?.type || 'BUY 1 GET 1 FREE'}
             </span>
             <h4 className="text-xl sm:text-2xl font-extrabold font-display leading-tight mb-1">
-              Anarkali & Sharara Suits
+              {secondaryBanner?.title || 'Anarkali & Sharara Suits'}
             </h4>
-            <p className="text-xs text-slate-300 mb-4">Under ₹1,999 Special Store</p>
+            {secondaryBanner?.subtitle && (
+              <p className="text-xs text-slate-300 mb-4">{secondaryBanner.subtitle}</p>
+            )}
 
             <a
-              href="/category/kurta-sets"
+              href={secondaryBanner?.linkUrl || "/category/kurta-sets"}
               className="bg-brand-crimson hover:bg-brand-crimson-dark text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center space-x-1.5 uppercase tracking-wider w-full"
             >
-              <span>SHOP BOGO SALE</span>
+              <span>{secondaryBanner?.linkLabel || 'SHOP BOGO SALE'}</span>
               <ArrowRight className="w-4 h-4" />
             </a>
           </div>
