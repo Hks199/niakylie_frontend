@@ -18,7 +18,8 @@ export function CartItemList({ items }: CartItemListProps) {
         const variant: any = typeof item.variantId === 'object' ? item.variantId : item.variant || {};
 
         const title = product.title || 'Ethnic Couture Garment';
-        const brand = product.brand || 'NiaKylie Signature';
+        const rawBrand = product.brand;
+        const brand = typeof rawBrand === 'object' && rawBrand !== null ? (rawBrand as any).name : (rawBrand || 'NiaKylie Signature');
         const image = product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
         const size = variant.size || 'M';
         const color = variant.color || 'Crimson Red';

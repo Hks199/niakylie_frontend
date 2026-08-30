@@ -11,24 +11,36 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  const bannersLength = banners?.length || 0;
+
+  // Auto-slide effect: automatically transition slides every 4 seconds unless paused
   useEffect(() => {
-    if (isPaused || !banners || banners.length <= 1) return;
+    if (isPaused || bannersLength <= 1) return;
+
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % banners.length);
-    }, 5500);
+      setCurrentIndex((prev) => (prev + 1) % bannersLength);
+    }, 4000);
+
     return () => clearInterval(timer);
-  }, [isPaused, banners]);
+  }, [isPaused, bannersLength]);
+
+  // Keep index within bounds if banners list changes
+  useEffect(() => {
+    if (bannersLength > 0 && currentIndex >= bannersLength) {
+      setCurrentIndex(0);
+    }
+  }, [bannersLength, currentIndex]);
 
   if (!banners || banners.length === 0) return null;
 
   const currentBanner = banners[currentIndex];
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % banners.length);
+    setCurrentIndex((prev) => (prev + 1) % bannersLength);
   };
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + banners.length) % banners.length);
+    setCurrentIndex((prev) => (prev - 1 + bannersLength) % bannersLength);
   };
 
   const resolveBannerImg = (path?: string) => {
@@ -41,6 +53,8 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
       className="relative w-full h-[450px] sm:h-[550px] lg:h-[620px] bg-slate-950 overflow-hidden group"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
     >
       <AnimatePresence mode="wait">
         <motion.div

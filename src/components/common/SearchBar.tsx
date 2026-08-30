@@ -137,7 +137,11 @@ export function SearchBar() {
                           <p className="text-xs font-semibold text-brand-slate-dark group-hover:text-brand-crimson">
                             {item.text}
                           </p>
-                          {item.category && <p className="text-[10px] text-slate-400">{item.category}</p>}
+                          {item.category && (
+                            <p className="text-[10px] text-slate-400">
+                              {typeof item.category === 'object' ? (item.category as any).name : item.category}
+                            </p>
+                          )}
                         </div>
                       </div>
 

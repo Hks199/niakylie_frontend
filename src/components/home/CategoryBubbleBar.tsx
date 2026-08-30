@@ -47,6 +47,10 @@ export function CategoryBubbleBar() {
                     <img
                       src={imageUrl}
                       alt={item.name}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=250&q=80';
+                      }}
                       className="w-full h-full object-cover group-hover:rotate-3 transition-transform duration-500"
                     />
                   </div>

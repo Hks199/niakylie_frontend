@@ -479,6 +479,10 @@ export function AdminCategoriesPanel() {
                           <img
                             src={cat.image.startsWith('http') ? cat.image : `http://localhost:3000${cat.image}`}
                             alt={cat.name}
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src =
+                                'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=250&q=80';
+                            }}
                             className="w-10 h-10 rounded-2xl object-cover border border-slate-200 shadow-sm"
                           />
                         ) : (

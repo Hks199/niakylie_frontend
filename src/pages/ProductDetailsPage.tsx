@@ -77,6 +77,9 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
 
   const originalPrice = activeProduct.originalPrice || Math.round(activeProduct.price * 2);
   const discount = activeProduct.discountPercentage || Math.round(((originalPrice - activeProduct.price) / originalPrice) * 100);
+  const brandName = typeof activeProduct.brand === 'object' && activeProduct.brand !== null
+    ? (activeProduct.brand as any).name
+    : (activeProduct.brand || 'NiaKylie Signature');
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
@@ -93,7 +96,7 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs uppercase font-extrabold text-brand-crimson tracking-widest">
-                {activeProduct.brand || 'NiaKylie Signature'}
+                {brandName}
               </span>
               <button
                 onClick={() => navigator.clipboard.writeText(window.location.href)}

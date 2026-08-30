@@ -37,6 +37,9 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const originalPrice = product.originalPrice || Math.round(product.price * 2);
   const discount = product.discountPercentage || Math.round(((originalPrice - product.price) / originalPrice) * 100);
+  const brandName = typeof product.brand === 'object' && product.brand !== null
+    ? (product.brand as any).name
+    : (product.brand || 'NiaKylie Signature');
 
   return (
     <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden flex flex-col justify-between">
@@ -107,7 +110,7 @@ export function ProductCard({ product }: ProductCardProps) {
       {/* Product Information */}
       <div className="p-3.5 space-y-1">
         <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-          {product.brand || 'NiaKylie Signature'}
+          {brandName}
         </span>
 
         <a href={`/product/${product.slug}`} className="block">
