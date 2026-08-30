@@ -466,7 +466,7 @@ export function AdminCategoriesPanel() {
                     ? ((cat.parentId as any)._id || (cat.parentId as any).id)
                     : cat.parentId;
                   const parentCat = parentIdVal
-                    ? categories.find((c) => (c._id || (c as any).id) === parentIdVal)
+                    ? categories.find((c) => (c._id || (c as any).id) === parentIdVal) || (typeof cat.parentId === 'object' && cat.parentId ? (cat.parentId as any) : null)
                     : null;
                   const isParent = !parentIdVal || parentIdVal === 'null' || parentIdVal === 'undefined';
                   const catId = cat._id || (cat as any).id || `cat-${idx}`;
