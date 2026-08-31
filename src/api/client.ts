@@ -36,8 +36,20 @@ export const apiClient = axios.create({
 // ─── REQUEST INTERCEPTOR ──────────────────────────────────────────────────
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Attach JWT Token if available in localStorage
-    const token = localStorage.getItem('access_token');
+    // Attach JWT Token if available in localStorage or Zustand store
+    let token = localStorage.getItem('access_token');
+    if (!token) {
+      try {
+        const authData = localStorage.getItem('niakylie-auth-storage');
+        if (authData) {
+          const parsed = JSON.parse(authData);
+          token = parsed?.state?.token || null;
+        }
+      } catch {
+        // Ignore parse error
+      }
+    }
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
