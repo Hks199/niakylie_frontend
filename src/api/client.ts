@@ -81,10 +81,10 @@ apiClient.interceptors.response.use(
       const requestUrl = (error.config as any)?.url || '';
       const storedToken = localStorage.getItem('access_token');
 
-      // Only fire auth:unauthorized if not on auth login endpoint itself
-      const isLoginEndpoint = requestUrl.includes('/auth/login');
+      // Only fire auth:unauthorized for explicit profile verification routes like /users/profile or /auth/me
+      const isProfileVerificationRoute = requestUrl.includes('/users/profile') || requestUrl.includes('/auth/me');
 
-      if (!isLoginEndpoint && storedToken) {
+      if (isProfileVerificationRoute && storedToken) {
         localStorage.removeItem('access_token');
         window.dispatchEvent(new CustomEvent('auth:unauthorized'));
       }

@@ -21,11 +21,17 @@ export const useWishlistStore = create<WishlistState>()((set, get) => ({
 
     set({ isLoading: true });
     try {
-      const data = await apiClient.get<WishlistItem[] | { items: WishlistItem[] }>('/users/wishlist');
-      const items: WishlistItem[] = Array.isArray(data) ? data : data?.items || [];
+      const data = await apiClient.get<WishlistItem[] | { items: WishlistItem[] }>('/users/profile/wishlist');
+      const items: WishlistItem[] = Array.isArray(data) ? data : (data as any)?.items || [];
       set({ wishlistItems: items, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false });
+    } catch {
+      try {
+        const data = await apiClient.get<WishlistItem[] | { items: WishlistItem[] }>('/users/wishlist');
+        const items: WishlistItem[] = Array.isArray(data) ? data : (data as any)?.items || [];
+        set({ wishlistItems: items, isLoading: false });
+      } catch {
+        set({ isLoading: false });
+      }
     }
   },
 
