@@ -134,15 +134,48 @@ function normalizeProduct(p: any): Product {
   const nameVal = p.name || p.title || 'NiaKylie Fashion Item';
   const slugVal = p.slug || idVal;
 
-  const firstVariant = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants[0] : null;
-  const offerPrice = firstVariant?.offerPrice ?? p.discountPrice ?? p.price ?? 1999;
-  const mrpPrice = firstVariant?.mrp ?? p.basePrice ?? p.originalPrice ?? offerPrice * 1.5;
   const rawImage = (Array.isArray(p.images) && p.images[0]) || p.thumbnail;
   const imageVal = rawImage
     ? rawImage.startsWith('http')
       ? rawImage
       : `http://localhost:3000${rawImage}`
     : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
+
+  const allImages = Array.isArray(p.images) && p.images.length > 0
+    ? p.images.map((img: string) => (img.startsWith('http') ? img : `http://localhost:3000${img}`))
+    : [imageVal];
+
+  const rawVariants = Array.isArray(p.variants) ? p.variants : [];
+  const normalizedVariants = rawVariants.map((v: any) => {
+    const vId = v._id || v.id || String(Math.random());
+    const vOffer = v.offerPrice ?? v.price ?? p.price ?? 2999;
+    const vMrp = v.mrp ?? v.originalPrice ?? p.originalPrice ?? vOffer * 1.5;
+    const vImages = Array.isArray(v.images) && v.images.length > 0
+      ? v.images.map((img: string) => (img.startsWith('http') ? img : `http://localhost:3000${img}`))
+      : allImages;
+
+    return {
+      ...v,
+      id: vId,
+      _id: vId,
+      sku: v.sku || `NK-${nameVal.slice(0, 3).toUpperCase()}-${(v.color || 'STD').slice(0, 3).toUpperCase()}`,
+      color: v.color || 'Standard',
+      colorHex: v.colorHex || '#E63946',
+      size: v.size || 'Free Size',
+      stock: v.stock !== undefined ? Number(v.stock) : 10,
+      price: Number(vOffer),
+      offerPrice: Number(vOffer),
+      mrp: Number(vMrp),
+      originalPrice: Number(vMrp),
+      discountPercentage: vMrp > vOffer ? Math.round(((vMrp - vOffer) / vMrp) * 100) : 0,
+      images: vImages,
+      isActive: v.isActive !== false,
+    };
+  });
+
+  const firstVariant = normalizedVariants[0];
+  const offerPrice = firstVariant?.price ?? p.price ?? 2999;
+  const mrpPrice = firstVariant?.originalPrice ?? p.originalPrice ?? offerPrice * 1.5;
 
   return {
     ...p,
@@ -155,10 +188,44 @@ function normalizeProduct(p: any): Product {
     originalPrice: Number(mrpPrice),
     discountPercentage: mrpPrice > offerPrice ? Math.round(((mrpPrice - offerPrice) / mrpPrice) * 100) : 0,
     thumbnail: imageVal,
-    images: Array.isArray(p.images) && p.images.length > 0 ? p.images : [imageVal],
+    images: allImages,
+    variants: normalizedVariants.length > 0 ? normalizedVariants : [
+      {
+        id: `${idVal}-v1`,
+        _id: `${idVal}-v1`,
+        sku: `NK-${nameVal.slice(0, 3).toUpperCase()}-RED`,
+        color: 'Crimson Red',
+        colorHex: '#E63946',
+        size: 'Free Size',
+        stock: 10,
+        price: Number(offerPrice),
+        offerPrice: Number(offerPrice),
+        mrp: Number(mrpPrice),
+        originalPrice: Number(mrpPrice),
+        discountPercentage: mrpPrice > offerPrice ? Math.round(((mrpPrice - offerPrice) / mrpPrice) * 100) : 0,
+        images: allImages,
+        isActive: true,
+      },
+      {
+        id: `${idVal}-v2`,
+        _id: `${idVal}-v2`,
+        sku: `NK-${nameVal.slice(0, 3).toUpperCase()}-GLD`,
+        color: 'Royal Gold',
+        colorHex: '#D4AF37',
+        size: 'Free Size',
+        stock: 5,
+        price: Number(offerPrice),
+        offerPrice: Number(offerPrice),
+        mrp: Number(mrpPrice),
+        originalPrice: Number(mrpPrice),
+        discountPercentage: mrpPrice > offerPrice ? Math.round(((mrpPrice - offerPrice) / mrpPrice) * 100) : 0,
+        images: allImages,
+        isActive: true,
+      },
+    ],
     brand: p.brand || (typeof p.brandId === 'object' && p.brandId?.name) || 'NiaKylie Signature',
-    rating: p.rating || 4.5,
-    reviewCount: p.reviewCount || 12,
+    rating: p.averageRating || p.rating || 4.8,
+    reviewCount: p.reviewsCount || p.reviewCount || 142,
   };
 }
 

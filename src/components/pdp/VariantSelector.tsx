@@ -23,7 +23,6 @@ export function VariantSelector({
   selectedVariant,
   onSelectVariant,
 }: VariantSelectorProps) {
-  const [selectedSize, setSelectedSize] = useState('M');
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
   // Group variants by color
@@ -36,27 +35,81 @@ export function VariantSelector({
 
   const availableColors = Array.from(colorMap.entries());
 
+  // Extract all available sizes from variants or fallback list
+  const sizeList = Array.from(
+    new Set(
+      variants && variants.length > 0
+        ? variants.map((v) => v.size || 'Free Size')
+        : ['Free Size', 'S', 'M', 'L', 'XL']
+    )
+  );
+
+  const currentSize = selectedVariant?.size || sizeList[0] || 'Free Size';
+  const currentColor = selectedVariant?.color || availableColors[0]?.[0] || 'Crimson Red';
+
+  const handleColorChange = (colorName: string) => {
+    // Find variant with matching color and current size, or any variant with matching color
+    const match =
+      variants?.find((v) => v.color === colorName && v.size === currentSize) ||
+      variants?.find((v) => v.color === colorName);
+    if (match) {
+      onSelectVariant(match);
+    }
+  };
+
+  const handleSizeChange = (sizeName: string) => {
+    // Find variant with matching current color and new size, or any variant with new size
+    const match =
+      variants?.find((v) => v.color === currentColor && v.size === sizeName) ||
+      variants?.find((v) => v.size === sizeName);
+    if (match) {
+      onSelectVariant(match);
+    }
+  };
+
+  const currentStock = selectedVariant?.stock !== undefined ? selectedVariant.stock : 10;
+  const isOutOfStock = currentStock === 0;
+  const isLowStock = currentStock > 0 && currentStock <= 3;
+
   return (
     <div className="space-y-6 pt-4 border-t border-gray-100">
+      {/* SKU & Stock Header */}
+      {selectedVariant?.sku && (
+        <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+          <span>
+            SKU: <strong className="text-slate-800 font-mono">{selectedVariant.sku}</strong>
+          </span>
+          {isOutOfStock ? (
+            <span className="text-rose-600 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-md">
+              OUT OF STOCK
+            </span>
+          ) : (
+            <span className="text-emerald-700 font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-md">
+              IN STOCK ({currentStock} available)
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Color Selection Swatches */}
       {availableColors.length > 0 && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
-              Color: <span className="text-brand-slate-dark capitalize">{selectedVariant?.color || 'Crimson Red'}</span>
+              Color: <span className="text-brand-slate-dark capitalize">{currentColor}</span>
             </span>
           </div>
 
           <div className="flex items-center space-x-3">
             {availableColors.map(([colorName, variant]) => {
-              const isSelected = selectedVariant?.color === colorName;
+              const isSelected = currentColor === colorName;
               return (
                 <button
                   key={colorName}
-                  onClick={() => onSelectVariant(variant)}
+                  onClick={() => handleColorChange(colorName)}
                   className={`px-4 py-2 text-xs font-bold rounded-xl border transition-all flex items-center space-x-2 ${
                     isSelected
-                      ? 'border-brand-crimson bg-brand-crimson/5 text-brand-crimson ring-2 ring-brand-crimson/20'
+                      ? 'border-brand-crimson bg-brand-crimson/5 text-brand-crimson ring-2 ring-brand-crimson/20 shadow-sm'
                       : 'border-gray-200 text-slate-700 hover:border-gray-300'
                   }`}
                 >
@@ -76,7 +129,7 @@ export function VariantSelector({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
-            Select Size: <span className="text-brand-slate-dark">{selectedSize}</span>
+            Select Size: <span className="text-brand-slate-dark font-bold">{currentSize}</span>
           </span>
           <button
             onClick={() => setIsSizeGuideOpen(true)}
@@ -89,40 +142,38 @@ export function VariantSelector({
 
         {/* Size Pills Grid */}
         <div className="flex flex-wrap gap-2.5">
-          {DEFAULT_SIZES.map(({ size, stock }) => {
-            const isSelected = selectedSize === size;
-            const isOutOfStock = stock === 0;
-            const isLowStock = stock > 0 && stock <= 3;
+          {sizeList.map((sizeName) => {
+            const isSelected = currentSize === sizeName;
+            const sizeVariant = variants?.find(
+              (v) => (v.color === currentColor || !currentColor) && v.size === sizeName
+            );
+            const sizeStock = sizeVariant?.stock !== undefined ? sizeVariant.stock : 10;
+            const sizeOut = sizeStock === 0;
 
             return (
               <button
-                key={size}
-                disabled={isOutOfStock}
-                onClick={() => setSelectedSize(size)}
-                className={`relative w-12 h-12 rounded-2xl font-extrabold text-xs transition-all flex flex-col items-center justify-center border ${
-                  isOutOfStock
+                key={sizeName}
+                disabled={sizeOut}
+                onClick={() => handleSizeChange(sizeName)}
+                className={`relative px-4 h-11 rounded-2xl font-extrabold text-xs transition-all flex items-center justify-center border ${
+                  sizeOut
                     ? 'bg-slate-100 border-gray-200 text-slate-400 cursor-not-allowed line-through'
                     : isSelected
                     ? 'border-brand-crimson bg-brand-crimson text-white shadow-md scale-105'
                     : 'border-gray-200 text-brand-slate-dark hover:border-brand-crimson'
                 }`}
               >
-                <span>{size}</span>
-                {isLowStock && !isSelected && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-white text-[8px] font-extrabold px-1 rounded-full animate-pulse">
-                    {stock} left
-                  </span>
-                )}
+                <span>{sizeName}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Stock Alert Badge */}
-        {DEFAULT_SIZES.find((s) => s.size === selectedSize)?.stock! <= 3 && (
+        {/* Low Stock Warning Alert */}
+        {isLowStock && (
           <div className="flex items-center space-x-1.5 text-xs text-amber-700 font-bold bg-amber-50 px-3 py-2 rounded-xl w-max">
             <AlertCircle className="w-4 h-4 text-amber-600" />
-            <span>Hurry! Only {DEFAULT_SIZES.find((s) => s.size === selectedSize)?.stock} items left in stock.</span>
+            <span>Hurry! Only {currentStock} items left in stock for this variant.</span>
           </div>
         )}
       </div>

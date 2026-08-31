@@ -45,7 +45,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden flex flex-col justify-between">
       {/* Product Image Container */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-100">
-        <a href={`/product/${product.slug}`}>
+        <a href={`/product/${product.slug || product.id || product._id}`}>
           <img
             src={product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80'}
             alt={product.title}
@@ -120,7 +120,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {brandName}
         </span>
 
-        <a href={`/product/${product.slug}`} className="block">
+        <a href={`/product/${product.slug || product.id || product._id}`} className="block">
           <h4 className="text-xs font-bold text-brand-slate-dark line-clamp-1 group-hover:text-brand-crimson transition-colors">
             {product.title}
           </h4>

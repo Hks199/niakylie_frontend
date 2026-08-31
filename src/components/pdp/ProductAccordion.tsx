@@ -35,9 +35,10 @@ export function ProductAccordion({ product }: ProductAccordionProps) {
                 'Immerse yourself in timeless Indian royalty with this handcrafted NiaKylie creation. Woven by skilled artisans using traditional techniques, this piece blends rich heritage aesthetics with modern drape elegance.'}
             </p>
             <div className="pt-2 font-bold text-slate-700 space-y-1">
-              <p>• <strong>Fabric:</strong> 100% Pure Banarasi Silk</p>
-              <p>• <strong>Weave Type:</strong> Zari Brocade Handloom</p>
-              <p>• <strong>Care:</strong> Dry Clean Only</p>
+              <p>• <strong>Fabric / Material:</strong> {product.material || '100% Pure Premium Silk'}</p>
+              <p>• <strong>Weave & Pattern:</strong> {product.pattern || 'Zari Brocade Handloom'}</p>
+              <p>• <strong>Collection:</strong> {product.productCollection || 'Royal Heritage Festive 2026'}</p>
+              <p>• <strong>Care Instructions:</strong> Dry Clean Only</p>
             </div>
           </div>
         )}
@@ -57,18 +58,26 @@ export function ProductAccordion({ product }: ProductAccordionProps) {
         </button>
 
         {openSection === 'specs' && (
-          <div className="p-4 text-xs text-slate-600 border-t border-gray-100 grid grid-cols-2 gap-4">
+          <div className="p-4 text-xs text-slate-600 border-t border-gray-100 grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Occasion</span>
-              <span className="font-bold text-slate-800">Wedding / Festive</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Border</span>
-              <span className="font-bold text-slate-800">Zari Embellished</span>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">Material</span>
+              <span className="font-bold text-slate-800">{product.material || 'Silk / Art Handloom'}</span>
             </div>
             <div>
               <span className="text-[10px] text-slate-400 uppercase font-bold block">Pattern</span>
-              <span className="font-bold text-slate-800">Ethnic Floral Motif</span>
+              <span className="font-bold text-slate-800">{product.pattern || 'Ethnic Floral Motif'}</span>
+            </div>
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">Season</span>
+              <span className="font-bold text-slate-800">{product.season || 'Festive / Wedding'}</span>
+            </div>
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">Occasion</span>
+              <span className="font-bold text-slate-800">Wedding / Ceremonial</span>
+            </div>
+            <div>
+              <span className="text-[10px] text-slate-400 uppercase font-bold block">Collection</span>
+              <span className="font-bold text-slate-800">{product.productCollection || 'Signature Collection'}</span>
             </div>
             <div>
               <span className="text-[10px] text-slate-400 uppercase font-bold block">Country of Origin</span>

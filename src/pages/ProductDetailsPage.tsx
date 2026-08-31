@@ -59,7 +59,15 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
   const currentVariant = selectedVariant || activeProduct.variants?.[0];
   const isWishlisted = isInWishlist(activeProduct.id || activeProduct._id || '');
 
+  // Calculate variant-specific pricing, stock, and gallery images
+  const price = currentVariant?.offerPrice ?? currentVariant?.price ?? activeProduct.price;
+  const originalPrice = currentVariant?.mrp ?? currentVariant?.originalPrice ?? activeProduct.originalPrice ?? Math.round(price * 2);
+  const discount = originalPrice > price ? Math.round(((originalPrice - price) / originalPrice) * 100) : activeProduct.discountPercentage || 0;
+  const galleryImages = (currentVariant?.images && currentVariant.images.length > 0) ? currentVariant.images : (activeProduct.images || [activeProduct.thumbnail || '']);
+  const isOutOfStock = currentVariant?.stock === 0;
+
   const handleAddToCart = async () => {
+    if (isOutOfStock) return;
     setIsAdding(true);
     try {
       await addToCart({
@@ -78,8 +86,6 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     await toggleWishlist(activeProduct.id || activeProduct._id || '');
   };
 
-  const originalPrice = activeProduct.originalPrice || Math.round(activeProduct.price * 2);
-  const discount = activeProduct.discountPercentage || Math.round(((originalPrice - activeProduct.price) / originalPrice) * 100);
   const brandName = typeof activeProduct.brand === 'object' && activeProduct.brand !== null
     ? (activeProduct.brand as any).name
     : (activeProduct.brand || 'NiaKylie Signature');
@@ -114,7 +120,7 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Left Column: Product Gallery (7 cols) */}
         <div className="lg:col-span-7">
-          <ProductGallery images={activeProduct.images || [activeProduct.thumbnail || '']} title={activeProduct.title} />
+          <ProductGallery images={galleryImages} title={activeProduct.title} />
         </div>
 
         {/* Right Column: Product Info & Actions (5 cols) */}
@@ -155,9 +161,9 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
           <div className="p-4 rounded-2xl bg-slate-50 border border-gray-100 space-y-1">
             <div className="flex items-baseline space-x-3">
               <span className="text-3xl font-extrabold text-brand-slate-dark font-display">
-                ₹{activeProduct.price.toLocaleString('en-IN')}
+                ₹{price.toLocaleString('en-IN')}
               </span>
-              {originalPrice > activeProduct.price && (
+              {originalPrice > price && (
                 <span className="text-base text-slate-400 line-through">
                   MRP ₹{originalPrice.toLocaleString('en-IN')}
                 </span>
@@ -182,14 +188,18 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
           <div className="flex items-center space-x-4 pt-2">
             <button
               onClick={handleAddToCart}
-              disabled={isAdding}
+              disabled={isAdding || isOutOfStock}
               className={`flex-1 font-extrabold text-xs sm:text-sm py-4 rounded-2xl shadow-xl flex items-center justify-center space-x-2 transition-all uppercase tracking-wider ${
-                isAdding
+                isOutOfStock
+                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                  : isAdding
                   ? 'bg-emerald-600 text-white'
                   : 'bg-brand-crimson hover:bg-brand-crimson-dark text-white'
               }`}
             >
-              {isAdding ? (
+              {isOutOfStock ? (
+                <span>OUT OF STOCK</span>
+              ) : isAdding ? (
                 <>
                   <Check className="w-5 h-5" />
                   <span>ADDED TO BAG</span>
