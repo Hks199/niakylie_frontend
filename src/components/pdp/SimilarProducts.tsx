@@ -8,9 +8,13 @@ interface SimilarProductsProps {
 }
 
 export function SimilarProducts({ categoryId, currentProductId }: SimilarProductsProps) {
+  const catIdStr = typeof categoryId === 'object' && categoryId !== null
+    ? (categoryId as any)._id || (categoryId as any).id || (categoryId as any).slug
+    : categoryId;
+
   const { data } = useQuery({
-    queryKey: ['products', 'similar', categoryId],
-    queryFn: () => productsApi.getProducts({ category: categoryId, limit: 4 }),
+    queryKey: ['products', 'similar', catIdStr],
+    queryFn: () => productsApi.getProducts({ category: catIdStr, limit: 4 }),
   });
 
   const products = data?.items?.filter((p) => p.id !== currentProductId && p._id !== currentProductId) || [];

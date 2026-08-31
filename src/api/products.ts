@@ -232,7 +232,15 @@ function normalizeProduct(p: any): Product {
 export const productsApi = {
   getProducts: async (params?: ProductQueryParams): Promise<ProductsResponse> => {
     try {
-      const response = await apiClient.get<any>('/products', { params });
+      const cleanedParams: Record<string, any> = params ? { ...params } : {};
+      if (cleanedParams.category && typeof cleanedParams.category === 'object') {
+        cleanedParams.category = cleanedParams.category._id || cleanedParams.category.slug || cleanedParams.category.id;
+      }
+      if (cleanedParams.categoryId && typeof cleanedParams.categoryId === 'object') {
+        cleanedParams.categoryId = cleanedParams.categoryId._id || cleanedParams.categoryId.id;
+      }
+
+      const response = await apiClient.get<any>('/products', { params: cleanedParams });
       const rawList = extractProductList(response);
       const normalizedItems = rawList.map(normalizeProduct);
 
