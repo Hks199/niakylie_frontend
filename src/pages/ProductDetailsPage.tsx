@@ -182,6 +182,13 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
             variants={activeProduct.variants}
             selectedVariant={currentVariant}
             onSelectVariant={(v) => setSelectedVariant(v)}
+            hideSizeGuide={
+              (typeof activeProduct.categoryId === 'string' && activeProduct.categoryId.toLowerCase().includes('saree')) ||
+              (typeof (activeProduct as any).category === 'string' && (activeProduct as any).category.toLowerCase().includes('saree')) ||
+              (typeof (activeProduct as any).category?.slug === 'string' && (activeProduct as any).category.slug.toLowerCase().includes('saree')) ||
+              (typeof (activeProduct as any).category?.name === 'string' && (activeProduct as any).category.name.toLowerCase().includes('saree')) ||
+              activeProduct.title?.toLowerCase().includes('saree')
+            }
           />
 
           {/* Main Action Buttons */}
@@ -237,7 +244,14 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
       <ReviewsSection productId={activeProduct.id || activeProduct._id || 'p1'} />
 
       {/* Similar Recommended Products */}
-      <SimilarProducts categoryId={activeProduct.categoryId} currentProductId={activeProduct.id} />
+      <SimilarProducts
+        categoryId={
+          typeof activeProduct.categoryId === 'string'
+            ? activeProduct.categoryId
+            : (activeProduct.categoryId as any)?._id || (activeProduct.categoryId as any)?.slug
+        }
+        currentProductId={activeProduct.id}
+      />
     </div>
   );
 }

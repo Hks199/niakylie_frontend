@@ -6,9 +6,13 @@ export interface ProductVariant {
   color: string;
   colorHex?: string;
   price: number;
+  offerPrice?: number;
+  mrp?: number;
   originalPrice?: number;
   stock: number;
   imageUrl?: string;
+  images?: string[];
+  isActive?: boolean;
 }
 
 export interface Product {
@@ -18,9 +22,10 @@ export interface Product {
   title: string;
   slug: string;
   sku?: string;
-  brand?: string;
-  category?: string;
+  brand?: string | { _id?: string; name?: string; slug?: string; logo?: string };
+  category?: string | { _id?: string; name?: string; slug?: string };
   description?: string;
+  shortDescription?: string;
   price: number;
   originalPrice?: number;
   discountPercentage?: number;
@@ -30,11 +35,15 @@ export interface Product {
   thumbnail?: string;
   images?: string[];
   fabric?: string;
+  material?: string;
+  pattern?: string;
+  season?: string;
+  productCollection?: string;
   careInstructions?: string;
   sizes?: string[];
   colors?: string[];
   variants?: ProductVariant[];
-  categoryId?: string;
+  categoryId?: string | { _id?: string; name?: string; slug?: string };
   isFeatured?: boolean;
   isTrending?: boolean;
   isBestSeller?: boolean;

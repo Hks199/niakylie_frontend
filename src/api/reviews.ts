@@ -14,16 +14,21 @@ export interface ProductReview {
 }
 
 export interface ReviewSummary {
-  averageRating: number;
-  totalReviews: number;
-  starsCount: {
+  averageRating?: number;
+  totalReviews?: number;
+  starsCount?: {
     5: number;
     4: number;
     3: number;
     2: number;
     1: number;
   };
-  reviews: ProductReview[];
+  summary?: {
+    averageRating?: number;
+    reviewCount?: number;
+    ratingBreakdown?: Record<string, number>;
+  };
+  reviews?: ProductReview[];
 }
 
 export const reviewsApi = {

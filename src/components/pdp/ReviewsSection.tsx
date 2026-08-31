@@ -50,14 +50,14 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
     },
   ];
 
-  const averageRating = data?.averageRating ?? 4.8;
+  const averageRating = data?.summary?.averageRating ?? data?.averageRating ?? 4.8;
   const rawReviews = Array.isArray(data?.reviews)
     ? data.reviews
     : Array.isArray(data)
     ? data
     : DEFAULT_REVIEWS;
   const reviews = rawReviews.length > 0 ? rawReviews : DEFAULT_REVIEWS;
-  const totalReviews = data?.totalReviews || reviews.length || 142;
+  const totalReviews = data?.summary?.reviewCount ?? data?.totalReviews ?? reviews.length ?? 142;
 
   const defaultStarsCount = {
     5: Math.max(1, Math.round(totalReviews * 0.7)),
@@ -69,7 +69,11 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
 
   const starsCount = {
     ...defaultStarsCount,
-    ...(data && typeof data.starsCount === 'object' ? data.starsCount : {}),
+    ...(data?.summary?.ratingBreakdown
+      ? data.summary.ratingBreakdown
+      : data && typeof data.starsCount === 'object'
+      ? data.starsCount
+      : {}),
   };
 
   return (
@@ -155,7 +159,7 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
             {/* Review Photos if any */}
             {rev.images && rev.images.length > 0 && (
               <div className="flex items-center space-x-2 pt-1">
-                {rev.images.map((img, idx) => (
+                {rev.images.map((img: string, idx: number) => (
                   <img
                     key={idx}
                     src={img}

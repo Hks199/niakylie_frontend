@@ -7,21 +7,14 @@ interface VariantSelectorProps {
   variants?: ProductVariant[];
   selectedVariant?: ProductVariant;
   onSelectVariant: (variant: ProductVariant) => void;
+  hideSizeGuide?: boolean;
 }
-
-const DEFAULT_SIZES = [
-  { size: 'XS', stock: 5 },
-  { size: 'S', stock: 12 },
-  { size: 'M', stock: 2 },
-  { size: 'L', stock: 8 },
-  { size: 'XL', stock: 0 },
-  { size: 'XXL', stock: 4 },
-];
 
 export function VariantSelector({
   variants,
   selectedVariant,
   onSelectVariant,
+  hideSizeGuide = false,
 }: VariantSelectorProps) {
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
 
@@ -70,6 +63,9 @@ export function VariantSelector({
   const currentStock = selectedVariant?.stock !== undefined ? selectedVariant.stock : 10;
   const isOutOfStock = currentStock === 0;
   const isLowStock = currentStock > 0 && currentStock <= 3;
+
+  const isFreeSizeOnly = sizeList.length === 1 && (sizeList[0] === 'Free Size' || sizeList[0] === 'Unstitched' || sizeList[0] === 'One Size');
+  const shouldShowSizeGuide = !hideSizeGuide && !isFreeSizeOnly;
 
   return (
     <div className="space-y-6 pt-4 border-t border-gray-100">
@@ -131,13 +127,15 @@ export function VariantSelector({
           <span className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
             Select Size: <span className="text-brand-slate-dark font-bold">{currentSize}</span>
           </span>
-          <button
-            onClick={() => setIsSizeGuideOpen(true)}
-            className="inline-flex items-center space-x-1 text-xs font-extrabold text-brand-crimson hover:underline"
-          >
-            <Ruler className="w-3.5 h-3.5" />
-            <span>SIZE GUIDE</span>
-          </button>
+          {shouldShowSizeGuide && (
+            <button
+              onClick={() => setIsSizeGuideOpen(true)}
+              className="inline-flex items-center space-x-1 text-xs font-extrabold text-brand-crimson hover:underline"
+            >
+              <Ruler className="w-3.5 h-3.5" />
+              <span>SIZE GUIDE</span>
+            </button>
+          )}
         </div>
 
         {/* Size Pills Grid */}
