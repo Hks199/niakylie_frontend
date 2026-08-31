@@ -170,7 +170,8 @@ export const useCartStore = create<CartState>()((set, get) => ({
 
   mergeGuestCart: async () => {
     try {
-      const cart = await apiClient.post<Cart>('/cart/merge-guest-cart');
+      const guestId = localStorage.getItem('guest_id');
+      const cart = await apiClient.post<Cart>('/cart/merge', { guestId });
       set({
         cart,
         cartItems: cart.items || [],
@@ -179,7 +180,8 @@ export const useCartStore = create<CartState>()((set, get) => ({
         appliedCoupon: cart.appliedCoupon || null,
       });
     } catch (error) {
-      // Ignore if no guest cart to merge
+      // Fallback: fetch user cart directly
+      await get().fetchCart().catch(() => {});
     }
   },
 }));

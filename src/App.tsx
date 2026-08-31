@@ -22,12 +22,13 @@ export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
-    // Only fetch cart/wishlist for authenticated non-admin customers
     const isAdminUser = checkIsAdmin(user);
 
-    if (isAuthenticated && !isAdminUser) {
+    if (!isAdminUser) {
       useCartStore.getState().fetchCart();
-      useWishlistStore.getState().fetchWishlist();
+      if (isAuthenticated) {
+        useWishlistStore.getState().fetchWishlist();
+      }
     }
 
     const handleLocationChange = () => {

@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User, LoginPayload, RegisterPayload, RegisterResponse } from '../types/auth';
 import { authApi } from '../api/auth';
+import { useCartStore } from './useCartStore';
+import { useWishlistStore } from './useWishlistStore';
 
 interface AuthState {
   user: User | null;
@@ -42,6 +44,11 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
+
+          // Fetch logged-in user's own cart & wishlist
+          useCartStore.getState().mergeGuestCart().catch(() => {});
+          useCartStore.getState().fetchCart().catch(() => {});
+          useWishlistStore.getState().fetchWishlist().catch(() => {});
         } catch (error) {
           set({ isLoading: false });
           throw error;
@@ -115,6 +122,11 @@ export const useAuthStore = create<AuthState>()(
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         set({ user: null, token: null, isAuthenticated: false, isLoading: false });
+
+        // Reset state for logout and reload fresh guest cart
+        useCartStore.getState().clearCart();
+        useWishlistStore.setState({ wishlistItems: [] });
+        useCartStore.getState().fetchCart().catch(() => {});
       },
 
       fetchProfile: async () => {
