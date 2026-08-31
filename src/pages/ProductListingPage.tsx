@@ -28,6 +28,7 @@ export function ProductListingPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [sort, setSort] = useState('recommended');
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
 
   // Sync state from URL query params on mount
@@ -37,6 +38,9 @@ export function ProductListingPage() {
     const brand = params.get('brand');
     const pageParam = params.get('page');
     const sortParam = params.get('sort');
+    const qParam = params.get('q') || params.get('search') || '';
+
+    setSearchQuery(qParam);
 
     setFilters((prev) => ({
       ...prev,
@@ -51,6 +55,7 @@ export function ProductListingPage() {
   // Update URL search parameters when filters change
   const updateURLParams = (newFilters: FilterState, newSort: string, newPage: number) => {
     const params = new URLSearchParams();
+    if (searchQuery) params.set('q', searchQuery);
     if (newFilters.categories.length > 0) params.set('category', newFilters.categories[0]);
     if (newFilters.brands.length > 0) params.set('brand', newFilters.brands[0]);
     if (newFilters.colors.length > 0) params.set('color', newFilters.colors[0]);
@@ -86,16 +91,18 @@ export function ProductListingPage() {
   const handleClearAll = () => {
     setFilters(initialFilterState);
     setPage(1);
+    setSearchQuery('');
     updateURLParams(initialFilterState, sort, 1);
   };
 
   // Fetch Products using TanStack Query
   const { data, isLoading } = useQuery({
-    queryKey: ['products', filters, sort, page],
+    queryKey: ['products', filters, sort, page, searchQuery],
     queryFn: () =>
       productsApi.getProducts({
         page,
         limit: 12,
+        search: searchQuery || undefined,
         category: filters.categories[0],
         brand: filters.brands[0],
         color: filters.colors[0],
@@ -113,7 +120,7 @@ export function ProductListingPage() {
 
   const { allCategories } = useCategories();
   const currentCategory = filters.categories[0];
-  const currentTitle = currentCategory || 'All Ethnic Couture';
+  const currentTitle = searchQuery ? `Search Results for "${searchQuery}"` : currentCategory || 'All Ethnic Couture';
   const breadcrumbs = buildBreadcrumbTrail(currentCategory, allCategories);
 
   return (
