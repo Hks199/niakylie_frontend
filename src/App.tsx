@@ -22,13 +22,10 @@ export function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
   useEffect(() => {
-    const isAdminUser = checkIsAdmin(user);
-
-    if (!isAdminUser) {
-      useCartStore.getState().fetchCart();
-      if (isAuthenticated) {
-        useWishlistStore.getState().fetchWishlist();
-      }
+    // Always fetch shopping cart on app mount so cart state persists across page reloads
+    useCartStore.getState().fetchCart();
+    if (isAuthenticated) {
+      useWishlistStore.getState().fetchWishlist();
     }
 
     const handleLocationChange = () => {

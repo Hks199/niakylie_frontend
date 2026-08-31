@@ -45,9 +45,12 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           });
 
-          // Fetch logged-in user's own cart & wishlist
-          useCartStore.getState().mergeGuestCart().catch(() => {});
-          useCartStore.getState().fetchCart().catch(() => {});
+          // Merge guest cart sequentially and fetch user cart & wishlist
+          try {
+            await useCartStore.getState().mergeGuestCart();
+          } catch {
+            await useCartStore.getState().fetchCart().catch(() => {});
+          }
           useWishlistStore.getState().fetchWishlist().catch(() => {});
         } catch (error) {
           set({ isLoading: false });
@@ -71,6 +74,11 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           });
+
+          // Sync cart for admin login
+          useCartStore.getState().mergeGuestCart().catch(() => {});
+          useCartStore.getState().fetchCart().catch(() => {});
+          useWishlistStore.getState().fetchWishlist().catch(() => {});
         } catch (error) {
           set({ isLoading: false });
           throw error;
@@ -173,6 +181,10 @@ export const useAuthStore = create<AuthState>()(
           token,
           isAuthenticated: !!user,
         });
+
+        if (user) {
+          useCartStore.getState().fetchCart().catch(() => {});
+        }
       },
     }),
     {
