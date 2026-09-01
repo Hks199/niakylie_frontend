@@ -40,11 +40,16 @@ export function ProductListingPage() {
     const sortParam = params.get('sort');
     const qParam = params.get('q') || params.get('search') || '';
 
+    let pathCat: string | undefined;
+    if (window.location.pathname.startsWith('/category/')) {
+      pathCat = decodeURIComponent(window.location.pathname.replace('/category/', ''));
+    }
+
     setSearchQuery(qParam);
 
     setFilters((prev) => ({
       ...prev,
-      categories: cat ? [cat] : prev.categories,
+      categories: pathCat ? [pathCat] : (cat ? [cat] : prev.categories),
       brands: brand ? [brand] : prev.brands,
     }));
 

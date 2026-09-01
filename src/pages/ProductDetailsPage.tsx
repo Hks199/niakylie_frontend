@@ -261,7 +261,7 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
       </div>
 
       {/* Customer Ratings & Reviews Section */}
-      <ReviewsSection productId={activeProduct.id || activeProduct._id || 'p1'} />
+      <ReviewsSection productId={targetProductId} productTitle={activeProduct.title} />
 
       {/* Similar Recommended Products */}
       <SimilarProducts

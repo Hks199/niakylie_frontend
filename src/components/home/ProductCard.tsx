@@ -69,8 +69,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Star Rating Badge */}
         {(() => {
-          const ratingVal = product.rating || (product as any).averageRating || 4.8;
-          const countVal = product.reviewCount || (product as any).reviewsCount || 142;
+          const ratingVal = product.rating ?? (product as any).averageRating ?? 0;
+          const countVal = product.reviewCount ?? (product as any).reviewsCount ?? 0;
+
+          if (!ratingVal && !countVal) return null;
+
           return (
             <div className="absolute bottom-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-full shadow-sm flex items-center space-x-1 text-[11px] font-extrabold text-slate-800 border border-gray-100">
               <span>{Number(ratingVal).toFixed(1)}</span>
