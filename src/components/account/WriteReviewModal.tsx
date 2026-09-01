@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, Star, Camera, Loader2 } from 'lucide-react';
 import { reviewsApi } from '../../api/reviews';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface WriteReviewModalProps {
   isOpen: boolean;
@@ -36,11 +37,17 @@ export function WriteReviewModal({ isOpen, productId, productTitle, onClose }: W
     if (rating === 0) return;
     setLoading(true);
     try {
+      const user = useAuthStore.getState().user;
+      const userId = user?.id || (user as any)?._id || (user as any)?._id?.toString();
+      const userName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : undefined;
+
       await reviewsApi.createReview({
         productId,
         rating,
         title: title || 'Customer Review',
         comment: comment || 'Great product quality!',
+        userId,
+        userName,
       });
       setSubmitted(true);
       resetForm(); // Form inputs cleared to vacant state

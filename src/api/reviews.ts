@@ -38,6 +38,8 @@ export interface CreateReviewPayload {
   comment: string;
   images?: string[];
   videos?: string[];
+  userId?: string;
+  userName?: string;
 }
 
 export const reviewsApi = {
