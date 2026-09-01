@@ -235,11 +235,20 @@ export const ordersApi = {
 
   downloadInvoice: async (id: string): Promise<void> => {
     try {
-      const url = `/api/v1/orders/${id}/invoice`;
+      const url = `http://localhost:3000/api/v1/checkout/orders/${id}/invoice`;
       window.open(url, '_blank');
     } catch (error) {
-      console.warn('Invoice download not available in offline mode');
+      console.warn('Invoice download error:', error);
+    }
+  },
+
+  getInvoice: async (id: string): Promise<any> => {
+    try {
+      return await apiClient.get(`/checkout/orders/${id}/invoice`);
+    } catch (error) {
+      return null;
     }
   },
 };
+
 
