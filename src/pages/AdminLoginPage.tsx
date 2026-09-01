@@ -8,15 +8,15 @@ interface AdminLoginPageProps {
 }
 
 export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
-  const { login, adminLogin, adminRegister, setUser } = useAuthStore();
+  const { login, adminLogin, adminRegister } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
-  // Form states
-  const [email, setEmail] = useState('admin@niakylie.com');
-  const [password, setPassword] = useState('admin123');
+  // Form states initialized empty (No prefilled demo credentials)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [adminSecretKey, setAdminSecretKey] = useState('NK_ADMIN_SECRET_KEY_2026');
+  const [adminSecretKey, setAdminSecretKey] = useState('');
   
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,27 +32,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
     }
   };
 
-  const applyDemoAdmin = () => {
-    localStorage.setItem('access_token', 'mock_admin_jwt_token_2026');
-    setUser({
-      id: 'admin-001',
-      firstName: 'System',
-      lastName: 'Admin',
-      email: 'admin@niakylie.com',
-      roles: ['ADMIN'],
-      isEmailVerified: true,
-      isActive: true,
-      addresses: [],
-      wishlist: [],
-      rewardPoints: 1000,
-      wallet: { balance: 0, history: [] },
-      notificationPreferences: { email: true, sms: true, push: true },
-      recentlyViewed: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
-  };
-
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -62,43 +41,34 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
     try {
       // 1. Try real Admin API login (POST /auth/admin/login)
       try {
-        await adminLogin({ email, password });
+        await adminLogin({ email: email.trim(), password });
       } catch {
         // Fallback to standard login endpoint (POST /auth/login)
-        await login({ email, password });
+        await login({ email: email.trim(), password });
       }
 
       const currentUser = useAuthStore.getState().user;
       const isAdminUser = checkIsAdmin(currentUser);
 
+      // Strict role verification: only ADMIN / SUPER_ADMIN role permitted
       if (currentUser && isAdminUser) {
         setSuccess('Admin authenticated! Redirecting to dashboard...');
         setTimeout(navigateToDashboard, 400);
         return;
       } else {
-        setError('Access Denied: This account does not have Admin privileges.');
+        // Access Denied for customer accounts — log out and notify
+        useAuthStore.getState().logout();
+        setError('Access Denied: Only authorized administrators can access the Admin Portal.');
         setIsLoading(false);
         return;
       }
     } catch (_err: any) {
-      // 2. API failed — use demo fallback if demo credentials used
-      if (
-        email.trim().toLowerCase() === 'admin@niakylie.com' &&
-        password === 'admin123'
-      ) {
-        applyDemoAdmin();
-        setSuccess('Demo Admin authenticated! Redirecting to dashboard...');
-        setIsLoading(false);
-        setTimeout(navigateToDashboard, 300);
-        return;
-      }
-
       const rawMsg = _err?.message || _err?.error;
       const errMsg = Array.isArray(rawMsg)
         ? rawMsg.join(' · ')
         : typeof rawMsg === 'string'
         ? rawMsg
-        : 'Invalid admin credentials or server error. Please try again.';
+        : 'Invalid admin credentials or server error. Access restricted to Administrators only.';
       setError(errMsg);
     } finally {
       setIsLoading(false);
@@ -232,7 +202,7 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@niakylie.com"
+                  placeholder="Enter admin email address"
                   className="w-full bg-slate-950 border border-slate-800 text-white rounded-2xl pl-10 pr-4 py-3 text-xs font-medium outline-none focus:border-brand-crimson transition-colors"
                 />
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -265,17 +235,10 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
               </div>
             </div>
 
-            {/* Demo hint */}
-            <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-3 text-[11px] text-slate-400 space-y-1">
-              <p className="font-bold text-amber-400 text-[10px] uppercase tracking-wider">Demo Admin Credentials</p>
-              <p>Email: <span className="font-mono text-amber-400">admin@niakylie.com</span></p>
-              <p>Password: <span className="font-mono text-amber-400">admin123</span></p>
-            </div>
-
             <button
               type="submit"
               disabled={isLoading || !!success}
-              className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-3.5 rounded-2xl shadow-lg shadow-brand-crimson/20 flex items-center justify-center space-x-2 uppercase tracking-wider transition-all disabled:opacity-60"
+              className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-3.5 rounded-2xl shadow-lg shadow-brand-crimson/20 flex items-center justify-center space-x-2 uppercase tracking-wider transition-all disabled:opacity-60 mt-2"
             >
               <span>{isLoading ? 'AUTHENTICATING...' : success ? 'REDIRECTING...' : 'LOG IN TO ADMIN DASHBOARD'}</span>
               <ArrowRight className="w-4 h-4" />
@@ -294,7 +257,7 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="System"
+                    placeholder="First Name"
                     className="w-full bg-slate-950 border border-slate-800 text-white rounded-2xl pl-9 pr-3 py-2.5 text-xs font-medium outline-none focus:border-brand-crimson"
                   />
                   <User className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -307,7 +270,7 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
                   required
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Administrator"
+                  placeholder="Last Name"
                   className="w-full bg-slate-950 border border-slate-800 text-white rounded-2xl px-3 py-2.5 text-xs font-medium outline-none focus:border-brand-crimson"
                 />
               </div>
@@ -322,7 +285,7 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="newadmin@niakylie.com"
+                  placeholder="Enter admin email address"
                   className="w-full bg-slate-950 border border-slate-800 text-white rounded-2xl pl-9 pr-3 py-2.5 text-xs font-medium outline-none focus:border-brand-crimson"
                 />
                 <Mail className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -363,7 +326,7 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
                   type="text"
                   value={adminSecretKey}
                   onChange={(e) => setAdminSecretKey(e.target.value)}
-                  placeholder="NK_ADMIN_SECRET_KEY_2026"
+                  placeholder="Enter administrative registration key"
                   className="w-full bg-slate-950 border border-slate-800 text-white rounded-2xl pl-9 pr-3 py-2.5 text-xs font-mono outline-none focus:border-brand-crimson"
                 />
                 <Key className="w-3.5 h-3.5 text-amber-500 absolute left-3 top-1/2 -translate-y-1/2" />
