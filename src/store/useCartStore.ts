@@ -98,12 +98,14 @@ const normalizeCartResponse = (rawCart: any) => {
     };
   });
 
-  const subtotal = Number(rawCart.subtotal ?? cartItems.reduce((sum: number, i: any) => sum + i.price * i.quantity, 0));
-  const totalMrp = Number(rawCart.totalMrp ?? cartItems.reduce((sum: number, i: any) => sum + i.originalPrice * i.quantity, 0));
+  const computedSubtotal = cartItems.reduce((sum: number, i: any) => sum + i.price * i.quantity, 0);
+  const subtotal = Number(rawCart.subtotal || computedSubtotal);
+  const computedMrp = cartItems.reduce((sum: number, i: any) => sum + i.originalPrice * i.quantity, 0);
+  const totalMrp = Number(rawCart.totalMrp || computedMrp);
   const couponDiscount = Number(rawCart.couponDiscount ?? 0);
-  const tax = Number(rawCart.tax ?? Math.round((subtotal - couponDiscount) * 0.18));
-  const shippingFee = Number(rawCart.shippingFee ?? (subtotal >= 1000 || subtotal === 0 ? 0 : 99));
-  const total = Number(rawCart.grandTotal ?? Math.max(0, subtotal - couponDiscount + tax + shippingFee));
+  const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 99;
+  const tax = 0;
+  const total = Math.max(0, subtotal - couponDiscount + shippingFee);
 
   const cartTotals: CartTotals = {
     subtotal,

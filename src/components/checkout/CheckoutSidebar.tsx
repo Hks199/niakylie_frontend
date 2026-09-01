@@ -11,7 +11,7 @@ export function CheckoutSidebar({ totals, appliedCoupon, shippingType }: Checkou
   const { subtotal, discount, couponDiscount, tax } = totals;
   const shippingFee = shippingType === 'express' ? 149 : 0;
   const totalMRP = subtotal + discount;
-  const grandTotal = subtotal - couponDiscount + shippingFee + tax;
+  const grandTotal = Math.max(0, subtotal - couponDiscount + shippingFee);
 
   return (
     <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-5 sticky top-24">

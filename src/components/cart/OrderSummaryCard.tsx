@@ -51,7 +51,7 @@ export function OrderSummaryCard({ totals, appliedCoupon, onProceedToCheckout }:
 
         {tax > 0 && (
           <div className="flex items-center justify-between text-slate-500">
-            <span>Estimated Tax (GST)</span>
+            <span>Estimated Tax</span>
             <span>₹{tax.toLocaleString('en-IN')}</span>
           </div>
         )}
