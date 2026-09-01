@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Download, Package, Loader2 } from 'lucide-react';
+import { ArrowLeft, Download, Package, Loader2, Star } from 'lucide-react';
 import { ordersApi } from '../../api/orders';
 import { OrderTrackingTimeline } from '../../components/account/OrderTrackingTimeline';
 import { WriteReviewModal } from '../../components/account/WriteReviewModal';
@@ -79,9 +79,11 @@ export function OrderDetailsPage({ orderId, onBack }: OrderDetailsPageProps) {
 
         {order.items && order.items.length > 0 ? (
           order.items.map((item, idx) => {
-            const product: any = typeof item.productId === 'object' ? item.productId : item.product || {};
-            const image = product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
-            const title = product.title || 'Ethnic Couture Garment';
+            const itemAny = item as any;
+            const product: any = typeof item.productId === 'object' ? item.productId : itemAny.product || {};
+            const image = itemAny.image || product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
+            const title = itemAny.name || product.title || 'NiaKylie Ethnic Couture Garment';
+            const targetProdId = typeof item.productId === 'string' ? item.productId : (item.productId?._id || itemAny.id || product.id || 'p1');
 
             return (
               <div key={idx} className="flex items-center justify-between p-4 border-b border-gray-50 last:border-0">
@@ -96,12 +98,13 @@ export function OrderDetailsPage({ orderId, onBack }: OrderDetailsPageProps) {
                 {order.status === 'DELIVERED' && (
                   <button
                     onClick={() => {
-                      setReviewProductId(typeof item.productId === 'string' ? item.productId : product.id || 'p1');
+                      setReviewProductId(targetProdId);
                       setReviewProductTitle(title);
                     }}
-                    className="text-[10px] font-extrabold text-brand-crimson border border-brand-crimson/30 hover:bg-brand-crimson/5 px-3 py-1.5 rounded-lg transition-all"
+                    className="text-[10px] font-extrabold text-white bg-amber-600 hover:bg-amber-700 px-3.5 py-2 rounded-xl transition-all shadow-sm flex items-center space-x-1"
                   >
-                    WRITE REVIEW
+                    <Star className="w-3 h-3 fill-white" />
+                    <span>WRITE REVIEW</span>
                   </button>
                 )}
               </div>
@@ -118,9 +121,10 @@ export function OrderDetailsPage({ orderId, onBack }: OrderDetailsPageProps) {
                   setReviewProductId('p1');
                   setReviewProductTitle('Banarasi Silk Saree');
                 }}
-                className="mt-3 text-[10px] font-extrabold text-brand-crimson border border-brand-crimson/30 hover:bg-brand-crimson/5 px-3 py-1.5 rounded-lg transition-all"
+                className="mt-3 text-[10px] font-extrabold text-white bg-amber-600 hover:bg-amber-700 px-3.5 py-2 rounded-xl transition-all shadow-sm flex items-center space-x-1"
               >
-                WRITE REVIEW
+                <Star className="w-3 h-3 fill-white" />
+                <span>WRITE REVIEW</span>
               </button>
             )}
           </div>

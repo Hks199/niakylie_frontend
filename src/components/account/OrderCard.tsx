@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, Download, X, Package } from 'lucide-react';
+import { Eye, Download, X, Package, Star } from 'lucide-react';
 import { Order, OrderStatus, ordersApi } from '../../api/orders';
 
 interface OrderCardProps {
@@ -74,6 +74,15 @@ export function OrderCard({ order, onViewDetails, onCancelled }: OrderCardProps)
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
+          {order.status === 'DELIVERED' && (
+            <button
+              onClick={() => onViewDetails(order.id || order.orderId)}
+              className="flex items-center space-x-1 text-[10px] font-extrabold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-lg transition-all"
+            >
+              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+              <span>RATE & REVIEW</span>
+            </button>
+          )}
           {canCancel && (
             <button
               onClick={handleCancel}

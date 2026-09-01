@@ -36,13 +36,20 @@ export function WriteReviewModal({ isOpen, productId, productTitle, onClose }: W
     if (rating === 0) return;
     setLoading(true);
     try {
-      await reviewsApi.getProductReviews(productId);
+      await reviewsApi.createReview({
+        productId,
+        rating,
+        title: title || 'Customer Review',
+        comment: comment || 'Great product quality!',
+      });
       setSubmitted(true);
       resetForm(); // Form inputs cleared to vacant state
       setTimeout(() => {
         setSubmitted(false);
         onClose();
       }, 1500);
+    } catch (error) {
+      console.error('Failed to submit review:', error);
     } finally {
       setLoading(false);
     }
