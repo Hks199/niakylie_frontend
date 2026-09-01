@@ -176,9 +176,81 @@ export const ordersApi = {
 
   getUserOrders: async (): Promise<Order[]> => {
     try {
-      return await apiClient.get<Order[]>('/orders');
+      let res: any;
+      try {
+        res = await apiClient.get('/orders/my');
+      } catch (e) {
+        try {
+          res = await apiClient.get('/orders');
+        } catch (e2) {
+          // ignore
+        }
+      }
+
+      let rawList = Array.isArray(res)
+        ? res
+        : Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.data?.data)
+        ? res.data.data
+        : (res?.items || []);
+
+      if (!rawList || rawList.length === 0) {
+        try {
+          const adminRes: any = await apiClient.get('/orders/admin');
+          rawList = Array.isArray(adminRes)
+            ? adminRes
+            : Array.isArray(adminRes?.data)
+            ? adminRes.data
+            : Array.isArray(adminRes?.data?.data)
+            ? adminRes.data.data
+            : (adminRes?.items || []);
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      return rawList.map((item: any) => {
+        const orderId = item.orderNumber || item.orderId || item._id || item.id;
+        const totalAmount = item.pricing?.grandTotal ?? item.grandTotal ?? item.totals?.total ?? 0;
+        
+        const estDate = item.shippingInfo?.estimatedDelivery 
+          ? new Date(item.shippingInfo.estimatedDelivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
+          : '3-5 Business Days';
+
+        return {
+          ...item,
+          id: orderId,
+          orderId,
+          status: item.orderStatus || item.status || 'CONFIRMED',
+          paymentStatus: item.paymentInfo?.status || item.paymentStatus || 'PAID',
+          paymentMethod: item.paymentInfo?.method || item.paymentMethod || 'COD',
+          deliveryAddress: item.shippingAddress || item.deliveryAddress || {},
+          estimatedDelivery: item.estimatedDelivery || estDate,
+          items: (item.items || []).map((it: any) => ({
+            id: it.productId || it._id || it.sku,
+            productId: it.productId,
+            name: it.name || it.title || 'NiaKylie Fashion Item',
+            price: it.unitPrice || it.price || 0,
+            quantity: it.quantity || 1,
+            color: it.color,
+            size: it.size,
+            image: it.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80',
+          })),
+          createdAt: item.createdAt || new Date().toISOString(),
+          totals: {
+            subtotal: item.pricing?.subtotal ?? item.totals?.subtotal ?? 0,
+            discount: item.pricing?.totalDiscount ?? item.totals?.discount ?? 0,
+            couponDiscount: item.pricing?.couponDiscount ?? item.totals?.couponDiscount ?? 0,
+            shippingFee: item.pricing?.shippingFee ?? item.totals?.shippingFee ?? 0,
+            tax: item.pricing?.tax ?? item.totals?.tax ?? 0,
+            total: totalAmount,
+          },
+        };
+      });
     } catch (error) {
-      return MOCK_ORDERS;
+      console.warn('Failed to fetch user orders from backend API:', error);
+      return [];
     }
   },
 
@@ -188,14 +260,35 @@ export const ordersApi = {
       try {
         res = await apiClient.get(`/checkout/orders/${id}`);
       } catch (e) {
-        res = await apiClient.get(`/orders/${id}`);
+        res = await apiClient.get(`/orders/my/${id}`);
       }
       const orderId = res.orderNumber || res.orderId || res._id || res.id;
       const totalAmount = res.pricing?.grandTotal ?? res.grandTotal ?? res.totals?.total ?? 0;
+      
+      const estDate = res.shippingInfo?.estimatedDelivery 
+        ? new Date(res.shippingInfo.estimatedDelivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
+        : '3-5 Business Days';
+
       return {
         ...res,
         id: orderId,
         orderId,
+        status: res.orderStatus || res.status || 'CONFIRMED',
+        paymentStatus: res.paymentInfo?.status || res.paymentStatus || 'PAID',
+        paymentMethod: res.paymentInfo?.method || res.paymentMethod || 'COD',
+        deliveryAddress: res.shippingAddress || res.deliveryAddress || {},
+        estimatedDelivery: res.estimatedDelivery || estDate,
+        items: (res.items || []).map((it: any) => ({
+          id: it.productId || it._id || it.sku,
+          productId: it.productId,
+          name: it.name || it.title || 'NiaKylie Fashion Item',
+          price: it.unitPrice || it.price || 0,
+          quantity: it.quantity || 1,
+          color: it.color,
+          size: it.size,
+          image: it.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80',
+        })),
+        createdAt: res.createdAt || new Date().toISOString(),
         totals: {
           subtotal: res.pricing?.subtotal ?? res.totals?.subtotal ?? 0,
           discount: res.pricing?.totalDiscount ?? res.totals?.discount ?? 0,
@@ -206,37 +299,36 @@ export const ordersApi = {
         },
       };
     } catch (error) {
+      console.warn('Failed to fetch order details:', error);
       const found = MOCK_ORDERS.find((o) => o.id === id || o.orderId === id);
       if (found) return found;
-      const delivery = new Date();
-      delivery.setDate(delivery.getDate() + 5);
-      return {
-        id,
-        orderId: id,
-        status: 'CONFIRMED',
-        paymentStatus: 'PAID',
-        paymentMethod: 'razorpay',
-        items: [],
-        deliveryAddress: { name: 'Ananya Roy', city: 'Mumbai', state: 'Maharashtra' },
-        estimatedDelivery: delivery.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long' }),
-        createdAt: new Date().toISOString(),
-        totals: { subtotal: 0, discount: 0, couponDiscount: 0, shippingFee: 0, tax: 0, total: 0 },
-      };
+      throw error;
     }
   },
 
   cancelOrder: async (id: string): Promise<{ success: boolean }> => {
     try {
-      return await apiClient.delete(`/orders/${id}`);
-    } catch (error) {
+      await apiClient.post(`/orders/my/${id}/cancel`, { reason: 'Cancelled by user from account portal' });
       return { success: true };
+    } catch (error) {
+      console.error('Failed to cancel order:', error);
+      return { success: false };
     }
   },
 
   downloadInvoice: async (id: string): Promise<void> => {
     try {
-      const url = `http://localhost:3000/api/v1/checkout/orders/${id}/invoice`;
-      window.open(url, '_blank');
+      const invoiceData = await ordersApi.getInvoice(id);
+      if (invoiceData && invoiceData.htmlTemplate) {
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(invoiceData.htmlTemplate);
+          printWindow.document.close();
+        }
+      } else {
+        const url = `http://localhost:3000/api/v1/checkout/orders/${id}/invoice`;
+        window.open(url, '_blank');
+      }
     } catch (error) {
       console.warn('Invoice download error:', error);
     }

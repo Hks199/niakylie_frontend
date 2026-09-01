@@ -5,20 +5,21 @@ import { ordersApi, Order } from '../../api/orders';
 import { OrderCard } from '../../components/account/OrderCard';
 
 export function MyOrdersPage({ onViewDetails }: { onViewDetails: (id: string) => void }) {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [localOrders, setLocalOrders] = useState<Order[] | null>(null);
 
-  const { isLoading } = useQuery({
+  const { data: fetchedOrders, isLoading } = useQuery({
     queryKey: ['user-orders'],
     queryFn: async () => {
       const data = await ordersApi.getUserOrders();
-      setOrders(data);
       return data;
     },
   });
 
+  const orders = localOrders || fetchedOrders || [];
+
   const handleCancelled = (orderId: string) => {
-    setOrders((prev) =>
-      prev.map((o) =>
+    setLocalOrders(
+      orders.map((o) =>
         o.id === orderId || o.orderId === orderId ? { ...o, status: 'CANCELLED' as const } : o
       )
     );

@@ -38,13 +38,14 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
 
   const handleDownloadReceipt = async () => {
     let htmlContent = '';
+    const logoUrl = `${window.location.origin}/asset/niakylie_logo.png`;
 
     try {
       const invoiceData = await ordersApi.getInvoice(orderId || displayOrderId);
       if (invoiceData && invoiceData.htmlTemplate) {
         htmlContent = invoiceData.htmlTemplate;
-        if (htmlContent.includes('http://localhost:5173/asset/niakylie_logo.png')) {
-          htmlContent = htmlContent.replace(/http:\/\/localhost:5173\/asset\/niakylie_logo\.png/g, NIAKYLIE_LOGO_BASE64);
+        if (!htmlContent.includes('<base')) {
+          htmlContent = htmlContent.replace('<head>', `<head><base href="${window.location.origin}/" />`);
         }
       }
     } catch (e) {
@@ -209,7 +210,7 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
 
           <div class="header">
             <div>
-              <img id="receipt-logo" src="${NIAKYLIE_LOGO_BASE64}" alt="NiaKylie Logo" style="height: 60px; max-width: 220px; width: auto; object-fit: contain; display: block; margin-bottom: 6px;" />
+              <img id="receipt-logo" src="${logoUrl}" onerror="this.onerror=null; this.src='${NIAKYLIE_LOGO_BASE64}';" alt="NiaKylie Logo" style="height: 60px; max-width: 220px; width: auto; object-fit: contain; display: block; margin-bottom: 6px;" />
 
               <div class="brand-tag">Luxury Ethnic Couture</div>
             </div>
@@ -294,17 +295,31 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
           </div>
 
           <script>
-            function triggerPrint() {
+            function doPrint() {
               setTimeout(function() {
                 window.print();
-              }, 300);
+              }, 400);
             }
             var logo = document.getElementById('receipt-logo');
-            if (logo && !logo.complete) {
-              logo.onload = triggerPrint;
-              logo.onerror = triggerPrint;
+            if (logo) {
+              if (logo.complete && logo.naturalWidth > 0) {
+                if ('decode' in logo) {
+                  logo.decode().then(doPrint).catch(doPrint);
+                } else {
+                  doPrint();
+                }
+              } else {
+                logo.onload = function() {
+                  if ('decode' in logo) {
+                    logo.decode().then(doPrint).catch(doPrint);
+                  } else {
+                    doPrint();
+                  }
+                };
+                logo.onerror = doPrint;
+              }
             } else {
-              triggerPrint();
+              doPrint();
             }
           </script>
 

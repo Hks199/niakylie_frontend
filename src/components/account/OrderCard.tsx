@@ -54,9 +54,13 @@ export function OrderCard({ order, onViewDetails, onCancelled }: OrderCardProps)
 
       {/* Items Thumbnail Strip */}
       <div className="flex items-center space-x-2">
-        <Package className="w-8 h-8 text-slate-300 flex-shrink-0" />
+        <Package className="w-8 h-8 text-brand-crimson/70 flex-shrink-0" />
         <div className="text-xs text-slate-500">
-          <p className="font-bold text-brand-slate-dark">Ethnic Couture Garment</p>
+          <p className="font-bold text-brand-slate-dark">
+            {order.items && order.items.length > 0
+              ? order.items.map((i: any) => i.name || i.title).filter(Boolean).join(', ')
+              : 'NiaKylie Ethnic Couture Item'}
+          </p>
           <p>Delivery by <span className="font-bold">{order.estimatedDelivery}</span></p>
         </div>
       </div>
