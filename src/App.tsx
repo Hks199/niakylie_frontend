@@ -8,6 +8,7 @@ import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { OrderSuccessPage } from './pages/OrderSuccessPage';
 import { AccountPage } from './pages/AccountPage';
+import { WishlistPage } from './pages/WishlistPage';
 import { CmsPage } from './pages/CmsPage';
 import { FaqPage } from './pages/FaqPage';
 import { BlogListingPage } from './pages/BlogListingPage';
@@ -45,6 +46,7 @@ export function App() {
   const isOrderSuccess = currentPath.startsWith('/order-success/');
   const isCheckout = currentPath === '/checkout';
   const isCart = currentPath === '/cart';
+  const isWishlist = currentPath === '/wishlist';
   const isAccount = currentPath.startsWith('/account');
   const isBlogDetail = currentPath.startsWith('/blogs/');
   const isBlogList = currentPath === '/blogs';
@@ -80,6 +82,7 @@ export function App() {
     if (isOrderSuccess) return <OrderSuccessPage orderId={orderId} />;
     if (isCheckout) return <CheckoutPage />;
     if (isCart) return <CartPage />;
+    if (isWishlist) return <WishlistPage />;
 
     if (isAccount) {
       if (!isAuthenticated) {

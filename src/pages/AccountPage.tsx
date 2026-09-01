@@ -4,6 +4,7 @@ import { MyOrdersPage } from './account/MyOrdersPage';
 import { OrderDetailsPage } from './account/OrderDetailsPage';
 import { ProfilePage } from './account/ProfilePage';
 import { AddressesPage } from './account/AddressesPage';
+import { MyWishlistPage } from './account/MyWishlistPage';
 
 // Derive initial page from URL sub-path
 function getInitialPage(pathname: string): string {
@@ -41,8 +42,7 @@ export function AccountPage() {
       case 'addresses':
         return <AddressesPage />;
       case 'wishlist':
-        window.location.href = '/wishlist';
-        return null;
+        return <MyWishlistPage />;
       case 'notifications':
         return (
           <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm text-center text-sm text-slate-400 py-12">

@@ -8,6 +8,7 @@ interface WishlistState {
 
   fetchWishlist: () => Promise<void>;
   toggleWishlist: (productId: string, variantId?: string) => Promise<boolean>;
+  removeFromWishlist: (productId: string) => Promise<void>;
   isInWishlist: (productId: string) => boolean;
 }
 
@@ -17,7 +18,10 @@ export const useWishlistStore = create<WishlistState>()((set, get) => ({
 
   fetchWishlist: async () => {
     const token = localStorage.getItem('access_token');
-    if (!token) return;
+    if (!token) {
+      set({ wishlistItems: [], isLoading: false });
+      return;
+    }
 
     set({ isLoading: true });
     try {
@@ -52,13 +56,34 @@ export const useWishlistStore = create<WishlistState>()((set, get) => ({
     }
   },
 
-  isInWishlist: (productId: string) => {
-    const items = get().wishlistItems;
-    return items.some((item) => {
-      if (typeof item.productId === 'string') {
-        return item.productId === productId;
+  removeFromWishlist: async (productId: string) => {
+    const token = localStorage.getItem('access_token');
+    if (!token) return;
+    try {
+      await apiClient.delete(`/users/profile/wishlist/${productId}`);
+      await get().fetchWishlist();
+    } catch {
+      try {
+        await apiClient.delete(`/users/wishlist/${productId}`);
+        await get().fetchWishlist();
+      } catch {
+        // Fallback to fetch
+        await get().fetchWishlist();
       }
-      return item.productId?.id === productId || item.productId?._id === productId;
+    }
+  },
+
+  isInWishlist: (productId: string) => {
+    if (!productId) return false;
+    const items = get().wishlistItems;
+    return items.some((item: any) => {
+      if (typeof item === 'string') return item === productId;
+      if (item._id === productId || item.id === productId) return true;
+      if (typeof item.productId === 'string') return item.productId === productId;
+      if (item.productId && typeof item.productId === 'object') {
+        return item.productId._id === productId || item.productId.id === productId;
+      }
+      return false;
     });
   },
 }));
