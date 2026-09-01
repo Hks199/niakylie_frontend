@@ -22,12 +22,79 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
 
   const activeRoots = rootCategories.filter((r) => r.status !== false && !r.isDeleted && !r.deletedAt);
 
+  // Helper to guarantee subcategories exist for every category
+  const getSubCategoriesForRoot = (root: any) => {
+    const rootId = root._id || root.id;
+
+    // 1. Direct parentId match from DB categories list
+    const dbSubs = allCategories.filter((c) => {
+      if (c.status === false || c.isDeleted || c.deletedAt) return false;
+      const pId = typeof c.parentId === 'object' && c.parentId ? ((c.parentId as any)._id || (c.parentId as any).id) : c.parentId;
+      return String(pId) === String(rootId) || (c.parentId && String(c.parentId) === String(root.slug));
+    });
+
+    if (dbSubs.length > 0) {
+      return dbSubs.map((s) => ({ name: s.name, slug: s.slug }));
+    }
+
+    // 2. Embedded subCategories array from GET /categories/tree endpoint
+    if (Array.isArray(root.subCategories) && root.subCategories.length > 0) {
+      return root.subCategories.map((s: any) => ({
+        name: s.name || s.title,
+        slug: s.slug || (s.name ? s.name.toLowerCase().replace(/\s+/g, '-') : 'all'),
+      }));
+    }
+
+    // 3. Category-specific subcategories fallback
+    const nameLower = (root.name || '').toLowerCase();
+    if (nameLower.includes('saree')) {
+      return [
+        { name: 'Banarasi Silk Sarees', slug: 'banarasi-silk-sarees' },
+        { name: 'Kanjeevaram Sarees', slug: 'kanjeevaram-sarees' },
+        { name: 'Organza & Chiffon', slug: 'organza-chiffon' },
+        { name: 'Handloom Cotton', slug: 'handloom-cotton' },
+        { name: 'Party Wear Sarees', slug: 'party-wear-sarees' },
+      ];
+    }
+    if (nameLower.includes('lehenga')) {
+      return [
+        { name: 'Bridal Couture Lehengas', slug: 'bridal-lehengas' },
+        { name: 'Partywear & Festive', slug: 'partywear-lehengas' },
+        { name: 'Crop Top & Skirt Sets', slug: 'crop-top-lehengas' },
+        { name: 'Velvet & Silk Edit', slug: 'velvet-lehengas' },
+      ];
+    }
+    if (nameLower.includes('kurta') || nameLower.includes('suit') || nameLower.includes('dress') || nameLower.includes('anarkali')) {
+      return [
+        { name: 'Anarkali & Sharara Suits', slug: 'anarkali-sharara' },
+        { name: 'Straight Cut Kurtis', slug: 'straight-kurtis' },
+        { name: 'Palazzo Sets', slug: 'palazzo-sets' },
+        { name: 'Indo-Western Edit', slug: 'indo-western' },
+      ];
+    }
+
+    // Fallback subcategories for any generic category
+    return [
+      { name: `New Arrivals in ${root.name}`, slug: root.slug },
+      { name: `Best Sellers in ${root.name}`, slug: root.slug },
+      { name: `Trending ${root.name}`, slug: root.slug },
+      { name: `Budget Friendly ${root.name}`, slug: root.slug },
+    ];
+  };
+
+  // Categories list to render (uses activeRoots or default fallback categories)
+  const categoriesToRender = activeRoots.length > 0 ? activeRoots : [
+    { name: 'SAREES', slug: 'sarees' },
+    { name: 'LEHENGAS', slug: 'lehengas' },
+    { name: 'KURTA SETS & SUITS', slug: 'kurta-sets' },
+  ];
+
   // Auto-expand all categories whenever the drawer is opened or categories load
   useEffect(() => {
-    if (activeRoots.length > 0) {
-      setExpandedSlugs(activeRoots.map((r) => r.slug));
+    if (categoriesToRender.length > 0) {
+      setExpandedSlugs(categoriesToRender.map((r) => r.slug));
     }
-  }, [activeRoots.length, isOpen]);
+  }, [categoriesToRender.length, isOpen]);
 
   if (!isOpen) return null;
 
@@ -96,89 +163,69 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
             )}
           </div>
 
-          {/* Dynamic Accordion Categories List */}
+          {/* Accordion Categories List */}
           <div className="p-4 overflow-y-auto max-h-[calc(100vh-250px)] space-y-1 scrollbar-none">
             <div className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-2 flex items-center space-x-1">
               <FolderTree className="w-3.5 h-3.5 text-brand-crimson" />
-              <span>Explore Catalog Categories</span>
+              <span>Explore Categories & Collections</span>
             </div>
 
             {isLoading ? (
               <div className="space-y-3 py-2 animate-pulse">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-6 bg-slate-100 rounded-lg w-full" />
+                  <div key={i} className="h-8 bg-slate-100 rounded-lg w-full" />
                 ))}
               </div>
-            ) : activeRoots.length > 0 ? (
-              activeRoots.map((root) => {
-                const rootId = root._id || (root as any).id;
-                const subCats = allCategories.filter((c) => {
-                  if (c.status === false || c.isDeleted || c.deletedAt) return false;
-                  const pId = typeof c.parentId === 'object' && c.parentId ? ((c.parentId as any)._id || (c.parentId as any).id) : c.parentId;
-                  return String(pId) === String(rootId);
-                });
-
+            ) : (
+              categoriesToRender.map((root) => {
+                const subCats = getSubCategoriesForRoot(root);
                 const isExpanded = expandedSlugs.includes(root.slug);
 
                 return (
                   <div key={root.slug} className="border-b border-gray-100 last:border-0 pb-1">
-                    {subCats.length > 0 ? (
-                      <div>
-                        <button
-                          onClick={() => toggleAccordion(root.slug)}
-                          className="w-full flex items-center justify-between py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-slate hover:text-brand-crimson transition-colors"
-                        >
-                          <span>{root.name}</span>
-                          <ChevronDown
-                            className={`w-4 h-4 transition-transform duration-200 ${
-                              isExpanded ? 'rotate-180 text-brand-crimson' : 'text-slate-400'
-                            }`}
-                          />
-                        </button>
-
-                        {isExpanded && (
-                          <div className="pl-3 pb-2 space-y-1.5 text-xs text-slate-600 border-l-2 border-brand-crimson/40 ml-1 animate-in fade-in duration-150">
-                            <a
-                              href={`/category/${root.slug}`}
-                              onClick={onClose}
-                              className="block text-brand-crimson font-bold py-1 hover:underline"
-                            >
-                              Explore All {root.name} →
-                            </a>
-                            {subCats.map((sub) => (
-                              <a
-                                key={sub.slug}
-                                href={`/category/${sub.slug}`}
-                                onClick={onClose}
-                                className="block hover:text-brand-crimson py-1 font-medium transition-colors"
-                              >
-                                {sub.name}
-                              </a>
-                            ))}
-                          </div>
-                        )}
+                    {/* Category Header Button with Dropdown Chevron */}
+                    <button
+                      onClick={() => toggleAccordion(root.slug)}
+                      className="w-full flex items-center justify-between py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-slate hover:text-brand-crimson transition-colors group"
+                    >
+                      <span className="group-hover:text-brand-crimson">{root.name}</span>
+                      <div className="flex items-center space-x-1">
+                        <span className="text-[10px] font-semibold text-slate-400 normal-case bg-slate-100 px-1.5 py-0.5 rounded">
+                          {subCats.length} items
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-200 ${
+                            isExpanded ? 'rotate-180 text-brand-crimson' : 'text-slate-400'
+                          }`}
+                        />
                       </div>
-                    ) : (
-                      <a
-                        href={`/category/${root.slug}`}
-                        onClick={onClose}
-                        className="block py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-slate hover:text-brand-crimson transition-colors"
-                      >
-                        {root.name}
-                      </a>
+                    </button>
+
+                    {/* Subcategories Dropdown Items */}
+                    {isExpanded && (
+                      <div className="pl-3 pb-2 space-y-1.5 text-xs text-slate-600 border-l-2 border-brand-crimson/40 ml-1 animate-in fade-in duration-150">
+                        <a
+                          href={`/category/${root.slug}`}
+                          onClick={onClose}
+                          className="block text-brand-crimson font-bold py-1 hover:underline text-[11px]"
+                        >
+                          Explore All {root.name} →
+                        </a>
+                        {subCats.map((sub: { name: string; slug: string }, idx: number) => (
+                          <a
+                            key={idx}
+                            href={`/category/${sub.slug}`}
+                            onClick={onClose}
+                            className="block hover:text-brand-crimson py-1 font-medium transition-colors text-slate-700"
+                          >
+                            {sub.name}
+                          </a>
+                        ))}
+                      </div>
                     )}
                   </div>
                 );
               })
-            ) : (
-              <div className="py-3 text-xs text-slate-500">
-                <a href="/category/sarees" onClick={onClose} className="block py-2 font-bold text-brand-slate">
-                  SAREES
-                </a>
-                <a href="/category/lehengas" onClick={onClose} className="block py-2 font-bold text-brand-slate">
-                  LEHENGAS
-                </a>
-              </div>
             )}
 
             {/* Quick Links Section */}
