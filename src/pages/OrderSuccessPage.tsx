@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { CheckCircle2, Package, Truck, Download, ArrowRight } from 'lucide-react';
 import { ordersApi } from '../api/orders';
 
+import { useEffect } from 'react';
+import { useCartStore } from '../store/useCartStore';
+
 interface OrderSuccessPageProps {
   orderId?: string;
 }
@@ -12,6 +15,10 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
     queryFn: () => ordersApi.getOrderDetails(orderId),
     enabled: !!orderId,
   });
+
+  useEffect(() => {
+    useCartStore.getState().clearCart();
+  }, []);
 
 
   const displayOrderId = order?.orderId || orderId;

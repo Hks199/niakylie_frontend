@@ -241,7 +241,7 @@ export const useCartStore = create<CartState>()((set, get) => ({
     await get().removeItem(itemId);
   },
 
-  clearCart: () => {
+  clearCart: async () => {
     set({
       cart: null,
       cartItems: [],
@@ -250,6 +250,11 @@ export const useCartStore = create<CartState>()((set, get) => ({
       appliedCoupon: null,
       isLoading: false,
     });
+    try {
+      await apiClient.delete('/cart/clear').catch(() => {});
+    } catch (error) {
+      // Ignore background clear errors
+    }
   },
 
   mergeGuestCart: async () => {
