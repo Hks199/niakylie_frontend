@@ -300,9 +300,33 @@ export const adminApi = {
     }
   },
 
-  // PATCH /orders/admin/:orderId/status  ← correct method from guide
+  // PATCH /orders/admin/:orderId/status
   updateOrderStatus: async (orderId: string, status: string, note?: string) => {
     return await apiClient.patch(`/orders/admin/${orderId}/status`, { status, note });
+  },
+
+  // PATCH /orders/admin/:orderId/tracking
+  updateTracking: async (orderId: string, payload: { courierPartner: string; trackingNumber: string; estimatedDeliveryDate?: string }) => {
+    return await apiClient.patch(`/orders/admin/${orderId}/tracking`, payload);
+  },
+
+  // POST /orders/my/:orderId/cancel (or PATCH status to CANCELLED)
+  cancelOrder: async (orderId: string, reason?: string) => {
+    try {
+      return await apiClient.post(`/orders/my/${orderId}/cancel`, { cancellationReason: reason || 'Cancelled by admin' });
+    } catch {
+      return await apiClient.patch(`/orders/admin/${orderId}/status`, { status: 'CANCELLED', note: reason || 'Cancelled by admin' });
+    }
+  },
+
+  // PATCH /orders/admin/:orderId/approve-return
+  approveReturn: async (orderId: string) => {
+    return await apiClient.patch(`/orders/admin/${orderId}/approve-return`);
+  },
+
+  // PATCH /orders/admin/:orderId/refund
+  markRefunded: async (orderId: string, notes?: string) => {
+    return await apiClient.patch(`/orders/admin/${orderId}/refund`, { notes });
   },
 
   // ─── 6. REVIEW MODERATION ────────────────────────────────
