@@ -167,7 +167,7 @@ export function AdminDashboardPage() {
             <>
               <KpiSummaryGrid kpis={activeKpis} />
               <AnalyticsChartsSection />
-              <AdminDataTables />
+              <AdminDataTables showInventoryAlerts={true} showTopProductsAndCustomers={true} />
             </>
           ) : activeTab === 'categories' ? (
             <AdminCategoriesPanel />
@@ -176,7 +176,7 @@ export function AdminDashboardPage() {
           ) : activeTab === 'products' ? (
             <AdminProductManagement />
           ) : activeTab === 'inventory' ? (
-            <AdminDataTables />
+            <AdminDataTables showInventoryAlerts={true} showTopProductsAndCustomers={false} />
           ) : activeTab === 'faqs' ? (
             <AdminFaqManagement />
           ) : activeTab === 'orders' ? (
@@ -184,7 +184,7 @@ export function AdminDashboardPage() {
           ) : activeTab === 'reviews' ? (
             <AdminReviewsPanel />
           ) : activeTab === 'customers' ? (
-            <AdminDataTables />
+            <AdminDataTables showInventoryAlerts={false} showTopProductsAndCustomers={true} />
           ) : activeTab === 'banners' ? (
             <AdminBannersPanel />
           ) : (
