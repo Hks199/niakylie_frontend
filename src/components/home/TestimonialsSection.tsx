@@ -36,6 +36,83 @@ const REVIEWS: Testimonial[] = [
     productName: 'Pastel Pink Organza Designer Saree',
     verifiedBuyer: true,
   },
+  {
+    id: 't4',
+    name: 'Ananya Sharma',
+    location: 'Delhi NCR',
+    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'Stunning fit and rich velvet border details! I wore this for Diwali night and received endless compliments from friends & family.',
+    productName: 'Emerald Green Chanderi Silk Lehenga',
+    verifiedBuyer: true,
+  },
+  {
+    id: 't5',
+    name: 'Kavita Reddy',
+    location: 'Hyderabad, Telangana',
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'Authentic pure silk feel with genuine weave certifications included. NiaKylie has earned my trust for all future festive orders.',
+    productName: 'Golden Handloom Kanjeevaram Saree',
+    verifiedBuyer: true,
+  },
+  {
+    id: 't6',
+    name: 'Sneha Patel',
+    location: 'Ahmedabad, Gujarat',
+    avatarUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'Soft breathable fabric combined with delicate hand-stitched Chikankari. Ideal for long festive gatherings without compromising comfort.',
+    productName: 'Chikankari Georgette Kurti Set',
+    verifiedBuyer: true,
+  },
+  {
+    id: 't7',
+    name: 'Priya Deshmukh',
+    location: 'Pune, Maharashtra',
+    avatarUrl: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'Prompt delivery and the vibrant color matches the product photos exactly! Beautiful packaging and zero color bleed after washing.',
+    productName: 'Lavender Floral Organza Dupatta Set',
+    verifiedBuyer: true,
+  },
+  {
+    id: 't8',
+    name: 'Divya Nair',
+    location: 'Kochi, Kerala',
+    avatarUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'The Kasavu border weave was elegant and traditional for Onam celebrations. Great quality control and polite customer care support.',
+    productName: 'Ivory Kasavu Bordered Festival Saree',
+    verifiedBuyer: true,
+  },
+  {
+    id: 't9',
+    name: 'Simran Kaur',
+    location: 'Chandigarh, Punjab',
+    avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'Heavy zardozi embroidery work with lightweight inner lining so it feels luxurious yet super light to carry around all evening!',
+    productName: 'Velvet Embroidered Bridal Suit Set',
+    verifiedBuyer: true,
+  },
+  {
+    id: 't10',
+    name: 'Aishwarya Roy',
+    location: 'Jaipur, Rajasthan',
+    avatarUrl: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&w=200&q=80',
+    rating: 5,
+    comment:
+      'The Gota Patti detailing is intricate and royal! NiaKylie offers high fashion ethnic wear with true value for money.',
+    productName: 'Gota Patti Designer Sharara Suit',
+    verifiedBuyer: true,
+  },
 ];
 
 export function TestimonialsSection() {
@@ -60,7 +137,7 @@ export function TestimonialsSection() {
         </div>
 
         <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-slate-dark font-display tracking-tight mb-8">
-          Over 50,000+ Happy Women Dressed
+          Over 5000+ Happy Women Dressed
         </h2>
 
         {/* Testimonial Card Slider */}
@@ -123,6 +200,22 @@ export function TestimonialsSection() {
           >
             <ChevronRight className="w-5 h-5" />
           </button>
+        </div>
+
+        {/* 10 Dots Navigation Indicator */}
+        <div className="flex items-center justify-center space-x-2 mt-6">
+          {REVIEWS.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentIndex(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? 'w-7 bg-brand-crimson'
+                  : 'w-2.5 bg-gray-300 hover:bg-gray-400'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>
