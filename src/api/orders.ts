@@ -1,4 +1,5 @@
 import { apiClient } from './client';
+import { addressesApi } from './addresses';
 import { CartItem } from '../types';
 
 export interface OrderItem {
@@ -9,7 +10,8 @@ export interface OrderItem {
 }
 
 export interface CreateOrderPayload {
-  addressId: string;
+  addressId?: string;
+  shippingAddress?: any;
   items?: OrderItem[];
   paymentMethod: 'razorpay' | 'stripe' | 'cod';
   shippingType: 'standard' | 'express';
@@ -36,6 +38,16 @@ export interface Order {
   courierName?: string;
   trackingNumber?: string;
   trackingUrl?: string;
+  pricing?: {
+    subtotal: number;
+    totalMrp: number;
+    totalDiscount: number;
+    couponDiscount: number;
+    tax: number;
+    shippingFee: number;
+    grandTotal: number;
+  };
+  grandTotal?: number;
   totals: {
     subtotal: number;
     discount: number;
@@ -93,24 +105,72 @@ const MOCK_ORDERS: Order[] = [
 
 export const ordersApi = {
   createOrder: async (payload: CreateOrderPayload): Promise<Order> => {
+    let shippingAddress = payload.shippingAddress;
+    if (!shippingAddress && payload.addressId) {
+      try {
+        const addresses = await addressesApi.getAddresses();
+        const found = addresses.find((a: any) => a._id === payload.addressId || a.id === payload.addressId);
+        if (found) {
+          shippingAddress = {
+            street: found.street,
+            city: found.city,
+            state: found.state,
+            postalCode: found.postalCode,
+            country: found.country || 'India',
+            phone: found.phone || '+919876543210',
+          };
+        }
+      } catch (e) {}
+    }
+
+    if (!shippingAddress) {
+      shippingAddress = {
+        street: 'Main Street Address',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        postalCode: '400001',
+        country: 'India',
+        phone: '+919876543210',
+      };
+    }
+
+    const backendPayload: Record<string, any> = {
+      addressId: payload.addressId,
+      shippingAddress,
+      paymentMethod: (payload.paymentMethod || 'COD').toString().toUpperCase(),
+      shippingMethod: payload.shippingType === 'express' ? 'EXPRESS' : 'STANDARD',
+      couponCode: payload.couponCode,
+      razorpayOrderId: payload.razorpayOrderId,
+      razorpayPaymentId: payload.razorpayPaymentId,
+      razorpaySignature: payload.razorpaySignature,
+      stripePaymentIntentId: payload.stripePaymentIntentId,
+    };
+    Object.keys(backendPayload).forEach((key) => {
+      if (backendPayload[key] === undefined) {
+        delete backendPayload[key];
+      }
+    });
+
     try {
-      return await apiClient.post<Order>('/orders', payload);
-    } catch (error) {
-      const orderId = `ORD-NK-${Date.now().toString().slice(-8).toUpperCase()}`;
-      const delivery = new Date();
-      delivery.setDate(delivery.getDate() + (payload.shippingType === 'express' ? 2 : 5));
+      const res: any = await apiClient.post('/checkout/place-order', backendPayload);
+      const orderId = res.orderNumber || res.orderId || res._id || res.id;
+      const totalAmount = res.pricing?.grandTotal ?? res.grandTotal ?? res.totals?.total ?? 0;
       return {
+        ...res,
         id: orderId,
         orderId,
-        status: 'CONFIRMED',
-        paymentStatus: payload.paymentMethod === 'cod' ? 'PENDING' : 'PAID',
-        paymentMethod: payload.paymentMethod,
-        items: [],
-        deliveryAddress: {},
-        estimatedDelivery: delivery.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long' }),
-        createdAt: new Date().toISOString(),
-        totals: { subtotal: 0, discount: 0, couponDiscount: 0, shippingFee: 0, tax: 0, total: 0 },
+        totals: {
+          subtotal: res.pricing?.subtotal ?? 0,
+          discount: res.pricing?.totalDiscount ?? 0,
+          couponDiscount: res.pricing?.couponDiscount ?? 0,
+          shippingFee: res.pricing?.shippingFee ?? 0,
+          tax: res.pricing?.tax ?? 0,
+          total: totalAmount,
+        },
       };
+    } catch (error) {
+      console.error('Order creation error:', error);
+      throw error;
     }
   },
 
@@ -124,7 +184,27 @@ export const ordersApi = {
 
   getOrderDetails: async (id: string): Promise<Order> => {
     try {
-      return await apiClient.get<Order>(`/orders/${id}`);
+      let res: any;
+      try {
+        res = await apiClient.get(`/checkout/orders/${id}`);
+      } catch (e) {
+        res = await apiClient.get(`/orders/${id}`);
+      }
+      const orderId = res.orderNumber || res.orderId || res._id || res.id;
+      const totalAmount = res.pricing?.grandTotal ?? res.grandTotal ?? res.totals?.total ?? 0;
+      return {
+        ...res,
+        id: orderId,
+        orderId,
+        totals: {
+          subtotal: res.pricing?.subtotal ?? res.totals?.subtotal ?? 0,
+          discount: res.pricing?.totalDiscount ?? res.totals?.discount ?? 0,
+          couponDiscount: res.pricing?.couponDiscount ?? res.totals?.couponDiscount ?? 0,
+          shippingFee: res.pricing?.shippingFee ?? res.totals?.shippingFee ?? 0,
+          tax: res.pricing?.tax ?? res.totals?.tax ?? 0,
+          total: totalAmount,
+        },
+      };
     } catch (error) {
       const found = MOCK_ORDERS.find((o) => o.id === id || o.orderId === id);
       if (found) return found;
@@ -140,7 +220,7 @@ export const ordersApi = {
         deliveryAddress: { name: 'Ananya Roy', city: 'Mumbai', state: 'Maharashtra' },
         estimatedDelivery: delivery.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long' }),
         createdAt: new Date().toISOString(),
-        totals: { subtotal: 2999, discount: 1000, couponDiscount: 0, shippingFee: 0, tax: 150, total: 2149 },
+        totals: { subtotal: 0, discount: 0, couponDiscount: 0, shippingFee: 0, tax: 0, total: 0 },
       };
     }
   },

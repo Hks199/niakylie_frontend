@@ -105,7 +105,10 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
       if (err?.message === 'Payment cancelled') {
         setError('Payment was cancelled. Please try again.');
       } else {
-        setError(err?.response?.data?.message || 'Order placement failed. Please try again.');
+        const msg = Array.isArray(err?.message)
+          ? err.message.join(', ')
+          : (err?.message || err?.response?.data?.message || 'Order placement failed. Please try again.');
+        setError(msg);
       }
     } finally {
       setLoading(false);

@@ -28,6 +28,12 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
     return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long' });
   })();
 
+  const orderTotal =
+    order?.totals?.total ??
+    order?.pricing?.grandTotal ??
+    order?.grandTotal ??
+    0;
+
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 text-center animate-in fade-in duration-500">
       {/* Success Icon with pulse ring */}
@@ -86,13 +92,14 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
         </div>
 
         {/* Order Amount Summary */}
-        {order?.totals?.total && (
+        {orderTotal > 0 && (
           <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-sm font-extrabold text-brand-slate-dark">
             <span>Amount Paid</span>
-            <span className="text-brand-crimson">₹{order.totals.total.toLocaleString('en-IN')}</span>
+            <span className="text-brand-crimson">₹{orderTotal.toLocaleString('en-IN')}</span>
           </div>
         )}
       </div>
+
 
       {/* CTA Buttons */}
       <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
