@@ -274,9 +274,14 @@ export const adminApi = {
 
   // ─── 5. ORDER MANAGEMENT ─────────────────────────────────
   // GET /orders/admin
-  getAllOrders: async (params?: { page?: number; limit?: number; status?: string; search?: string; startDate?: string; endDate?: string }): Promise<{ orders?: AdminOrder[]; items?: AdminOrder[]; totalItems?: number; total?: number; totalPages?: number; page?: number }> => {
+  getAllOrders: async (params?: { page?: number; limit?: number; status?: string; orderStatus?: string; search?: string; startDate?: string; endDate?: string }): Promise<{ orders?: AdminOrder[]; data?: AdminOrder[]; items?: AdminOrder[]; totalItems?: number; total?: number; totalPages?: number; page?: number }> => {
     try {
-      return await apiClient.get('/orders/admin', { params });
+      const queryParams = {
+        ...params,
+        orderStatus: params?.orderStatus || params?.status,
+        status: params?.status || params?.orderStatus,
+      };
+      return await apiClient.get('/orders/admin', { params: queryParams });
     } catch {
       return {
         orders: [
