@@ -8,6 +8,7 @@ import { ProductAccordion } from '../components/pdp/ProductAccordion';
 import { ReviewsSection } from '../components/pdp/ReviewsSection';
 import { SimilarProducts } from '../components/pdp/SimilarProducts';
 import { productsApi } from '../api/products';
+import { reviewsApi } from '../api/reviews';
 import { useCartStore, useWishlistStore } from '../store';
 import { ProductVariant } from '../types';
 import { useCategories } from '../hooks/useCategories';
@@ -55,6 +56,25 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     ],
     categoryId: 'sarees',
   };
+
+  const targetProductId = activeProduct.id || activeProduct._id || slug;
+  const { data: reviewsData } = useQuery({
+    queryKey: ['product-reviews', targetProductId],
+    queryFn: () => reviewsApi.getProductReviews(targetProductId),
+  });
+
+  const displayRating =
+    reviewsData?.summary?.averageRating ??
+    reviewsData?.averageRating ??
+    (activeProduct as any).averageRating ??
+    activeProduct.rating ??
+    4.0;
+
+  const displayReviewCount =
+    reviewsData?.summary?.reviewCount ??
+    reviewsData?.totalReviews ??
+    (reviewsData as any)?.total ??
+    (reviewsData?.reviews ? reviewsData.reviews.length : ((activeProduct as any).reviewsCount ?? activeProduct.reviewCount ?? 1));
 
   const currentVariant = selectedVariant || activeProduct.variants?.[0];
   const isWishlisted = isInWishlist(activeProduct.id || activeProduct._id || '');
@@ -148,11 +168,11 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
             {/* Star Rating Badge */}
             <div className="flex items-center space-x-2 mt-3">
               <div className="bg-slate-900 text-white font-extrabold text-xs px-2.5 py-1 rounded-md flex items-center space-x-1">
-                <span>{activeProduct.rating || 4.8}</span>
+                <span>{Number(displayRating).toFixed(1)}</span>
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               </div>
               <span className="text-xs font-bold text-slate-500">
-                | {activeProduct.reviewCount || 142} Ratings & Reviews
+                | {displayReviewCount} {displayReviewCount === 1 ? 'Rating & Review' : 'Ratings & Reviews'}
               </span>
             </div>
           </div>

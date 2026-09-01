@@ -225,8 +225,10 @@ export function normalizeProduct(p: any): Product {
       },
     ],
     brand: p.brand || (typeof p.brandId === 'object' && p.brandId?.name) || 'NiaKylie Signature',
-    rating: p.averageRating || p.rating || 4.8,
-    reviewCount: p.reviewsCount || p.reviewCount || 142,
+    rating: p.averageRating && p.averageRating > 0 ? Number(p.averageRating) : (p.rating ? Number(p.rating) : 4.8),
+    reviewCount: p.reviewsCount !== undefined && p.reviewsCount > 0 ? Number(p.reviewsCount) : (p.reviewCount ? Number(p.reviewCount) : 142),
+    averageRating: p.averageRating && p.averageRating > 0 ? Number(p.averageRating) : (p.rating ? Number(p.rating) : 4.8),
+    reviewsCount: p.reviewsCount !== undefined && p.reviewsCount > 0 ? Number(p.reviewsCount) : (p.reviewCount ? Number(p.reviewCount) : 142),
   };
 }
 
