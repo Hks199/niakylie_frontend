@@ -33,12 +33,12 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   'contact-us': {
     slug: 'contact-us',
     title: 'Contact Us - NiaKylie Official Support',
-    lastUpdated: '2026-08-26',
+    lastUpdated: '2026-08-31',
     content: `
       <h2 id="get-in-touch">Get in Touch</h2>
       <p>Have a question about an order, custom measurements, or return requests? Our dedicated NiaKylie customer care team is here to assist you.</p>
       <h2 id="store-address">Store Address</h2>
-      <p><strong>NiaKylie Fashion Pvt. Ltd.</strong><br />Sarora, Raipur, Chhattisgarh, India</p>
+      <p><strong>NiaKylie Women Collection</strong><br />Sarora, Raipur, Chhattisgarh 492001, India</p>
       <h2 id="phone-whatsapp">Phone & WhatsApp</h2>
       <p>Phone: <a href="tel:+919589928337">+91 95899 28337</a><br />WhatsApp: <a href="https://wa.me/919589928337" target="_blank">+91 95899 28337</a></p>
       <h2 id="email-social">Email & Social Media</h2>

@@ -94,6 +94,44 @@ export function CmsPage({ slug }: CmsPageProps) {
                 [&_strong]:font-extrabold [&_strong]:text-brand-slate-dark"
               dangerouslySetInnerHTML={{ __html: page.content }}
             />
+
+            {/* Dedicated Interactive Google Map for Contact Us page */}
+            {slug === 'contact-us' && (
+              <div className="mt-10 pt-8 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                  <div>
+                    <h3 className="text-lg font-extrabold text-brand-slate-dark flex items-center space-x-2">
+                      <span className="text-brand-crimson">📍</span>
+                      <span>Store Location Map</span>
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Sarora, Raipur, Chhattisgarh, India
+                    </p>
+                  </div>
+                  <a
+                    href="https://www.google.com/maps/dir/?api=1&destination=21.290281,81.611905"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95"
+                  >
+                    <span>Get Directions</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </a>
+                </div>
+
+                {/* Google Maps Responsive Frame */}
+                <div className="relative w-full h-[380px] rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-100">
+                  <iframe
+                    title="NiaKylie Store Google Map Location"
+                    src="https://maps.google.com/maps?q=21.290281,81.611905&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </article>
       </div>

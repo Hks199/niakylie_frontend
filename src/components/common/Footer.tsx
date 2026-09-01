@@ -143,12 +143,36 @@ export function Footer() {
             )}
 
             {/* Store & Contact Info */}
-            <div className="pt-2 space-y-2 text-xs text-slate-600">
+            <div className="pt-2 space-y-2.5 text-xs text-slate-600">
               <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-brand-slate-dark">Store Address & Contact</h5>
               <div className="flex items-start space-x-2">
                 <MapPin className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0 mt-0.5" />
-                <span>Sarora, Raipur, Chhattisgarh, India</span>
+                <div>
+                  <span className="font-semibold text-slate-700">Sarora, Raipur, Chhattisgarh 492001, India</span>
+                </div>
               </div>
+
+              {/* Embedded Google Map Preview */}
+              <div className="relative w-full h-36 rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 group">
+                <iframe
+                  title="NiaKylie Store Google Map Location"
+                  src="https://maps.google.com/maps?q=21.290281,81.611905&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  className="w-full h-full border-0 group-hover:scale-105 transition-transform duration-300"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+                <a
+                  href="https://www.google.com/maps/dir/?api=1&destination=21.290281,81.611905"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-md hover:bg-brand-crimson hover:text-white text-brand-slate-dark text-[10px] font-bold px-2.5 py-1 rounded-lg shadow-sm border border-slate-200/80 transition-all flex items-center space-x-1"
+                >
+                  <span>Get Directions</span>
+                  <span>↗</span>
+                </a>
+              </div>
+
               <div className="flex items-center space-x-2">
                 <Phone className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0" />
                 <a href="tel:+919589928337" className="hover:text-brand-crimson font-bold transition-colors">+91 95899 28337</a>
@@ -211,7 +235,7 @@ export function Footer() {
               alt="NiaKylie Fashion"
               className="h-8 w-auto object-contain rounded-lg"
             />
-            <span>© 2026 NiaKylie Fashion Pvt. Ltd. All rights reserved.</span>
+            <span>© 2026 NiaKylie Women Collection. All rights reserved.</span>
             <span className="text-slate-300">|</span>
             <a href="/admin" className="text-slate-500 hover:text-brand-crimson font-semibold flex items-center space-x-1">
               <Shield className="w-3 h-3 text-amber-500" />
