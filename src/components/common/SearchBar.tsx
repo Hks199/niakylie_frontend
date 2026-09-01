@@ -108,7 +108,7 @@ export function SearchBar() {
 
       {/* Predictive Autocomplete Dropdown Drawer */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl rounded-2xl p-4 z-50 animate-in fade-in slide-in-from-top-1 duration-150 max-h-96 overflow-y-auto no-scrollbar">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-[69vw] sm:w-full max-w-lg mt-2 bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl rounded-2xl p-3.5 sm:p-5 z-50 animate-in fade-in slide-in-from-top-1 duration-150 max-h-[75vh] sm:max-h-96 overflow-y-auto scrollbar-none [&::-webkit-scrollbar]:hidden">
           {/* Active Autocomplete Results */}
           {query.trim().length >= 2 ? (
             <div>

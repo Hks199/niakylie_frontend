@@ -50,7 +50,7 @@ export function Header() {
             </div>
 
             {/* Center Right: Search Bar */}
-            <div className="flex-1 max-w-xs sm:max-w-md mx-2 sm:mx-4">
+            <div className="flex-1 min-w-0 max-w-full sm:max-w-md mx-1 sm:mx-4">
               <SearchBar />
             </div>
 
