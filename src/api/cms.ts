@@ -23,10 +23,13 @@ export interface CmsPage {
 }
 
 export interface FaqItem {
-  id: string;
+  id?: string;
+  _id?: string;
   question: string;
   answer: string;
-  category: 'General' | 'Orders' | 'Shipping' | 'Returns' | 'Payments';
+  category: 'General' | 'Orders' | 'Shipping' | 'Returns' | 'Payments' | string;
+  displayOrder?: number;
+  isActive?: boolean;
 }
 
 const MOCK_PAGES: Record<string, CmsPage> = {
@@ -208,10 +211,63 @@ export const cmsApi = {
 
   getFaqs: async (): Promise<FaqItem[]> => {
     try {
-      return await apiClient.get<FaqItem[]>('/cms/faqs');
+      const res: any = await apiClient.get('/cms/faqs');
+      let list: FaqItem[] = [];
+      if (Array.isArray(res)) {
+        list = res;
+      } else if (res && typeof res === 'object') {
+        Object.values(res).forEach((items: any) => {
+          if (Array.isArray(items)) list.push(...items);
+        });
+      }
+      if (list.length > 0) {
+        return list.map((f: any) => ({
+          ...f,
+          id: f._id || f.id,
+          displayOrder: f.displayOrder ?? 0,
+          isActive: f.isActive !== false,
+        }));
+      }
+      return MOCK_FAQS;
     } catch (error) {
       return MOCK_FAQS;
     }
+  },
+
+  getAdminFaqs: async (): Promise<FaqItem[]> => {
+    try {
+      const res: any = await apiClient.get('/cms/admin/faqs');
+      let list: FaqItem[] = [];
+      if (Array.isArray(res)) {
+        list = res;
+      } else if (res && typeof res === 'object') {
+        Object.values(res).forEach((items: any) => {
+          if (Array.isArray(items)) list.push(...items);
+        });
+      }
+      return list.map((f: any) => ({
+        ...f,
+        id: f._id || f.id,
+        displayOrder: f.displayOrder ?? 0,
+        isActive: f.isActive !== false,
+      }));
+    } catch (error) {
+      return MOCK_FAQS;
+    }
+  },
+
+  createFaq: async (dto: Partial<FaqItem>): Promise<FaqItem> => {
+    const res = await apiClient.post<FaqItem>('/cms/admin/faqs', dto);
+    return { ...res, id: (res as any)._id || res.id };
+  },
+
+  updateFaq: async (id: string, dto: Partial<FaqItem>): Promise<FaqItem> => {
+    const res = await apiClient.put<FaqItem>(`/cms/admin/faqs/${id}`, dto);
+    return { ...res, id: (res as any)._id || res.id };
+  },
+
+  deleteFaq: async (id: string): Promise<void> => {
+    await apiClient.delete(`/cms/admin/faqs/${id}`);
   },
 
   getBlogs: async (): Promise<BlogPost[]> => {

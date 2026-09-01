@@ -12,6 +12,7 @@ import { AdminReviewsPanel } from '../components/admin/AdminReviewsPanel';
 import { AdminBannersPanel } from '../components/admin/AdminBannersPanel';
 import { AdminCategoriesPanel } from '../components/admin/AdminCategoriesPanel';
 import { AdminBrandsPanel } from '../components/admin/AdminBrandsPanel';
+import { AdminFaqManagement } from '../components/admin/AdminFaqManagement';
 import { DashboardSummary } from '../types/admin';
 
 const DEFAULT_KPIS: DashboardSummary = {
@@ -176,6 +177,8 @@ export function AdminDashboardPage() {
             <AdminProductManagement />
           ) : activeTab === 'inventory' ? (
             <AdminDataTables />
+          ) : activeTab === 'faqs' ? (
+            <AdminFaqManagement />
           ) : activeTab === 'orders' ? (
             <AdminOrdersPanel />
           ) : activeTab === 'reviews' ? (
