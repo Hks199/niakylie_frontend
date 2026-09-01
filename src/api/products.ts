@@ -128,13 +128,14 @@ function extractProductList(res: any): any[] {
   return [];
 }
 
-function normalizeProduct(p: any): Product {
+export function normalizeProduct(p: any): Product {
   if (!p) return {} as Product;
-  const idVal = p._id || p.id || String(Math.random());
-  const nameVal = p.name || p.title || 'NiaKylie Fashion Item';
-  const slugVal = p.slug || idVal;
+  const targetObj = p.productId && typeof p.productId === 'object' ? p.productId : p;
+  const idVal = targetObj._id || targetObj.id || (typeof p === 'string' ? p : String(Math.random()));
+  const nameVal = targetObj.name || targetObj.title || 'NiaKylie Fashion Item';
+  const slugVal = targetObj.slug || idVal;
 
-  const rawImage = (Array.isArray(p.images) && p.images[0]) || p.thumbnail;
+  const rawImage = (Array.isArray(targetObj.images) && targetObj.images[0]) || targetObj.thumbnail;
   const imageVal = rawImage
     ? rawImage.startsWith('http')
       ? rawImage

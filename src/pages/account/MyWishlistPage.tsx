@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Heart, Trash2, ShoppingBag, ArrowRight, Check } from 'lucide-react';
 import { useWishlistStore, useCartStore } from '../../store';
 import { Product } from '../../types';
+import { normalizeProduct } from '../../api/products';
 
 export function MyWishlistPage() {
   const { wishlistItems, removeFromWishlist, isLoading } = useWishlistStore();
@@ -55,16 +56,8 @@ export function MyWishlistPage() {
     );
   }
 
-  // Extract array of products from wishlistItems state
-  const normalizedWishlist = wishlistItems.map((item: any) => {
-    if (typeof item === 'string') {
-      return { id: item, _id: item, title: 'Wishlist Item', price: 0 };
-    }
-    if (item.productId && typeof item.productId === 'object') {
-      return { ...item.productId, wishlistId: item._id || item.id };
-    }
-    return item;
-  });
+  // Extract array of normalized products from wishlistItems state
+  const normalizedWishlist = wishlistItems.map((item: any) => normalizeProduct(item));
 
   return (
     <div className="bg-white border border-gray-100 rounded-3xl p-4 sm:p-8 shadow-card space-y-6">
@@ -121,14 +114,15 @@ export function MyWishlistPage() {
           {normalizedWishlist.map((product: any) => {
             const productId = product._id || product.id || product.slug;
             const title = product.title || product.name || 'NiaKylie Fashion Item';
-            const image = product.thumbnail || product.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
-            const price = product.offerPrice || product.price || 0;
-            const originalPrice = product.mrp || product.compareAtPrice || product.originalPrice || (price ? Math.round(price * 1.5) : 0);
-            const discount = originalPrice > price ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+            const firstVariant = product.variants && product.variants.length > 0 ? product.variants[0] : null;
+            const image = product.thumbnail || product.images?.[0] || firstVariant?.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
+            const price = product.offerPrice ?? product.price ?? firstVariant?.offerPrice ?? 0;
+            const originalPrice = product.mrp ?? product.compareAtPrice ?? product.originalPrice ?? firstVariant?.mrp ?? price;
+            const discount = product.discountPercentage ?? product.discount ?? firstVariant?.discount ?? (originalPrice > price && originalPrice > 0 ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0);
             const isAdded = addedMap[productId];
             const isRemoving = removingMap[productId];
             const brand = typeof product.brand === 'object' ? product.brand?.name : (product.brand || 'NiaKylie');
-            const isOutOfStock = product.isAvailable === false || product.stock === 0;
+            const isOutOfStock = product.isAvailable === false || (product.stock === 0 && (!firstVariant || firstVariant.stock === 0));
 
             return (
               <div

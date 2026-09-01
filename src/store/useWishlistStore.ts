@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { WishlistItem } from '../types';
 import { apiClient } from '../api/client';
+import { normalizeProduct } from '../api/products';
 
 interface WishlistState {
   wishlistItems: WishlistItem[];
@@ -26,12 +27,14 @@ export const useWishlistStore = create<WishlistState>()((set, get) => ({
     set({ isLoading: true });
     try {
       const data = await apiClient.get<WishlistItem[] | { items: WishlistItem[] }>('/users/profile/wishlist');
-      const items: WishlistItem[] = Array.isArray(data) ? data : (data as any)?.items || [];
+      const rawItems: any[] = Array.isArray(data) ? data : (data as any)?.items || [];
+      const items: WishlistItem[] = rawItems.map((item) => normalizeProduct(item) as any);
       set({ wishlistItems: items, isLoading: false });
     } catch {
       try {
         const data = await apiClient.get<WishlistItem[] | { items: WishlistItem[] }>('/users/wishlist');
-        const items: WishlistItem[] = Array.isArray(data) ? data : (data as any)?.items || [];
+        const rawItems: any[] = Array.isArray(data) ? data : (data as any)?.items || [];
+        const items: WishlistItem[] = rawItems.map((item) => normalizeProduct(item) as any);
         set({ wishlistItems: items, isLoading: false });
       } catch {
         set({ isLoading: false });
