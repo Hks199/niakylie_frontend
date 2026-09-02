@@ -159,7 +159,7 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li><a href="/pages/about-us" className="hover:text-brand-crimson transition-colors">About NiaKylie</a></li>
-              <li><a href="/blogs" className="hover:text-brand-crimson transition-colors">Fashion Journal / Blog</a></li>
+              <li><a href="/blogs" className="hover:text-brand-crimson font-semibold transition-colors">Saree Journal</a></li>
               <li>
                 <a
                   href="/admin"

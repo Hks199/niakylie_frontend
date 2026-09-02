@@ -163,53 +163,326 @@ const MOCK_FAQS: FaqItem[] = [
 const MOCK_BLOGS: BlogPost[] = [
   {
     id: 'b1',
-    slug: 'art-of-banarasi-silk',
-    title: 'The Timeless Art of Banarasi Silk Weaving',
-    excerpt: 'A deep dive into the 600-year-old Banarasi silk weaving tradition — the golden threads, the intricate motifs, and the master weavers who keep it alive.',
+    slug: 'how-to-style-saree-modern-look',
+    title: 'How to Style a Saree for a Modern Look',
+    excerpt: 'The saree never goes out of style — but the way we wear it keeps evolving. Discover simple ways to give your traditional saree a modern touch with the right blouse, drape, jewellery and accessories.',
     content: `
-      <p>Banarasi silk has adorned Indian brides and royals for over six centuries. Woven in the holy city of Varanasi on the banks of the Ganges, these magnificent textiles are defined by their fine silk, gold and silver zari work, and intricate floral and paisley motifs inspired by Mughal artistry.</p>
-      <h2>The Weaving Process</h2>
-      <p>Each saree takes between 15 days to 6 months to create depending on the intricacy of the design. The weaver uses a traditional handloom called a "khaddi" — a wooden frame that requires the coordinated skill of both hands and feet simultaneously. The gold zari thread (made from a core of silk wound with thin strips of real or imitation gold) is carefully interlaced to create the distinctive shimmer.</p>
-      <h2>GI Tag Recognition</h2>
-      <p>In 2009, Banarasi silk sarees received Geographical Indication (GI) tag status from the Government of India, protecting the craft from imitation and ensuring only authentic Varanasi-produced textiles can carry the Banarasi name.</p>
-      <h2>Caring for Your Banarasi</h2>
-      <p>Always dry-clean Banarasi silk. Store wrapped in soft muslin cloth away from direct sunlight. Air periodically and avoid contact with perfumes or deodorants as alcohol can damage the zari work.</p>
+      <h2 id="evolution-of-saree">The Evolution of Modern Saree Draping</h2>
+      <p>The saree is timeless, but modern styling has given it a brand-new avatar. Today's woman wants elegance without compromising on comfort. Whether you are dressing for a cocktail party, corporate event, or festival, here are simple ways to style your traditional saree for a contemporary look.</p>
+
+      <h2 id="statement-blouse">1. Pair with a Statement Modern Blouse</h2>
+      <p>Swap your standard blouse for a crop top, high-neck halter, corset, or structured blazer. A plain NIAKYLIE georgette or organza saree paired with an embroidered or sequined blouse instantly elevates the ensemble.</p>
+
+      <h2 id="waist-belt">2. Accentuate Your Waist with a Belt</h2>
+      <p>Adding a metallic waist belt (Kamarbandh) or a slim leather/fabric belt keeps the pallu in place and defines your silhouette with effortlessly chic flair.</p>
+
+      <h2 id="draping-styles">3. Experiment with Draping Styles</h2>
+      <p>Try the pant-style drape, neck-wrap drape, or dhoti drape. Pre-draped sarees from NIAKYLIE let you get ready in under two minutes without fussing with pleats.</p>
+
+      <h2 id="jewellery-accessories">4. Contemporary Jewellery & Footwear</h2>
+      <p>Ditch heavy traditional sets for geometric brass neckpieces, statement earrings, or oxidized silver chokers. Pair your saree with comfortable block heels or even classic sneakers for an edgy street-style look.</p>
     `,
     coverImage: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80',
-    author: { name: 'Priya Sharma', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', bio: 'Fashion Editor & Textile Heritage Journalist' },
-    publishedAt: '2026-08-01',
-    category: 'Heritage & Craft',
-    tags: ['Banarasi Silk', 'Handloom', 'Indian Heritage', 'Sarees'],
-    viewCount: 4280,
-    readTime: '6 min read',
-  },
-  {
-    id: 'b2',
-    slug: 'styling-lehenga-choli',
-    title: 'How to Style a Lehenga Choli for Every Occasion',
-    excerpt: 'From intimate mehendi ceremonies to grand sangeet nights — our complete guide to accessorizing and styling your lehenga choli like a fashion icon.',
-    content: `<p>The lehenga choli is the crown jewel of Indian festive fashion. With the right styling, it can take you from an intimate family gathering to a grand ballroom celebration with effortless grace.</p><h2>Mehendi & Haldi Ceremonies</h2><p>For daytime events, opt for bright yellows, greens, and corals in lightweight georgette or cotton lehengas. Keep jewellery minimal — floral jewellery is trending heavily.</p><h2>Sangeet Nights</h2><p>Go bold with heavily embroidered velvet or raw silk lehengas in deep jewel tones — emerald, cobalt blue, or magenta. Statement chandbali earrings and a maang tikka complete the look.</p>`,
-    coverImage: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1200&q=80',
-    author: { name: 'Kavya Menon', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', bio: 'Celebrity Stylist & Fashion Consultant' },
-    publishedAt: '2026-07-20',
-    category: 'Style Guide',
-    tags: ['Lehenga', 'Styling', 'Wedding Fashion', 'Festive Looks'],
-    viewCount: 3150,
+    author: { name: 'NIAKYLIE Styling Team', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', bio: 'Saree Styling Experts at NIAKYLIE' },
+    publishedAt: '2026-09-01',
+    category: 'Saree Styling',
+    tags: ['Modern Saree', 'Styling Tips', 'Blouse Ideas', 'Belted Saree'],
+    viewCount: 4890,
     readTime: '5 min read',
   },
   {
-    id: 'b3',
-    slug: 'festive-2026-trends',
-    title: 'Festive 2026: The Top Ethnic Fashion Trends You Need to Know',
-    excerpt: 'Our fashion forecasters break down the biggest ethnic wear trends for Navratri, Diwali, and wedding season 2026 — from resurgent handlooms to sustainable couture.',
-    content: `<p>Festive 2026 is shaping up to be a landmark season for ethnic fashion. After years of minimalism, Indian couture is returning to its maximalist roots — rich embroideries, bold colours, and heritage textiles are all making a triumphant comeback.</p><h2>Top Trends</h2><p><strong>1. Ombre Kanjivarams</strong> — Gradient silk sarees moving from ivory to deep crimson are the must-have of the season.</p><p><strong>2. Contemporary Kurta Sets</strong> — Sharara and palazzo-paired asymmetric kurtas in handblock print cotton are bridging traditional and modern aesthetics beautifully.</p>`,
-    coverImage: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1200&q=80',
-    author: { name: 'Aisha Nair', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80', bio: 'Senior Fashion Editor, NiaKylie' },
-    publishedAt: '2026-07-10',
-    category: 'Trend Report',
-    tags: ['Festive Fashion', '2026 Trends', 'Ethnic Wear', 'Diwali'],
-    viewCount: 5890,
+    id: 'b2',
+    slug: '10-types-of-sarees-every-woman-should-know',
+    title: '10 Types of Sarees Every Woman Should Know',
+    excerpt: 'From elegant silks and traditional handlooms to lightweight everyday sarees, discover different saree varieties and what makes each one special.',
+    content: `
+      <h2 id="saree-varieties">The Rich Tapestry of Indian Sarees</h2>
+      <p>Every region in India has its signature weave, fabric, and artistic pattern. Here are 10 iconic saree types every woman should have in her wardrobe collection:</p>
+
+      <h2 id="banarasi-silk">1. Banarasi Silk Saree</h2>
+      <p>Woven in Varanasi with intricate gold and silver zari work. Perfect for weddings and grand festive celebrations.</p>
+
+      <h2 id="kanjivaram-silk">2. Kanjivaram (Kanchipuram) Silk</h2>
+      <p>Hailing from Tamil Nadu, known for its thick pure silk base and contrasting temple motifs on borders.</p>
+
+      <h2 id="organza-saree">3. Organza Saree</h2>
+      <p>Sheer, lightweight, and crisp with subtle sheen. Extremely popular for day events and summer parties.</p>
+
+      <h2 id="chanderi-saree">4. Chanderi Saree</h2>
+      <p>A delicate blend of silk and cotton with zari borders from Madhya Pradesh.</p>
+
+      <h2 id="georgette-saree">5. Georgette Saree</h2>
+      <p>Bouncy, fluid, and figure-flattering. Great for party wear and daily celebrations.</p>
+
+      <h2 id="linen-saree">6. Linen Saree</h2>
+      <p>Breathable, eco-friendly, and effortlessly stylish for workwear and casual outings.</p>
+
+      <h2 id="cotton-saree">7. Cotton Handloom Saree</h2>
+      <p>Pure comfort with timeless artistic appeal, ideal for daily wear in warm Indian climates.</p>
+
+      <h2 id="tissue-silk">8. Tissue Silk Saree</h2>
+      <p>Glossy, metallic shimmer weave that reflects light beautifully for evening functions.</p>
+
+      <h2 id="net-saree">9. Net & Lace Saree</h2>
+      <p>Modern, sheer, and heavily embellished with sequins and zardozi for glamour.</p>
+
+      <h2 id="tussar-silk">10. Tussar Silk Saree</h2>
+      <p>Rich textured natural silk with deep earthy tones and traditional hand block prints.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1200&q=80',
+    author: { name: 'Kavya Menon', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', bio: 'Textile Heritage Specialist' },
+    publishedAt: '2026-08-28',
+    category: 'Saree Guide',
+    tags: ['Saree Types', 'Banarasi', 'Kanjivaram', 'Organza', 'Handloom'],
+    viewCount: 6120,
     readTime: '7 min read',
+  },
+  {
+    id: 'b3',
+    slug: 'choose-perfect-saree-for-every-occasion',
+    title: 'How to Choose the Perfect Saree for Every Occasion',
+    excerpt: 'Wedding, festival, office, family function or a casual day out — the right saree can completely transform your look. Here is how to choose a saree based on the occasion.',
+    content: `
+      <h2 id="matching-saree">Matching Your Saree to the Event</h2>
+      <p>Selecting the right saree depends on the dress code, time of day, and level of comfort needed. Here is NIAKYLIE's definitive occasion guide:</p>
+
+      <h2 id="wedding-saree">1. Grand Weddings & Reception</h2>
+      <p><strong>Recommended Sarees:</strong> Heavy Banarasi Silk, Kanjivaram, Zardozi Embroidered Silk.<br />Go for deep jewel tones like crimson red, royal blue, emerald green, and gold.</p>
+
+      <h2 id="festive-saree">2. Festive Celebrations (Diwali, Navratri, Puja)</h2>
+      <p><strong>Recommended Sarees:</strong> Tissue Silk, Bright Chanderi, Embroidered Organza.<br />Choose vibrant colors like yellow, magenta, mustard, and orange with festive zari borders.</p>
+
+      <h2 id="office-saree">3. Office & Formal Corporate Wear</h2>
+      <p><strong>Recommended Sarees:</strong> Linen, Soft Handloom Cotton, Linen-Silk blend.<br />Opt for pastels, beige, muted greys, and minimal prints that look polished and feel comfortable all day.</p>
+
+      <h2 id="party-saree">4. Evening Parties & Cocktails</h2>
+      <p><strong>Recommended Sarees:</strong> Fluid Georgette, Satin Silk, Sequined Net.<br />Style with contemporary blouses in dark shades like midnight black, plum, or metallic silver.</p>
+
+      <h2 id="casual-saree">5. Everyday Casual Outings</h2>
+      <p><strong>Recommended Sarees:</strong> Lightweight Mulmul Cotton, Printed Chiffon.<br />Easy to drape, quick to wash, and breezy for daily errands or coffee catch-ups.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1200&q=80',
+    author: { name: 'Aisha Nair', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80', bio: 'Senior Fashion Editor' },
+    publishedAt: '2026-08-25',
+    category: 'Occasion Wear',
+    tags: ['Occasion Wear', 'Weddings', 'Office Sarees', 'Party Wear'],
+    viewCount: 3840,
+    readTime: '6 min read',
+  },
+  {
+    id: 'b4',
+    slug: 'saree-fabric-guide-which-fabric-is-right-for-you',
+    title: 'Saree Fabric Guide: Which Fabric Is Right for You?',
+    excerpt: 'Confused between Organza, Georgette, Silk, and Cotton? Explore our ultimate saree fabric guide to choose the ideal fabric for your comfort and style.',
+    content: `
+      <h2 id="fabric-guide">Understanding Saree Fabrics & Drapes</h2>
+      <p>The fabric of your saree dictates its drape, fall, volume, and suitability for different seasons. Here is a breakdown of popular saree fabrics available at NIAKYLIE:</p>
+
+      <h2 id="cotton-fabric">Cotton</h2>
+      <p>Natural, highly breathable, holds pleats crisp and firm. Ideal for hot weather and everyday wear.</p>
+
+      <h2 id="silk-fabric">Pure Silk & Art Silk</h2>
+      <p>Lustrous, regal, and durable. Perfect for heirloom collections, weddings, and formal rituals.</p>
+
+      <h2 id="georgette-fabric">Georgette</h2>
+      <p>Lightweight, slightly crinkled texture that hugs curves gracefully. Excellent for fluid drapes and slim silhouettes.</p>
+
+      <h2 id="chiffon-fabric">Chiffon</h2>
+      <p>Ultra-sheer, soft, and airy. Drapes like a dream with minimal bulk around the waist.</p>
+
+      <h2 id="organza-fabric">Organza</h2>
+      <p>Crisp, structured, and sheer with a subtle sheen. Adds regal volume and structure to your outfit.</p>
+
+      <h2 id="linen-fabric">Linen</h2>
+      <p>Eco-friendly, moisture-wicking, with a sophisticated textured weave that softens with every wash.</p>
+
+      <h2 id="satin-fabric">Satin & Crepe</h2>
+      <p>Smooth, glossy surface with a luxurious heavy fall. Perfect for evening partywear.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'NIAKYLIE Fabric Desk', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', bio: 'Textile Specialists' },
+    publishedAt: '2026-08-20',
+    category: 'Saree Fabrics',
+    tags: ['Fabric Guide', 'Organza', 'Georgette', 'Cotton', 'Silk'],
+    viewCount: 5210,
+    readTime: '5 min read',
+  },
+  {
+    id: 'b5',
+    slug: 'traditional-vs-modern-saree-styling',
+    title: 'Traditional vs Modern Saree Styling',
+    excerpt: 'Can a traditional saree look modern? Absolutely. Explore how the right blouse, jewellery, draping style and accessories can completely change the personality of a saree.',
+    content: `
+      <h2 id="fusion-styling">Merging Heritage Weaves with Contemporary Trends</h2>
+      <p>You don't need to buy a new saree to get a fresh look. The magic lies in how you mix traditional craftsmanship with modern styling choices.</p>
+
+      <h2 id="blouse-transform">1. Blouse Transformation</h2>
+      <p>Traditional: Round neck elbow-sleeve silk blouse.<br />Modern: Off-shoulder corset top, denim jacket, or high-neck turtleneck knit sweater for winter.</p>
+
+      <h2 id="draping-twist">2. Draping Twist</h2>
+      <p>Traditional: Classic Nivi drape over left shoulder.<br />Modern: Belted drape with pleated pallu tucked neatly into a sleek leather or embroidered belt.</p>
+
+      <h2 id="jewellery-pairing">3. Jewellery Pairing</h2>
+      <p>Traditional: Temple gold sets and heavy kundan neckpieces.<br />Modern: Layered delicate chain necklaces, cuff bracelets, and minimalist geometric studs.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'NIAKYLIE Styling Team', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', bio: 'Style Consultants' },
+    publishedAt: '2026-08-15',
+    category: 'Saree Styling',
+    tags: ['Fusion Fashion', 'Traditional', 'Modern Drape', 'Accessories'],
+    viewCount: 2980,
+    readTime: '4 min read',
+  },
+  {
+    id: 'b6',
+    slug: '7-saree-draping-styles-every-woman-should-try',
+    title: '7 Saree Draping Styles Every Woman Should Try',
+    excerpt: 'Transform your saree look with these 7 classic and modern draping styles — from Nivi and Gujarati to Pant-Style and Belted drapes.',
+    content: `
+      <h2 id="7-drapes">7 Unique Ways to Drape a Saree</h2>
+
+      <h2 id="nivi-drape">1. Nivi Drape (The Classic)</h2>
+      <p>The universal drape where pleats are tucked at the center and pallu draped over the left shoulder.</p>
+
+      <h2 id="gujarati-drape">2. Gujarati / Seedha Pallu Drape</h2>
+      <p>Pallu is brought from back to front over the right shoulder, highlighting rich pallu embroidery.</p>
+
+      <h2 id="bengali-drape">3. Bengali Style Drape</h2>
+      <p>Box pleats with pallu draped over left shoulder, then brought under right arm and pinned back over left shoulder with a key ring ornament.</p>
+
+      <h2 id="nauvari-drape">4. Nauvari / Maharashtrian Drape</h2>
+      <p>Draped through legs like a dhoti, offering freedom of movement without a petticoat.</p>
+
+      <h2 id="pant-drape">5. Pant-Style Drape</h2>
+      <p>Drape pleats around fitted pants or leggings instead of a petticoat for an ultra-chic runway look.</p>
+
+      <h2 id="belted-drape">6. Belted Saree Drape</h2>
+      <p>Pin pallu neatly and cinch the waist with a metallic or cloth belt for a structured silhouette.</p>
+
+      <h2 id="lehenga-drape">7. Pre-Draped / Lehenga Drape</h2>
+      <p>Pleat pallu into soft gathers like a skirt and drape around waist for a quick lehenga-like appearance.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'Kavya Menon', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80', bio: 'Fashion Stylist' },
+    publishedAt: '2026-08-10',
+    category: 'Saree Styling',
+    tags: ['Draping Guide', 'Nivi Drape', 'Pant Style', 'Gujarati Drape'],
+    viewCount: 4430,
+    readTime: '6 min read',
+  },
+  {
+    id: 'b7',
+    slug: 'how-to-choose-right-blouse-for-your-saree',
+    title: 'How to Choose the Right Blouse for Your Saree',
+    excerpt: 'A blouse can make or break your saree look. Learn how to pair statement blouses with plain sarees, contrast colors, necklines, and sleeve patterns.',
+    content: `
+      <h2 id="blouse-pairing">Mastering the Art of Blouse Pairing</h2>
+      <p>The right blouse enhances the grace of a saree. Follow these NIAKYLIE rules for effortless pairing:</p>
+
+      <h2 id="rule-1">Rule 1: Plain Saree → Statement Blouse</h2>
+      <p>Pair solid chiffon or georgette sarees with heavily embroidered, sequined, or mirror-work blouses.</p>
+
+      <h2 id="rule-2">Rule 2: Heavy Saree → Simple Elegant Blouse</h2>
+      <p>Let a rich Banarasi silk saree shine by pairing it with a clean raw silk or satin blouse in a contrasting tone.</p>
+
+      <h2 id="rule-3">Rule 3: Printed Saree → Solid Color Blouse</h2>
+      <p>Pick the dominant accent shade from the printed saree pattern for your solid blouse.</p>
+
+      <h2 id="rule-4">Rule 4: Play with Necklines & Sleeves</h2>
+      <p>Sweetheart necklines for festive glam, boat necks for corporate sophistication, and deep V-backs for wedding receptions.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'NIAKYLIE Design Team', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80', bio: 'Couture Designers' },
+    publishedAt: '2026-08-05',
+    category: 'Saree Guide',
+    tags: ['Blouse Guide', 'Necklines', 'Contrast Blouse', 'Saree Styling'],
+    viewCount: 3710,
+    readTime: '5 min read',
+  },
+  {
+    id: 'b8',
+    slug: 'saree-colours-how-to-choose-right-shade',
+    title: 'Saree Colours: How to Choose the Right Shade',
+    excerpt: 'Explore the magic of saree colors — from royal reds and festive golds to serene pastels and elegant blacks for every celebration.',
+    content: `
+      <h2 id="colour-mood">Choosing Saree Shades for Mood & Atmosphere</h2>
+      <p>Color creates instant visual impact. Here is how to select the right shade for your next event:</p>
+
+      <h2 id="red-maroon">Red & Maroon</h2>
+      <p>Symbol of tradition, passion, and bridal radiance. Perfect for weddings and auspicious pujas.</p>
+
+      <h2 id="yellow-mustard">Yellow & Mustard</h2>
+      <p>Vibrant, joyful, and radiant. Ideal for Haldi ceremonies and daytime festive events.</p>
+
+      <h2 id="pastels">Pastel Pink, Lavender & Peach</h2>
+      <p>Soft, dreamy, and modern. Outstanding for summer outdoor events and baby showers.</p>
+
+      <h2 id="green-blue">Emerald Green & Royal Blue</h2>
+      <p>Regal, deep, and luxurious. Perfect for evening receptions and sangeet nights.</p>
+
+      <h2 id="black-silver">Black & Metallic Silver</h2>
+      <p>Sleek, glamorous, and contemporary for cocktail parties and evening galas.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'Aisha Nair', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80', bio: 'Trend Analyst' },
+    publishedAt: '2026-08-01',
+    category: 'Trending Sarees',
+    tags: ['Saree Colors', 'Festive Shades', 'Pastels', 'Bridal Red'],
+    viewCount: 2890,
+    readTime: '4 min read',
+  },
+  {
+    id: 'b9',
+    slug: 'how-to-take-care-of-your-sarees',
+    title: 'How to Take Care of Your Sarees',
+    excerpt: 'Maintain the longevity, shine, and zari of your precious sarees with our expert care, folding, washing, and storage guide.',
+    content: `
+      <h2 id="saree-care">Preserving Your Saree Treasures for Years</h2>
+      <p>Your sarees are investment pieces and family heirlooms. Protect them with these essential maintenance steps:</p>
+
+      <h2 id="muslin-storage">1. Storage in Breathable Muslin Cloth</h2>
+      <p>Never store silk sarees in plastic bags as trapped moisture causes fabric yellowing and mold. Wrap each silk saree in pure cotton or muslin cloth bags.</p>
+
+      <h2 id="refolding">2. Periodic Refolding</h2>
+      <p>Refold your stored silk and organza sarees every 3 months along different fold lines to prevent permanent crease wear or fiber breakage along zari borders.</p>
+
+      <h2 id="washing-guide">3. Washing Guidelines</h2>
+      <p>Dry-clean Banarasi, Kanjivaram, Organza, and silk sarees. Wash lightweight cottons and chiffons gently by hand in cold water with mild detergent.</p>
+
+      <h2 id="zari-care">4. Zari Care</h2>
+      <p>Keep perfumes, hairsprays, and alcohol-based deodorants away from zari work as chemical sprays cause real metallic threads to tarnish.</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80',
+    author: { name: 'NIAKYLIE Care Desk', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', bio: 'Textile Preservation Team' },
+    publishedAt: '2026-07-28',
+    category: 'Saree Care',
+    tags: ['Saree Care', 'Silk Storage', 'Zari Maintenance', 'Washing Tips'],
+    viewCount: 5740,
+    readTime: '5 min read',
+  },
+  {
+    id: 'b10',
+    slug: 'why-we-started-niakylie-women-collection',
+    title: 'Why We Started NIAKYLIE Women Collection',
+    excerpt: 'The story behind NIAKYLIE — built with a simple vision to bring high-quality, stylish sarees to every woman through our Raipur store and online platforms.',
+    content: `
+      <h2 id="niakylie-dream">The NIAKYLIE Dream</h2>
+      <p>NIAKYLIE Women Collection started with a simple idea — to make beautiful, stylish, and versatile sarees accessible to every woman without compromising on quality or authentic craftsmanship.</p>
+
+      <h2 id="raipur-store">Our Roots in Raipur, Chhattisgarh</h2>
+      <p>We opened our physical boutique store in <strong>Sarora, Raipur, Chhattisgarh</strong> to connect directly with local saree lovers, offering curated collections that celebrate every occasion.</p>
+
+      <h2 id="online-community">Building Our Online Community</h2>
+      <p>To reach saree enthusiasts across India and globally, we built our digital storefront (niakylie.com) and active social media presence on Instagram, Facebook, and WhatsApp.</p>
+      <p>We are a growing brand, and every customer, order, message, and piece of feedback is an important part of our journey. Thank you for making NIAKYLIE a part of your celebrations!</p>
+    `,
+    coverImage: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80',
+    author: { name: 'NIAKYLIE Founder', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80', bio: 'Founder & Visionary' },
+    publishedAt: '2026-07-15',
+    category: 'NIAKYLIE Stories',
+    tags: ['Brand Story', 'NIAKYLIE', 'Raipur Boutique', 'Our Journey'],
+    viewCount: 6890,
+    readTime: '4 min read',
   },
 ];
 

@@ -68,7 +68,7 @@ export function BlogDetailsPage({ slug }: BlogDetailsPageProps) {
         className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-brand-crimson mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span>Back to Fashion Journal</span>
+        <span>Back to Saree Journal</span>
       </button>
 
       {/* Category Tag */}
