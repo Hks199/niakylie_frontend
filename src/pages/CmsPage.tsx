@@ -1400,6 +1400,772 @@ function PrivacyPolicyView(_props: { pageContent?: string }) {
   );
 }
 
+const termsConfig = {
+  lastUpdated: 'September 2, 2026',
+  email: 'niakylieofficial@gmail.com',
+  whatsapp: '+91 95899 28337',
+  whatsappClean: '919589928337',
+  address: 'Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221',
+  instagram: '@niakylie_women_collection',
+  facebook: 'NIAKYLIE Women Collection',
+  website: 'niakylie.com',
+};
+
+const TERMS_NAV_ITEMS = [
+  { id: 'about-niakylie', label: '1. About NIAKYLIE' },
+  { id: 'use-of-our-website', label: '2. Use of Our Website' },
+  { id: 'product-information', label: '3. Product Information' },
+  { id: 'saree-availability', label: '4. Saree Availability' },
+  { id: 'product-prices', label: '5. Product Prices' },
+  { id: 'orders', label: '6. Orders' },
+  { id: 'payment', label: '7. Payment' },
+  { id: 'order-confirmation', label: '8. Order Confirmation' },
+  { id: 'shipping-delivery', label: '9. Shipping & Delivery' },
+  { id: 'delivery-inspection', label: '10. Delivery Inspection' },
+  { id: 'returns-exchanges-refunds', label: '11. Returns & Refunds' },
+  { id: 'promotional-offers', label: '12. Promotional Offers' },
+  { id: 'promotional-cards-coupons', label: '13. Coupons & Vouchers' },
+  { id: 'intellectual-property', label: '14. Intellectual Property' },
+  { id: 'user-generated-content', label: '15. User Content' },
+  { id: 'social-media-whatsapp', label: '16. Social & WhatsApp' },
+  { id: 'third-party-links', label: '17. Third-Party Links' },
+  { id: 'website-availability', label: '18. Website Availability' },
+  { id: 'limitation-of-liability', label: '19. Limitation of Liability' },
+  { id: 'force-majeure', label: '20. Force Majeure' },
+  { id: 'privacy', label: '21. Privacy' },
+  { id: 'changes-to-these-terms', label: '22. Changes to Terms' },
+  { id: 'governing-law', label: '23. Governing Law' },
+  { id: 'contact-us', label: '24. Contact Us' },
+];
+
+function TermsAndConditionsView(_props: { pageContent?: string }) {
+  const [activeSection, setActiveSection] = useState<string>('about-niakylie');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+
+      const sectionElements = TERMS_NAV_ITEMS.map((item) =>
+        document.getElementById(item.id)
+      );
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const el = sectionElements[i];
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 140) {
+            setActiveSection(TERMS_NAV_ITEMS[i].id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = -100;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* 1. Hero Header */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-brand-slate-dark to-slate-900 text-white p-8 sm:p-14 shadow-2xl border border-amber-500/20 text-center">
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+          <p className="text-[11px] font-extrabold uppercase tracking-widest text-amber-300">
+            NIAKYLIE WOMEN COLLECTION
+          </p>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Terms & Conditions
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-1 font-sans">
+            Welcome to <strong>NIAKYLIE Women Collection</strong>. These Terms & Conditions govern your use of our website <strong>niakylie.com</strong>, your interactions with NIAKYLIE Women Collection, and purchases made through our website, WhatsApp, social media channels, or physical store.
+          </p>
+
+          <div className="pt-2 flex items-center justify-center space-x-2 text-[11px] font-bold text-amber-300">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Last Updated: {termsConfig.lastUpdated}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs font-semibold text-slate-400 py-1">
+        <a href="/" className="hover:text-brand-crimson transition-colors">
+          Home
+        </a>
+        <ChevronRight className="w-3 h-3 text-slate-400" />
+        <span className="text-brand-slate-dark font-bold">Terms & Conditions</span>
+      </nav>
+
+      {/* 3. Mobile Collapsible Navigation Dropdown */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="w-full bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex items-center justify-between font-extrabold text-sm text-brand-slate-dark transition-all hover:bg-slate-50"
+        >
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-brand-crimson" />
+            <span>Terms Navigation ({TERMS_NAV_ITEMS.length} Sections)</span>
+          </div>
+          <ChevronDown
+            className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${
+              mobileMenuOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
+
+        {mobileMenuOpen && (
+          <div className="mt-2 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg space-y-1 animate-in fade-in slide-in-from-top-2 duration-200 max-h-80 overflow-y-auto">
+            {TERMS_NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`w-full text-left text-xs font-bold px-3 py-2.5 rounded-xl transition-all ${
+                  activeSection === item.id
+                    ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson'
+                    : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 4. Desktop Main Layout (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Left Column: Sticky Navigation Sidebar */}
+        <aside className="lg:col-span-4 sticky top-24 space-y-6 hidden lg:block">
+          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center space-x-2 pb-3 border-b border-gray-100">
+              <Sparkles className="w-4 h-4 text-brand-crimson" />
+              <h4 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+                Terms Navigation
+              </h4>
+            </div>
+
+            <nav className="space-y-1 max-h-[540px] overflow-y-auto pr-1">
+              {TERMS_NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`w-full text-left text-xs font-bold px-3 py-2 rounded-xl transition-all duration-200 flex items-center justify-between ${
+                      isActive
+                        ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson shadow-xs'
+                        : 'text-slate-600 hover:text-brand-crimson hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-brand-crimson" />}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Sidebar Support Box */}
+          <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-4 border border-slate-800">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-white">Need Assistance?</h4>
+                <p className="text-[11px] text-slate-400">NIAKYLIE Customer Support</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Have questions regarding our terms, order policies, or services? Speak directly with our team.
+            </p>
+
+            <a
+              href={`https://wa.me/${termsConfig.whatsappClean}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center space-x-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold py-3 rounded-2xl transition-all shadow-md"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>WhatsApp Support</span>
+            </a>
+          </div>
+        </aside>
+
+        {/* Right Column: Main Terms Content */}
+        <main className="lg:col-span-8 space-y-8 max-w-3xl">
+          {/* Welcome Notice */}
+          <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4">
+            <div className="inline-flex items-center space-x-2 text-brand-crimson bg-rose-50 px-3 py-1 rounded-full text-xs font-bold">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Customer Agreement</span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display">
+              Welcome to NIAKYLIE Women Collection
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              By accessing our website or purchasing our products through <strong>niakylie.com</strong>, WhatsApp, social media, or our physical store, you agree to these Terms & Conditions. Please read them carefully before using our services.
+            </p>
+          </div>
+
+          {/* Section 1: About NIAKYLIE */}
+          <section id="about-niakylie" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                1. About NIAKYLIE Women Collection
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              NIAKYLIE Women Collection is a saree-focused fashion brand offering sarees in a variety of fabrics, designs, colors, patterns, and styles.
+            </p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Our products are available through our website, social media channels, WhatsApp Business, and physical store.
+            </p>
+            <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-2 text-xs">
+              <div className="font-extrabold text-brand-slate-dark flex items-center space-x-2">
+                <MapPin className="w-4 h-4 text-brand-crimson" />
+                <span>Physical Store Address</span>
+              </div>
+              <p className="text-slate-700 leading-relaxed font-semibold pl-6">
+                {termsConfig.address}
+              </p>
+            </div>
+          </section>
+
+          {/* Section 2: Use of Our Website */}
+          <section id="use-of-our-website" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                2. Use of Our Website
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                By using our website, you agree to adhere to the following usage guidelines:
+              </p>
+            </div>
+
+            <ul className="space-y-2.5 text-xs text-slate-700">
+              {[
+                'Use the website only for lawful purposes.',
+                'Provide accurate information when placing an order or making an enquiry.',
+                'Not misuse, damage, or attempt to disrupt the website.',
+                'Not attempt to gain unauthorized access to our website, systems, or data.',
+                'Not copy, reproduce, distribute, or commercially use our website content without permission.',
+              ].map((item, index) => (
+                <li key={index} className="flex items-start space-x-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                  <CheckCircle2 className="w-4 h-4 text-brand-crimson flex-shrink-0 mt-0.5" />
+                  <span className="font-semibold">{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p className="text-xs text-slate-500 bg-amber-50/70 border border-amber-200/80 p-4 rounded-2xl text-amber-900 leading-relaxed">
+              We reserve the right to restrict or terminate access to the website if we believe it is being misused or used in violation of these Terms.
+            </p>
+          </section>
+
+          {/* Section 3: Product Information */}
+          <section id="product-information" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                3. Product Information
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                We make reasonable efforts to ensure product descriptions, images, prices, colors, and details are accurate.
+              </p>
+            </div>
+
+            <div className="space-y-3 text-xs text-slate-600">
+              <p className="font-bold text-slate-800">Please note the following regarding saree products:</p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <li className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1">
+                  <span className="font-extrabold text-brand-slate-dark block">Display Colors</span>
+                  <span>Actual colors may vary slightly depending on your device's screen settings.</span>
+                </li>
+                <li className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1">
+                  <span className="font-extrabold text-brand-slate-dark block">Weave & Detail Variations</span>
+                  <span>Patterns, prints, embroidery, or borders may vary slightly from product photographs.</span>
+                </li>
+                <li className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1">
+                  <span className="font-extrabold text-brand-slate-dark block">Handcrafted Fabric Nature</span>
+                  <span>Minor variations may occur due to the nature of traditional saree fabrics & weaving.</span>
+                </li>
+                <li className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1">
+                  <span className="font-extrabold text-brand-slate-dark block">Stock Availability</span>
+                  <span>Product availability and pricing may change without prior notice.</span>
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              We reserve the right to correct errors, update product information, or discontinue products at any time.
+            </p>
+          </section>
+
+          {/* Section 4: Saree Availability */}
+          <section id="saree-availability" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                4. Saree Availability
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              All products are subject to availability. Adding a saree to your cart, wishlist, or enquiry does not guarantee that the product will remain available.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              If a product becomes unavailable after you place an enquiry or order, we will contact you immediately and provide available alternatives or options.
+            </p>
+          </section>
+
+          {/* Section 5: Product Prices */}
+          <section id="product-prices" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                5. Product Prices
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Product prices displayed on our website are subject to change without prior notice. The final price applicable to your order will be the price confirmed by NIAKYLIE at the time the order is accepted.
+            </p>
+            <p className="text-xs text-slate-500 italic">
+              Additional charges such as delivery or applicable taxes, where relevant, will be communicated clearly before order confirmation.
+            </p>
+          </section>
+
+          {/* Section 6: Orders */}
+          <section id="orders" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                6. Orders
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Channels for placing orders with NIAKYLIE Women Collection:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-center font-bold text-slate-700">
+              <div className="bg-rose-50/60 border border-rose-100 p-3 rounded-2xl text-brand-crimson">NIAKYLIE Website</div>
+              <div className="bg-emerald-50/60 border border-emerald-100 p-3 rounded-2xl text-emerald-700">WhatsApp Business</div>
+              <div className="bg-purple-50/60 border border-purple-100 p-3 rounded-2xl text-purple-700">Instagram</div>
+              <div className="bg-blue-50/60 border border-blue-100 p-3 rounded-2xl text-blue-700">Facebook</div>
+              <div className="bg-amber-50/60 border border-amber-100 p-3 rounded-2xl text-amber-800 sm:col-span-2">Physical Store in Raipur</div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              An order is considered confirmed only after NIAKYLIE confirms the order and any required payment or advance payment has been received.
+            </p>
+
+            <div className="space-y-2 text-xs text-slate-600">
+              <p className="font-bold text-slate-800">We reserve the right to refuse or cancel an order for reasons including:</p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  'Product unavailability',
+                  'Incorrect pricing or product info',
+                  'Suspected fraudulent activity',
+                  'Incorrect customer information',
+                  'Delivery-related limitations',
+                  'Other legitimate business reasons',
+                ].map((reason, index) => (
+                  <li key={index} className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 font-semibold text-slate-700 flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-crimson" />
+                    <span>{reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-xs text-slate-500 italic bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              If we cancel an order after payment has been received, we will communicate the applicable refund process immediately.
+            </p>
+          </section>
+
+          {/* Section 7: Payment */}
+          <section id="payment" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                7. Payment
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Depending on the order method, we accept payment through available methods communicated by NIAKYLIE. Customers are responsible for providing accurate payment information.
+            </p>
+
+            {/* Payment Security Warning */}
+            <div className="bg-slate-900 text-white rounded-2xl p-5 space-y-2 border border-slate-800">
+              <div className="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+                <Lock className="w-4 h-4" />
+                <span>Sensitive Credentials Protection</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                NIAKYLIE does not store complete debit card, credit card, banking passwords, or similar sensitive payment credentials on its own systems. All online transactions are processed through encrypted payment providers.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 8: Order Confirmation */}
+          <section id="order-confirmation" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                8. Order Confirmation
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Confirmations are issued via WhatsApp, phone, email, or SMS.
+              </p>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-2 text-xs">
+              <p className="font-extrabold text-brand-slate-dark">Please verify your order confirmation details carefully:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 font-semibold text-slate-700">
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Product Details</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Quantity</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Confirmed Price</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Delivery Address</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Contact Number</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Special Notes</div>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If you notice an error, contact us as soon as possible. Once an order has been processed or dispatched, changes or cancellations may not be possible.
+            </p>
+          </section>
+
+          {/* Section 9: Shipping & Delivery */}
+          <section id="shipping-delivery" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                9. Shipping & Delivery
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We aim to process and dispatch confirmed orders within the timeframe communicated at purchase.
+            </p>
+
+            <div className="space-y-2 text-xs">
+              <p className="font-bold text-slate-800">Delivery times may vary based on external factors:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 font-semibold text-slate-700">
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">Location</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">Courier availability</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">Weather conditions</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">Holidays</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">Public events</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">Operational delays</div>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              A delivery estimate is not an absolute guarantee. Customers are responsible for providing complete address and contact details.
+            </p>
+          </section>
+
+          {/* Section 10: Delivery Inspection */}
+          <section id="delivery-inspection" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                10. Delivery Inspection
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Customers are encouraged to inspect the package and product carefully upon receipt. If the package appears damaged, opened, or tampered with, please document the condition (take photos/videos) and contact NIAKYLIE as soon as possible.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              For damaged, incorrect, or defective products, please contact us within the period specified in our <strong>Return & Refund Policy</strong>.
+            </p>
+          </section>
+
+          {/* Section 11: Returns, Exchanges & Refunds */}
+          <section id="returns-exchanges-refunds" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                11. Returns, Exchanges & Refunds
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Returns, exchanges, cancellations, and refunds are subject to our separate <a href="/pages/refund-policy" className="text-brand-crimson font-bold hover:underline">Return & Refund Policy</a>. Please review that policy carefully before purchasing.
+            </p>
+            <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-4 text-xs text-brand-crimson font-bold">
+              Please do not send a product back without first contacting NIAKYLIE and receiving return authorization and instructions.
+            </div>
+          </section>
+
+          {/* Section 12: Promotional Offers & Discounts */}
+          <section id="promotional-offers" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                12. Promotional Offers & Discounts
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              NIAKYLIE may offer periodic discounts, campaigns, coupons, or special offers. Each offer has its own validity period, eligibility rules, and usage limitations.
+            </p>
+            <p className="text-xs text-slate-500">
+              Promotional offers cannot be combined unless explicitly stated. NIAKYLIE reserves the right to modify or discontinue promotional offers where legally permitted.
+            </p>
+          </section>
+
+          {/* Section 13: Promotional Cards & Coupons */}
+          <section id="promotional-cards-coupons" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                13. Promotional Cards & Coupons
+              </h2>
+            </div>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+              {[
+                'Promotional cards cannot be exchanged for cash.',
+                'Discounts cannot be transferred for cash value.',
+                'Promotional cards carry specific expiry dates.',
+                'Only one promotional offer per purchase unless specified.',
+              ].map((rule, idx) => (
+                <li key={idx} className="bg-slate-50 p-3 rounded-xl border border-slate-100 font-semibold flex items-center space-x-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0" />
+                  <span>{rule}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Section 14: Intellectual Property */}
+          <section id="intellectual-property" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                14. Intellectual Property
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              All content on the NIAKYLIE website—including brand name, logo, product photographs, videos, graphics, text, designs, website layout, and marketing materials—is owned by or licensed to NIAKYLIE Women Collection and protected by applicable intellectual property laws.
+            </p>
+            <p className="text-xs font-bold text-slate-800 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+              You may not copy, reproduce, modify, publish, distribute, sell, or commercially use our content without prior written permission.
+            </p>
+          </section>
+
+          {/* Section 15: User-Generated Content */}
+          <section id="user-generated-content" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                15. User-Generated Content
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If you voluntarily submit reviews, photographs, testimonials, or comments, you grant NIAKYLIE permission to use them for legitimate marketing, business, or social media purposes where permitted by law.
+            </p>
+          </section>
+
+          {/* Section 16: Social Media & WhatsApp */}
+          <section id="social-media-whatsapp" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                16. Social Media & WhatsApp
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              When communicating with us through WhatsApp, Instagram, Facebook, email, or phone, you are also subject to the privacy terms and policies of those platforms.
+            </p>
+          </section>
+
+          {/* Section 17: Third-Party Links */}
+          <section id="third-party-links" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4 flex items-center justify-between">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                17. Third-Party Links
+              </h2>
+              <ExternalLink className="w-5 h-5 text-slate-400" />
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Our website may contain links to third-party services (payment gateways, delivery partners, social platforms). We do not control third-party websites and are not responsible for their content or privacy practices.
+            </p>
+          </section>
+
+          {/* Section 18: Website Availability */}
+          <section id="website-availability" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                18. Website Availability
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              While we make reasonable efforts to keep our website available, we do not guarantee uninterrupted or error-free operation. Temporary downtime may occur for maintenance, upgrades, or technical issues.
+            </p>
+          </section>
+
+          {/* Section 19: Limitation of Liability */}
+          <section id="limitation-of-liability" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                19. Limitation of Liability
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              To the extent permitted by applicable law, NIAKYLIE Women Collection will not be responsible for losses resulting from circumstances beyond our reasonable control, such as third-party service failures or courier delays.
+            </p>
+          </section>
+
+          {/* Section 20: Force Majeure */}
+          <section id="force-majeure" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                20. Force Majeure
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              NIAKYLIE will not be responsible for delays or failure to perform obligations caused by natural disasters, severe weather, government restrictions, strikes, transport disruptions, internet failures, or unforeseen public emergencies.
+            </p>
+          </section>
+
+          {/* Section 21: Privacy */}
+          <section id="privacy" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                21. Privacy Policy
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Your use of our website is also governed by our <a href="/pages/privacy-policy" className="text-brand-crimson font-bold hover:underline">Privacy Policy</a>, which details how we collect, use, and protect your personal information.
+            </p>
+          </section>
+
+          {/* Section 22: Changes to These Terms */}
+          <section id="changes-to-these-terms" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                22. Changes to These Terms
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              NIAKYLIE may update these Terms & Conditions periodically. Updated versions will be published on this page with a revised "Last Updated" date.
+            </p>
+          </section>
+
+          {/* Section 23: Governing Law */}
+          <section id="governing-law" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                23. Governing Law
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              These Terms & Conditions shall be governed by and interpreted in accordance with the applicable laws of India. Any disputes shall be subject to the jurisdiction of the appropriate courts having jurisdiction over Raipur, Chhattisgarh.
+            </p>
+          </section>
+
+          {/* Section 24: Contact Us & Quick Links Footer */}
+          <section id="contact-us" className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-brand-slate-dark to-slate-950 text-white p-8 sm:p-10 shadow-2xl border border-amber-500/20 space-y-6 scroll-mt-28">
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
+                SECTION 24
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-display">
+                24. Contact Us
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                If you have questions about these Terms & Conditions, an order, or our services, please contact NIAKYLIE Women Collection.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-800 text-xs">
+              <div className="space-y-2">
+                <p className="font-extrabold text-white uppercase text-[11px] tracking-wider text-amber-300">
+                  NIAKYLIE Women Collection
+                </p>
+                <div className="flex items-start space-x-2 text-slate-300 leading-relaxed">
+                  <MapPin className="w-4 h-4 text-brand-crimson flex-shrink-0 mt-0.5" />
+                  <span>{termsConfig.address}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-slate-300">
+                <div className="flex items-center space-x-2">
+                  <Globe className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <span>{termsConfig.website}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Instagram className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                  <span>{termsConfig.instagram}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                  <a href={`mailto:${termsConfig.email}`} className="hover:text-amber-300 transition-colors">
+                    {termsConfig.email}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <a href={`https://wa.me/${termsConfig.whatsappClean}`} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 transition-colors">
+                    {termsConfig.whatsapp}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Links Section */}
+            <div className="pt-4 border-t border-slate-800 space-y-3">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-amber-400">
+                Quick Links
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-300 font-semibold">
+                <a href="/pages/privacy-policy" className="bg-slate-800/60 hover:bg-brand-crimson hover:text-white p-2.5 rounded-xl text-center transition-all">
+                  Privacy Policy
+                </a>
+                <a href="/pages/refund-policy" className="bg-slate-800/60 hover:bg-brand-crimson hover:text-white p-2.5 rounded-xl text-center transition-all">
+                  Return & Refund Policy
+                </a>
+                <a href="/pages/shipping-policy" className="bg-slate-800/60 hover:bg-brand-crimson hover:text-white p-2.5 rounded-xl text-center transition-all">
+                  Shipping Policy
+                </a>
+                <a href="/pages/contact-us" className="bg-slate-800/60 hover:bg-brand-crimson hover:text-white p-2.5 rounded-xl text-center transition-all">
+                  Contact Us
+                </a>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 text-center space-y-1">
+              <p className="text-xs font-bold text-amber-300 font-serif italic">
+                NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.
+              </p>
+              <p className="text-[11px] text-slate-400">
+                © 2026 NIAKYLIE Women Collection. All rights reserved.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          className="fixed bottom-6 right-6 z-50 bg-slate-900 hover:bg-brand-crimson text-white p-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 border border-slate-800 animate-in fade-in"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function CmsPage({ slug }: CmsPageProps) {
   const { data: page, isLoading } = useQuery({
     queryKey: ['cms-page', slug],
@@ -1436,6 +2202,8 @@ export function CmsPage({ slug }: CmsPageProps) {
         <ContactUsView />
       ) : slug === 'privacy-policy' ? (
         <PrivacyPolicyView pageContent={page.content} />
+      ) : slug === 'terms-and-conditions' || slug === 'terms' ? (
+        <TermsAndConditionsView pageContent={page.content} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Table of Contents Sidebar */}

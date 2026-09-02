@@ -237,16 +237,133 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   'terms-and-conditions': {
     slug: 'terms-and-conditions',
     title: 'Terms & Conditions',
-    lastUpdated: '2026-06-15',
+    lastUpdated: '2026-09-02',
     content: `
-      <h2 id="acceptance">Acceptance of Terms</h2>
-      <p>By accessing or using the NiaKylie platform, you agree to be bound by these Terms & Conditions. If you do not agree, please discontinue use of the platform immediately.</p>
-      <h2 id="eligibility">Eligibility</h2>
-      <p>You must be at least 18 years of age to make a purchase. By placing an order, you confirm that you meet this requirement.</p>
-      <h2 id="orders">Orders & Payments</h2>
-      <p>All orders are subject to product availability. We reserve the right to cancel orders at our discretion in cases of pricing errors, fraud detection, or stock unavailability. You will receive a full refund within 7 business days in such cases.</p>
-      <h2 id="intellectual-property">Intellectual Property</h2>
-      <p>All content on the NiaKylie platform including product photographs, descriptions, brand identity, and software is the exclusive intellectual property of NiaKylie Fashion Private Limited. Unauthorized reproduction is prohibited.</p>
+      <p class="lead text-base font-semibold text-slate-700 mb-6">
+        Welcome to <strong>NIAKYLIE Women Collection</strong>. These Terms & Conditions govern your use of our website <strong>niakylie.com</strong>, your interactions with NIAKYLIE Women Collection, and purchases made through our website, WhatsApp, social media channels, or physical store.
+      </p>
+
+      <p class="mb-6">
+        By accessing our website or purchasing our products, you agree to these Terms & Conditions. Please read them carefully before using our services.
+      </p>
+
+      <h2 id="about-niakylie">1. About NIAKYLIE Women Collection</h2>
+      <p>NIAKYLIE Women Collection is a saree-focused fashion brand offering sarees in a variety of fabrics, designs, colors, patterns, and styles.</p>
+      <p>Our products are available through our website, social media channels, WhatsApp Business, and physical store.</p>
+      <p><strong>Store Address:</strong><br />
+      Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221</p>
+
+      <h2 id="use-of-our-website">2. Use of Our Website</h2>
+      <p>By using our website, you agree to:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Use the website only for lawful purposes.</li>
+        <li>Provide accurate information when placing an order or making an enquiry.</li>
+        <li>Not misuse, damage, or attempt to disrupt the website.</li>
+        <li>Not attempt to gain unauthorized access to our website, systems, or data.</li>
+        <li>Not copy, reproduce, distribute, or commercially use our website content without permission.</li>
+      </ul>
+      <p>We reserve the right to restrict or terminate access to the website if we believe it is being misused or used in violation of these Terms.</p>
+
+      <h2 id="product-information">3. Product Information</h2>
+      <p>We make reasonable efforts to ensure that product descriptions, images, prices, colors, and other information displayed on our website are accurate.</p>
+      <p>However, please note that:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Actual colors may vary slightly depending on your device's screen.</li>
+        <li>Saree patterns, prints, embroidery, borders, or other details may vary slightly from product images.</li>
+        <li>Minor variations may occur due to the nature of fabrics and manufacturing processes.</li>
+        <li>Product availability may change without prior notice.</li>
+      </ul>
+      <p>We reserve the right to correct errors, update product information, or discontinue products at any time.</p>
+
+      <h2 id="saree-availability">4. Saree Availability</h2>
+      <p>All products are subject to availability.</p>
+      <p>Adding a product to your cart, wishlist, or enquiry does not necessarily guarantee that the product will remain available.</p>
+      <p>If a product becomes unavailable after you place an enquiry or order, we will contact you and provide the available options.</p>
+
+      <h2 id="product-prices">5. Product Prices</h2>
+      <p>Product prices displayed on our website are subject to change without prior notice.</p>
+      <p>The final price applicable to your order will be the price confirmed by NIAKYLIE at the time the order is accepted.</p>
+      <p>Additional charges such as delivery or applicable taxes, where relevant, may be communicated separately before order confirmation.</p>
+
+      <h2 id="orders">6. Orders</h2>
+      <p>Orders may be placed through:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>NIAKYLIE website</li>
+        <li>WhatsApp Business</li>
+        <li>Instagram</li>
+        <li>Facebook</li>
+        <li>Physical store</li>
+      </ul>
+      <p>An order is considered confirmed only after NIAKYLIE confirms the order and any required payment or advance payment has been received.</p>
+      <p>We reserve the right to refuse or cancel an order in circumstances including: product unavailability, incorrect pricing or product information, suspected fraudulent activity, incorrect customer information, delivery-related limitations, or other legitimate business reasons.</p>
+      <p>If we cancel an order after payment has been received, we will communicate the applicable refund process to the customer.</p>
+
+      <h2 id="payment">7. Payment</h2>
+      <p>Depending on the order method, we may accept payment through available payment methods communicated by NIAKYLIE.</p>
+      <p>Customers are responsible for providing accurate payment information.</p>
+      <p>If a third-party payment provider is used, the payment may also be subject to that provider's terms and conditions.</p>
+      <p>NIAKYLIE does not store complete debit card, credit card, banking passwords, or similar sensitive payment credentials on its own systems.</p>
+
+      <h2 id="order-confirmation">8. Order Confirmation</h2>
+      <p>After placing an order, you may receive confirmation through WhatsApp, phone, email, SMS, or another communication method provided by you.</p>
+      <p>Please check your order details carefully, including product, quantity, price, delivery address, and contact number. If you notice an error, contact us as soon as possible. Once an order has been processed or dispatched, changes or cancellations may not be possible.</p>
+
+      <h2 id="shipping-delivery">9. Shipping & Delivery</h2>
+      <p>We aim to process and dispatch confirmed orders within the timeframe communicated at the time of purchase.</p>
+      <p>Delivery times may vary depending on delivery location, courier availability, weather conditions, holidays, public events, or operational delays. A delivery estimate is not an absolute guarantee.</p>
+
+      <h2 id="delivery-inspection">10. Delivery Inspection</h2>
+      <p>Customers are encouraged to inspect the package and product carefully when received. If the package appears damaged, opened, or tampered with, please document the condition and contact NIAKYLIE as soon as possible.</p>
+
+      <h2 id="returns-exchanges-refunds">11. Returns, Exchanges & Refunds</h2>
+      <p>Returns, exchanges, cancellations, and refunds are subject to our separate <strong>Return & Refund Policy</strong>. Please do not send a product back without first contacting NIAKYLIE and receiving return instructions.</p>
+
+      <h2 id="promotional-offers">12. Promotional Offers & Discounts</h2>
+      <p>From time to time, NIAKYLIE may offer discounts, promotional campaigns, coupons, or special offers. Each promotion may have its own validity period, eligibility requirements, and limitations. Offers cannot be combined unless explicitly stated.</p>
+
+      <h2 id="promotional-cards-coupons">13. Promotional Cards & Coupons</h2>
+      <p>If NIAKYLIE issues a promotional card or coupon, printed terms apply. Promotional cards cannot be exchanged or transferred for cash and may carry expiry dates.</p>
+
+      <h2 id="intellectual-property">14. Intellectual Property</h2>
+      <p>All content appearing on the NIAKYLIE website (brand name, logo, photographs, videos, graphics, text, designs, layout, descriptions) is owned by or used by NIAKYLIE Women Collection and protected by applicable intellectual property laws.</p>
+
+      <h2 id="user-generated-content">15. User-Generated Content</h2>
+      <p>By submitting reviews, photos, testimonials, or comments, you grant NIAKYLIE permission to use them for legitimate business, marketing, promotional, or social media purposes where permitted by applicable law.</p>
+
+      <h2 id="social-media-whatsapp">16. Social Media & WhatsApp</h2>
+      <p>When communicating with us via WhatsApp, Instagram, Facebook, email, or phone, you are also subject to the terms of those third-party platforms.</p>
+
+      <h2 id="third-party-links">17. Third-Party Links</h2>
+      <p>Our website may contain links to third-party websites. We do not control third-party websites and are not responsible for their content, availability, security, or privacy practices.</p>
+
+      <h2 id="website-availability">18. Website Availability</h2>
+      <p>We make reasonable efforts to keep our website available, but we do not guarantee uninterrupted, error-free operation at all times.</p>
+
+      <h2 id="limitation-of-liability">19. Limitation of Liability</h2>
+      <p>To the extent permitted by applicable law, NIAKYLIE Women Collection will not be responsible for losses resulting from circumstances beyond our reasonable control.</p>
+
+      <h2 id="force-majeure">20. Force Majeure</h2>
+      <p>NIAKYLIE will not be responsible for delays or failures caused by natural disasters, severe weather, government restrictions, strikes, transport disruptions, internet failures, or unforeseen emergencies.</p>
+
+      <h2 id="privacy">21. Privacy</h2>
+      <p>Your use of our website and services is also subject to our <strong>Privacy Policy</strong>.</p>
+
+      <h2 id="changes-to-these-terms">22. Changes to These Terms</h2>
+      <p>NIAKYLIE may update these Terms & Conditions from time to time. Updated terms will be published with a revised "Last Updated" date.</p>
+
+      <h2 id="governing-law">23. Governing Law</h2>
+      <p>These Terms & Conditions shall be governed by and interpreted in accordance with the applicable laws of India, under the jurisdiction of the appropriate courts.</p>
+
+      <h2 id="contact-us">24. Contact Us</h2>
+      <p>If you have questions about these Terms & Conditions, an order, or our services, please contact us:</p>
+      <p><strong>NIAKYLIE Women Collection</strong><br />
+      Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221<br />
+      <strong>Website:</strong> niakylie.com<br />
+      <strong>Instagram:</strong> @niakylie_women_collection<br />
+      <strong>Email:</strong> niakylieofficial@gmail.com<br />
+      <strong>WhatsApp:</strong> +91 95899 28337</p>
+
+      <p class="mt-6 pt-4 border-t border-slate-100 text-center font-extrabold text-brand-crimson font-serif text-base">NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.</p>
     `,
   },
   'refund-policy': {
