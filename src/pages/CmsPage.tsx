@@ -1,5 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
-import { ChevronRight, Clock, Loader2 } from 'lucide-react';
+import {
+  ChevronRight,
+  Clock,
+  Loader2,
+  Sparkles,
+  Heart,
+  Store,
+  Globe,
+  Instagram,
+  Facebook,
+  Phone,
+  MapPin,
+  Award,
+  ShieldCheck,
+  ArrowRight,
+  ShoppingBag,
+} from 'lucide-react';
 import { cmsApi } from '../api/cms';
 
 interface CmsPageProps {
@@ -19,6 +35,283 @@ const SLUG_LABELS: Record<string, string> = {
 function extractHeadings(html: string): { id: string; label: string }[] {
   const matches = [...html.matchAll(/<h2[^>]*id="([^"]+)"[^>]*>([^<]+)<\/h2>/gi)];
   return matches.map(([, id, label]) => ({ id, label }));
+}
+
+function AboutUsView() {
+  return (
+    <div className="space-y-10 animate-in fade-in duration-500">
+      {/* 1. Hero Banner */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-brand-slate-dark to-slate-900 text-white p-8 sm:p-14 shadow-2xl border border-amber-500/20">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl space-y-4">
+          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500/20 to-brand-crimson/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-amber-500/30 text-amber-300 text-xs font-extrabold uppercase tracking-widest">
+            <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
+            <span>WEAR BEAUTY, FEEL BEAUTY</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
+            About Niakylie <br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-300 to-amber-400">
+              Women Collection
+            </span>
+          </h1>
+
+          <p className="text-lg sm:text-xl font-bold text-amber-200 font-serif italic pt-1">
+            "Celebrating Every Woman, One Saree at a Time"
+          </p>
+
+          <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
+            Welcome to <strong className="text-white font-extrabold">Niakylie Women Collection</strong> — a growing saree brand built with a simple vision: to make beautiful, stylish, and versatile sarees accessible to every woman.
+          </p>
+
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            At NIAKYLIE, we believe a saree is more than just an outfit. It is a part of our culture, a reflection of individuality, and something that can make every occasion feel special. From traditional celebrations to everyday elegance, we bring together a variety of sarees to suit different styles, occasions, and personalities.
+          </p>
+        </div>
+      </div>
+
+      {/* 2. Our Collection Section */}
+      <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm space-y-8">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-2xl bg-brand-crimson/10 text-brand-crimson flex items-center justify-center font-extrabold">
+            <ShoppingBag className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display">Our Collection</h2>
+            <p className="text-xs text-slate-500 font-semibold">Diverse Sarees of All Varieties & Ethnic Elegance</p>
+          </div>
+        </div>
+
+        <p className="text-sm text-slate-600 leading-relaxed">
+          Our primary focus is <strong className="text-brand-slate-dark font-extrabold">sarees of all varieties</strong>. We are continuously working to bring a diverse collection featuring different fabrics, designs, colors, patterns, and styles — whether you're looking for something traditional, festive, elegant, or contemporary.
+        </p>
+
+        {/* 3 Pillars Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-6 hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Award className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-base text-brand-slate-dark mb-2">Uncompromising Quality</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              We carefully handpick each saree to ensure superior fabric feel, flawless weaving, and long-lasting elegance.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-6 hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-xl bg-brand-crimson/10 text-brand-crimson flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-base text-brand-slate-dark mb-2">Signature Style</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              From rich traditional Banarasi weaves to modern pastel georgettes, we cater to every aesthetic and celebration.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-6 hover:shadow-md transition-all group">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-base text-brand-slate-dark mb-2">True Customer Value</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Offering premium ethnic fashion directly to you with transparent pricing and exceptional value for money.
+            </p>
+          </div>
+        </div>
+
+        {/* Variety Chips */}
+        <div className="pt-2 border-t border-gray-100">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">Explore Varieties:</span>
+          <div className="flex flex-wrap gap-2">
+            {['Banarasi Silk Sarees', 'Kanjivaram Weaves', 'Organza & Tissue Sarees', 'Designer Kurta Sets', 'Bridal Lehengas', 'Indo-Western Fusion', 'Cotton & Daily Wear'].map((tag) => (
+              <a
+                key={tag}
+                href="/products"
+                className="text-xs font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-700 hover:bg-brand-crimson hover:text-white transition-all border border-slate-200/60"
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Our Journey Section */}
+      <div className="bg-gradient-to-r from-slate-900 to-slate-950 rounded-3xl p-8 sm:p-10 text-white shadow-xl space-y-6">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold">
+            <Heart className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-extrabold font-display">Our Journey</h2>
+            <p className="text-xs text-slate-400 font-semibold">From a Small Startup to a Trusted Brand</p>
+          </div>
+        </div>
+
+        <p className="text-sm text-slate-300 leading-relaxed">
+          <strong className="text-white font-extrabold">Niakylie Women Collection</strong> started as a small startup with a big dream — to build a saree brand that customers can trust and return to.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+          <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 space-y-2">
+            <div className="flex items-center space-x-2 text-amber-400 font-extrabold text-sm">
+              <Store className="w-4 h-4" />
+              <span>Physical Boutique Flagship</span>
+            </div>
+            <p className="text-xs text-slate-300">
+              Visit our physical store located in <strong>Raipur, Chhattisgarh</strong> for an immersive touch-and-feel saree shopping experience.
+            </p>
+          </div>
+
+          <div className="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 space-y-2">
+            <div className="flex items-center space-x-2 text-rose-400 font-extrabold text-sm">
+              <Globe className="w-4 h-4" />
+              <span>24/7 Digital Storefront</span>
+            </div>
+            <p className="text-xs text-slate-300">
+              Expanding nationwide online so saree lovers from anywhere can discover our newest arrivals and order with ease.
+            </p>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs font-semibold text-center italic">
+          "We are a growing brand, and every customer, order, message, and piece of feedback is an important part of our journey."
+        </div>
+      </div>
+
+      {/* 4. Shop With Us & Store Location */}
+      <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display flex items-center space-x-2">
+              <MapPin className="w-6 h-6 text-brand-crimson" />
+              <span>Shop With Us & Store Location</span>
+            </h2>
+            <p className="text-xs text-slate-500 mt-1">
+              You can explore NIAKYLIE through our website and social media platforms, or visit us at our shop:
+            </p>
+          </div>
+
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=21.290281,81.611905"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-3 rounded-xl shadow-md transition-all hover:scale-105"
+          >
+            <span>Get Map Directions</span>
+            <ChevronRight className="w-4 h-4" />
+          </a>
+        </div>
+
+        {/* Address & Embedded Map Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+          <div className="lg:col-span-5 bg-slate-50 border border-slate-200/80 rounded-2xl p-6 space-y-4">
+            <h3 className="font-extrabold text-base text-brand-slate-dark border-b border-slate-200 pb-2">
+              Niakylie Women Collection
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+              Ward No. 39, Kabir Chaura, Bajar Chauk,<br />
+              Sarora, Gondwara Basti,<br />
+              Raipur, Chhattisgarh – 493221
+            </p>
+            <div className="pt-2 text-xs space-y-2 text-slate-600">
+              <div className="flex items-center space-x-2">
+                <Phone className="w-3.5 h-3.5 text-brand-crimson" />
+                <a href="tel:+919589928337" className="font-bold hover:text-brand-crimson">+91 95899 28337</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 h-[260px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
+            <iframe
+              title="Niakylie Store Location Map"
+              src="https://maps.google.com/maps?q=21.290281,81.611905&t=&z=16&ie=UTF8&iwloc=&output=embed"
+              className="w-full h-full border-0"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Connect With NIAKYLIE (Social Buttons) */}
+      <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm space-y-6">
+        <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display">Connect With NIAKYLIE</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <a
+            href="https://niakylie.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 hover:border-brand-crimson hover:bg-rose-50/30 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div className="text-xs font-bold text-slate-400 uppercase">Website</div>
+            <div className="text-sm font-extrabold text-brand-slate-dark group-hover:text-brand-crimson">niakylie.com</div>
+          </a>
+
+          <a
+            href="https://www.instagram.com/niakylie_women_collection"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 hover:border-brand-crimson hover:bg-rose-50/30 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <Instagram className="w-5 h-5" />
+            </div>
+            <div className="text-xs font-bold text-slate-400 uppercase">Instagram</div>
+            <div className="text-sm font-extrabold text-brand-slate-dark group-hover:text-brand-crimson">@niakylie_women_collection</div>
+          </a>
+
+          <a
+            href="https://www.facebook.com/profile.php?id=61592438117379"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 hover:border-brand-crimson hover:bg-rose-50/30 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-700 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <Facebook className="w-5 h-5" />
+            </div>
+            <div className="text-xs font-bold text-slate-400 uppercase">Facebook</div>
+            <div className="text-sm font-extrabold text-brand-slate-dark group-hover:text-brand-crimson">NIAKYLIE Women Collection</div>
+          </a>
+
+          <a
+            href="https://wa.me/919589928337"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-slate-50 border border-slate-200/80 rounded-2xl p-5 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <Phone className="w-5 h-5" />
+            </div>
+            <div className="text-xs font-bold text-slate-400 uppercase">WhatsApp</div>
+            <div className="text-sm font-extrabold text-brand-slate-dark group-hover:text-emerald-600">Business WhatsApp</div>
+          </a>
+        </div>
+      </div>
+
+      {/* 6. Closing Slogan Banner */}
+      <div className="bg-gradient-to-r from-brand-crimson via-rose-700 to-brand-crimson-dark text-white rounded-3xl p-8 sm:p-10 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <div className="space-y-1">
+          <p className="text-xs font-extrabold uppercase tracking-widest text-amber-300">NIAKYLIE WOMEN COLLECTION</p>
+          <h3 className="text-2xl sm:text-3xl font-extrabold font-display">Wear Beauty, Feel Beauty.</h3>
+          <p className="text-xs text-rose-100">Whether for a special occasion or everyday elegance, we are honored to be part of your journey.</p>
+        </div>
+
+        <a
+          href="/products"
+          className="inline-flex items-center space-x-2 bg-white text-brand-slate-dark hover:bg-amber-300 font-extrabold text-xs px-6 py-3.5 rounded-2xl shadow-lg transition-all hover:scale-105 uppercase tracking-wider flex-shrink-0"
+        >
+          <span>EXPLORE SAREES</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </div>
+    </div>
+  );
 }
 
 export function CmsPage({ slug }: CmsPageProps) {
@@ -46,95 +339,99 @@ export function CmsPage({ slug }: CmsPageProps) {
       <nav className="flex items-center space-x-1.5 text-[11px] font-semibold text-slate-400 mb-6">
         <a href="/" className="hover:text-brand-crimson transition-colors">Home</a>
         <ChevronRight className="w-3 h-3" />
-        <a href="/pages" className="hover:text-brand-crimson transition-colors">Legal & Policies</a>
+        <a href="/pages" className="hover:text-brand-crimson transition-colors">Brand & Policies</a>
         <ChevronRight className="w-3 h-3" />
         <span className="text-brand-slate-dark font-bold">{label}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Table of Contents Sidebar */}
-        {headings.length > 0 && (
-          <aside className="lg:col-span-3 sticky top-24 hidden lg:block">
-            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-              <p className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider mb-3">
-                Contents
-              </p>
-              <nav className="space-y-2">
-                {headings.map(({ id, label }) => (
-                  <a
-                    key={id}
-                    href={`#${id}`}
-                    className="block text-xs font-semibold text-slate-500 hover:text-brand-crimson transition-colors py-0.5 border-l-2 border-transparent hover:border-brand-crimson pl-3"
-                  >
-                    {label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </aside>
-        )}
-
-        {/* Main Content Area */}
-        <article className={headings.length > 0 ? 'lg:col-span-9' : 'lg:col-span-12'}>
-          <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm">
-            <h1 className="text-3xl font-extrabold text-brand-slate-dark font-display mb-2">
-              {page.title}
-            </h1>
-            <div className="flex items-center space-x-1.5 text-[11px] text-slate-400 font-semibold mb-8 pb-6 border-b border-gray-100">
-              <Clock className="w-3.5 h-3.5" />
-              <span>Last updated: {new Date(page.lastUpdated).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-            </div>
-
-            {/* Rendered HTML Content */}
-            <div
-              className="prose prose-sm max-w-none text-slate-600 leading-relaxed
-                [&_h2]:text-lg [&_h2]:font-extrabold [&_h2]:text-brand-slate-dark [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:scroll-mt-24
-                [&_p]:mb-4 [&_p]:text-slate-600 [&_p]:text-sm [&_p]:leading-relaxed
-                [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1
-                [&_strong]:font-extrabold [&_strong]:text-brand-slate-dark"
-              dangerouslySetInnerHTML={{ __html: page.content }}
-            />
-
-            {/* Dedicated Interactive Google Map for Contact Us page */}
-            {slug === 'contact-us' && (
-              <div className="mt-10 pt-8 border-t border-gray-100">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                  <div>
-                    <h3 className="text-lg font-extrabold text-brand-slate-dark flex items-center space-x-2">
-                      <span className="text-brand-crimson">📍</span>
-                      <span>Store Location Map</span>
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Sarora, Raipur, Chhattisgarh, India
-                    </p>
-                  </div>
-                  <a
-                    href="https://www.google.com/maps/dir/?api=1&destination=21.290281,81.611905"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95"
-                  >
-                    <span>Get Directions</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </a>
-                </div>
-
-                {/* Google Maps Responsive Frame */}
-                <div className="relative w-full h-[380px] rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-100">
-                  <iframe
-                    title="NiaKylie Store Google Map Location"
-                    src="https://maps.google.com/maps?q=21.290281,81.611905&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                    className="w-full h-full border-0"
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
+      {slug === 'about-us' ? (
+        <AboutUsView />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          {/* Table of Contents Sidebar */}
+          {headings.length > 0 && (
+            <aside className="lg:col-span-3 sticky top-24 hidden lg:block">
+              <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+                <p className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider mb-3">
+                  Contents
+                </p>
+                <nav className="space-y-2">
+                  {headings.map(({ id, label }) => (
+                    <a
+                      key={id}
+                      href={`#${id}`}
+                      className="block text-xs font-semibold text-slate-500 hover:text-brand-crimson transition-colors py-0.5 border-l-2 border-transparent hover:border-brand-crimson pl-3"
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </nav>
               </div>
-            )}
-          </div>
-        </article>
-      </div>
+            </aside>
+          )}
+
+          {/* Main Content Area */}
+          <article className={headings.length > 0 ? 'lg:col-span-9' : 'lg:col-span-12'}>
+            <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm">
+              <h1 className="text-3xl font-extrabold text-brand-slate-dark font-display mb-2">
+                {page.title}
+              </h1>
+              <div className="flex items-center space-x-1.5 text-[11px] text-slate-400 font-semibold mb-8 pb-6 border-b border-gray-100">
+                <Clock className="w-3.5 h-3.5" />
+                <span>Last updated: {new Date(page.lastUpdated).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              </div>
+
+              {/* Rendered HTML Content */}
+              <div
+                className="prose prose-sm max-w-none text-slate-600 leading-relaxed
+                  [&_h2]:text-lg [&_h2]:font-extrabold [&_h2]:text-brand-slate-dark [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:scroll-mt-24
+                  [&_p]:mb-4 [&_p]:text-slate-600 [&_p]:text-sm [&_p]:leading-relaxed
+                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1
+                  [&_strong]:font-extrabold [&_strong]:text-brand-slate-dark"
+                dangerouslySetInnerHTML={{ __html: page.content }}
+              />
+
+              {/* Dedicated Interactive Google Map for Contact Us page */}
+              {slug === 'contact-us' && (
+                <div className="mt-10 pt-8 border-t border-gray-100">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div>
+                      <h3 className="text-lg font-extrabold text-brand-slate-dark flex items-center space-x-2">
+                        <span className="text-brand-crimson">📍</span>
+                        <span>Store Location Map</span>
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Sarora, Raipur, Chhattisgarh, India
+                      </p>
+                    </div>
+                    <a
+                      href="https://www.google.com/maps/dir/?api=1&destination=21.290281,81.611905"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95"
+                    >
+                      <span>Get Directions</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </a>
+                  </div>
+
+                  {/* Google Maps Responsive Frame */}
+                  <div className="relative w-full h-[380px] rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-slate-100">
+                    <iframe
+                      title="NiaKylie Store Google Map Location"
+                      src="https://maps.google.com/maps?q=21.290281,81.611905&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                      className="w-full h-full border-0"
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </article>
+        </div>
+      )}
     </div>
   );
 }

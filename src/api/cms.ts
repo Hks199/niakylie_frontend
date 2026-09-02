@@ -50,17 +50,37 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   },
   'about-us': {
     slug: 'about-us',
-    title: 'About NiaKylie Fashion',
-    lastUpdated: '2026-07-01',
+    title: 'About Niakylie Women Collection',
+    lastUpdated: '2026-09-02',
     content: `
-      <h2 id="our-story">Our Story</h2>
-      <p>NiaKylie Fashion was born out of a deep reverence for India's rich textile heritage and the desire to make handcrafted ethnic couture accessible to every modern woman. Founded in 2021, we partner directly with master weavers across Varanasi, Kanchipuram, and Lucknow to bring you sarees, salwar suits, and lehengas of unparalleled artistry.</p>
-      <h2 id="our-mission">Our Mission</h2>
-      <p>Our mission is to celebrate the timeless elegance of Indian handloom while empowering the artisans who create it. Every purchase you make directly sustains the livelihood of a skilled craftsperson and preserves a centuries-old tradition.</p>
-      <h2 id="sustainability">Sustainability & Ethics</h2>
-      <p>We are committed to ethical sourcing, fair trade practices, and sustainable packaging. Our sarees are wrapped in eco-friendly cloth bags instead of single-use plastic, and we offset our logistics carbon footprint through verified reforestation programs.</p>
-      <h2 id="craftsmanship">Craftsmanship</h2>
-      <p>Each NiaKylie garment carries a QR-coded Certificate of Authenticity, verifiable on our platform, guaranteeing genuine handloom or handcrafted origin. We do not sell machine-manufactured imitations.</p>
+      <h2 id="celebrating-every-woman">Celebrating Every Woman, One Saree at a Time</h2>
+      <p>Welcome to <strong>Niakylie Women Collection</strong> — a growing saree brand built with a simple vision: to make beautiful, stylish, and versatile sarees accessible to every woman.</p>
+      <p>At NIAKYLIE, we believe a saree is more than just an outfit. It is a part of our culture, a reflection of individuality, and something that can make every occasion feel special. From traditional celebrations to everyday elegance, we bring together a variety of sarees to suit different styles, occasions, and personalities.</p>
+
+      <h2 id="our-collection">Our Collection</h2>
+      <p>Our primary focus is <strong>sarees of all varieties</strong>. We are continuously working to bring a diverse collection featuring different fabrics, designs, colors, patterns, and styles — whether you're looking for something traditional, festive, elegant, or contemporary.</p>
+      <p>We carefully select our collection with the aim of offering <strong>quality, style, and value</strong> to our customers.</p>
+
+      <h2 id="our-journey">Our Journey</h2>
+      <p>Niakylie Women Collection started as a small startup with a big dream — to build a saree brand that customers can trust and return to.</p>
+      <p>Along with our physical shop in <strong>Raipur, Chhattisgarh</strong>, we are also building our presence online so that customers can discover our latest collections and connect with us easily from anywhere.</p>
+      <p>We are a growing brand, and every customer, order, message, and piece of feedback is an important part of our journey.</p>
+
+      <h2 id="shop-with-us">Shop With Us</h2>
+      <p>You can explore NIAKYLIE through our website and social media platforms, or visit us at our shop:</p>
+      <p><strong>Niakylie Women Collection</strong><br />
+      Ward No. 39, Kabir Chaura, Bajar Chauk,<br />
+      Sarora, Gondwara Basti,<br />
+      Raipur, Chhattisgarh – 493221</p>
+
+      <h2 id="connect-with-niakylie">Connect With NIAKYLIE</h2>
+      <p><strong>Website:</strong> niakylie.com<br />
+      <strong>Instagram:</strong> @niakylie_women_collection<br />
+      <strong>Facebook:</strong> NIAKYLIE Women Collection<br />
+      <strong>WhatsApp:</strong> Business WhatsApp (+91 95899 28337)</p>
+
+      <p>Whether you're looking for a saree for a special occasion or simply want to add something beautiful to your wardrobe, we would love to be a part of your journey.</p>
+      <p><strong>Niakylie Women Collection — Wear Beauty, Feel Beauty.</strong></p>
     `,
   },
   'privacy-policy': {
