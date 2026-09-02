@@ -12,6 +12,7 @@ import {
   X,
   Layers,
   ArrowUpDown,
+  RefreshCw,
 } from 'lucide-react';
 import { cmsApi, FaqItem } from '../../api/cms';
 
@@ -43,7 +44,7 @@ export function AdminFaqManagement() {
   });
 
   // Fetch admin FAQs
-  const { data: faqs = [], isLoading } = useQuery({
+  const { data: faqs = [], isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['admin-faqs'],
     queryFn: () => cmsApi.getAdminFaqs(),
   });
@@ -157,13 +158,28 @@ export function AdminFaqManagement() {
           </div>
         </div>
 
-        <button
-          onClick={openAddModal}
-          className="inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-md transition-all uppercase tracking-wider"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New FAQ</span>
-        </button>
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <button
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['admin-faqs'] });
+              queryClient.invalidateQueries({ queryKey: ['faqs'] });
+              refetch();
+            }}
+            disabled={isRefetching}
+            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+            title="Refresh FAQ Content"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
+          </button>
+
+          <button
+            onClick={openAddModal}
+            className="inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-md transition-all uppercase tracking-wider"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New FAQ</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter & Search Controls */}

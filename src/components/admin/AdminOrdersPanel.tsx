@@ -219,9 +219,12 @@ export function AdminOrdersPanel() {
 
           <div className="flex items-center space-x-2">
             <button
-              onClick={() => refetch()}
+              onClick={() => {
+                queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+                refetch();
+              }}
               disabled={isRefetching}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl border border-gray-200 text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors"
+              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl border border-gray-200 text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin' : ''}`} />
               <span>Refresh</span>

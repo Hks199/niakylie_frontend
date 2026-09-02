@@ -311,7 +311,7 @@ export function AdminCategoriesPanel() {
         {/* Action Header Buttons */}
         <div className="flex items-center space-x-2 sm:space-x-3">
           <button
-            onClick={() => refetch()}
+            onClick={() => invalidateAllCaches()}
             disabled={isRefetching}
             className="p-2.5 rounded-2xl border border-slate-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             title="Refresh Categories List"

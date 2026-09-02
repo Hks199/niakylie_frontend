@@ -128,6 +128,7 @@ export function AdminProductManagement() {
     data: adminProductsResponse,
     isLoading: isLoadingProducts,
     refetch: refetchProducts,
+    isRefetching: isRefetchingProducts,
   } = useQuery({
     queryKey: ['admin-products-display', page, limit, searchQuery, selectedCategory, sortBy, sortOrder],
     queryFn: () =>
@@ -630,11 +631,16 @@ export function AdminProductManagement() {
               </button>
 
               <button
-                onClick={() => refetchProducts()}
-                className="p-2.5 bg-slate-50 border border-gray-200 text-slate-600 hover:text-brand-crimson rounded-2xl transition-colors"
+                onClick={() => {
+                  queryClient.invalidateQueries();
+                  refetchProducts();
+                  refetchAlerts();
+                }}
+                disabled={isRefetchingProducts}
+                className="p-2.5 bg-slate-50 border border-gray-200 text-slate-600 hover:text-brand-crimson rounded-2xl transition-colors disabled:opacity-50"
                 title="Refresh Product Catalog from Database"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className={`w-4 h-4 ${isRefetchingProducts ? 'animate-spin text-brand-crimson' : ''}`} />
               </button>
             </div>
           </div>

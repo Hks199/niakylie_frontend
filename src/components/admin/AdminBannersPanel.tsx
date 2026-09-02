@@ -47,7 +47,7 @@ export function AdminBannersPanel() {
   const [successMessage, setSuccessMessage] = useState('');
   const [formData, setFormData] = useState<BannerFormData>(DEFAULT_FORM);
 
-  const { data: bannersResponse, isLoading, refetch } = useQuery({
+  const { data: bannersResponse, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['admin-banners'],
     queryFn: () => bannersApi.getAllBanners(),
   });
@@ -226,11 +226,16 @@ export function AdminBannersPanel() {
         {/* Header Actions */}
         <div className="flex items-center space-x-2 sm:space-x-3">
           <button
-            onClick={() => refetch()}
-            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors"
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
+              queryClient.invalidateQueries({ queryKey: ['banners'] });
+              refetch();
+            }}
+            disabled={isRefetching}
+            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             title="Refresh Banners List"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
           </button>
 
           <button

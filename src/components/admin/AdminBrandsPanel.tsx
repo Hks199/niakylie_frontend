@@ -35,7 +35,7 @@ export function AdminBrandsPanel() {
   const [successMessage, setSuccessMessage] = useState('');
   const [formData, setFormData] = useState<BrandFormData>(DEFAULT_FORM);
 
-  const { data: brandsResponse, isLoading, refetch } = useQuery({
+  const { data: brandsResponse, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['admin-brands', searchTerm],
     queryFn: async () => {
       return await brandsApi.getBrands({ search: searchTerm.trim() || undefined, limit: 100 });
@@ -167,11 +167,15 @@ export function AdminBrandsPanel() {
 
         <div className="flex items-center space-x-3">
           <button
-            onClick={() => refetch()}
-            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors"
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['admin-brands'] });
+              refetch();
+            }}
+            disabled={isRefetching}
+            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             title="Refresh Brands List"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
           </button>
 
           <button

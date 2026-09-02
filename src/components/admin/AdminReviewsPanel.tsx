@@ -14,7 +14,7 @@ export function AdminReviewsPanel() {
   const [statusFilter, setStatusFilter] = useState('');
   const [actionId, setActionId] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['admin-reviews', statusFilter],
     queryFn: () =>
       adminApi.getAllReviews({
@@ -73,17 +73,31 @@ export function AdminReviewsPanel() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Filter className="w-3.5 h-3.5 text-slate-400" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:border-brand-crimson"
+          <button
+            onClick={() => {
+              queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+              refetch();
+            }}
+            disabled={isRefetching}
+            className="p-2 rounded-xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+            title="Refresh Reviews List"
           >
-            <option value="">All Reviews</option>
-            <option value="PENDING">Pending</option>
-            <option value="APPROVED">Approved</option>
-            <option value="REJECTED">Rejected</option>
-          </select>
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
+          </button>
+
+          <div className="flex items-center space-x-2 bg-slate-50 border border-gray-200 rounded-xl px-3 py-1.5">
+            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="bg-transparent text-xs font-medium outline-none cursor-pointer"
+            >
+              <option value="">All Reviews</option>
+              <option value="PENDING">Pending</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
         </div>
       </div>
 

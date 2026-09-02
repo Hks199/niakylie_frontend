@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Bell, Search, RefreshCw, Menu } from 'lucide-react';
 import { adminApi } from '../api/admin';
 import { AdminSidebar, NAV_ITEMS } from '../components/admin/AdminSidebar';
@@ -29,6 +29,7 @@ const DEFAULT_KPIS: DashboardSummary = {
 };
 
 export function AdminDashboardPage() {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,6 +46,7 @@ export function AdminDashboardPage() {
     setIsClearingCache(true);
     try {
       await adminApi.clearDashboardCache();
+      await queryClient.invalidateQueries();
       await refetch();
     } catch (err) {
       console.error('Failed to clear cache', err);
