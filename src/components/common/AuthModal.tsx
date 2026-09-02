@@ -25,8 +25,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
   // Feedback
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-  // Dev fallback OTP (when SMTP credentials are missing in local dev)
-  const [devOtp, setDevOtp] = useState('');
   const [isLocalLoading, setIsLocalLoading] = useState(false);
 
   // 5-minute countdown timer effect
@@ -53,7 +51,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     setTimeLeft(300);
     setErrorMsg('');
     setSuccessMsg('');
-    setDevOtp('');
   };
 
   const handleClose = () => {
@@ -82,9 +79,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       } else if (mode === 'register') {
         const res = await register({ email, password, firstName, lastName });
         setSuccessMsg(res.message || 'Account created! Please verify your email with the 6-digit OTP.');
-        if (res.otp) {
-          setDevOtp(res.otp);
-        }
         setMode('verify');
         setTimeLeft(300);
         setPassword('');
@@ -94,9 +88,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       const rawError = err?.response?.data || err;
       if (rawError?.isEmailVerified === false || rawError?.message?.includes('not verified')) {
         setErrorMsg('Your account is not verified yet. An OTP has been sent to your email.');
-        if (rawError?.otp) {
-          setDevOtp(rawError.otp);
-        }
         setMode('verify');
         setTimeLeft(300);
         return;
@@ -140,9 +131,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
       const res = await sendOtp(email);
       setSuccessMsg(res?.message || 'A new 6-digit OTP has been sent to your email.');
       setTimeLeft(300); // Reset timer to 5 minutes
-      if (res?.otp) {
-        setDevOtp(res.otp);
-      }
     } catch (err: any) {
       setErrorMsg(err?.message || 'Failed to resend OTP. Please try again.');
     }
@@ -163,7 +151,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
     try {
       const res = await authApi.forgotPassword(email.trim());
       setSuccessMsg(res.message || 'OTP code sent to your email address.');
-      if (res.otp) setDevOtp(res.otp);
       setMode('reset_password');
       setTimeLeft(300);
       setOtp('');
@@ -408,16 +395,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                 </div>
               </div>
 
-              {/* Dev Mode Helper */}
-              {devOtp && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-left space-y-1">
-                  <p className="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider">
-                    ⚙️ Dev Mode — Reset OTP Code
-                  </p>
-                  <p className="text-xs text-amber-800 font-mono font-extrabold tracking-widest">{devOtp}</p>
-                </div>
-              )}
-
               <button
                 type="submit"
                 disabled={isLocalLoading || timeLeft === 0}
@@ -492,16 +469,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
                   className="w-full text-center tracking-[12px] font-mono text-xl font-extrabold py-3 border border-gray-300 rounded-2xl focus:border-brand-crimson focus:ring-2 focus:ring-brand-crimson/10 outline-none uppercase bg-slate-50"
                 />
               </div>
-
-              {/* Dev Mode Helper */}
-              {devOtp && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-left space-y-1">
-                  <p className="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider">
-                    ⚙️ Dev Mode — Quick Verification OTP
-                  </p>
-                  <p className="text-xs text-amber-800 font-mono font-extrabold tracking-widest">{devOtp}</p>
-                </div>
-              )}
 
               <button
                 type="submit"

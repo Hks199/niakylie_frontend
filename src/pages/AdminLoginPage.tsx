@@ -22,7 +22,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
   // OTP Verification states
   const [otp, setOtp] = useState('');
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
-  const [devOtp, setDevOtp] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -71,7 +70,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
         const rawErr = err?.response?.data || err;
         if (rawErr?.isEmailVerified === false || rawErr?.message?.includes('not verified')) {
           setError('Admin account is not verified yet. A 6-digit OTP has been sent to your email.');
-          if (rawErr?.otp) setDevOtp(rawErr.otp);
           setActiveTab('verify');
           setTimeLeft(300);
           setIsLoading(false);
@@ -119,7 +117,7 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
     }
 
     try {
-      const res = await adminRegister({
+      await adminRegister({
         email: email.trim(),
         password,
         firstName: firstName.trim(),
@@ -127,7 +125,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
         adminSecretKey: adminSecretKey.trim() || undefined,
       });
 
-      if (res?.otp) setDevOtp(res.otp);
       setSuccess('Admin account created! Please enter the 6-digit OTP sent to your email.');
       setActiveTab('verify');
       setTimeLeft(300);
@@ -181,7 +178,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
       const res = await sendOtp(email.trim());
       setSuccess(res?.message || 'A new 6-digit OTP has been sent to your admin email.');
       setTimeLeft(300);
-      if (res?.otp) setDevOtp(res.otp);
     } catch (err: any) {
       setError(err?.message || 'Failed to resend OTP code.');
     } finally {
@@ -204,7 +200,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
     try {
       const res = await authApi.forgotPassword(email.trim());
       setSuccess(res.message || 'Password reset 6-digit OTP code sent to your email.');
-      if (res.otp) setDevOtp(res.otp);
       setActiveTab('reset_password');
       setTimeLeft(300);
       setOtp('');
@@ -429,16 +424,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
               </div>
             </div>
 
-            {/* Dev Mode Helper */}
-            {devOtp && (
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3 text-left space-y-1">
-                <p className="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider">
-                  ⚙️ Dev Mode — Reset OTP Code
-                </p>
-                <p className="text-xs text-amber-300 font-mono font-extrabold tracking-widest">{devOtp}</p>
-              </div>
-            )}
-
             <button
               type="submit"
               disabled={isLoading || timeLeft === 0}
@@ -497,16 +482,6 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
                 className="w-full text-center tracking-[12px] font-mono text-xl font-extrabold py-3 bg-slate-950 border border-slate-800 text-white rounded-2xl focus:border-brand-crimson outline-none uppercase"
               />
             </div>
-
-            {/* Dev Mode Helper */}
-            {devOtp && (
-              <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3 text-left space-y-1">
-                <p className="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider">
-                  ⚙️ Dev Mode — Quick Verification OTP
-                </p>
-                <p className="text-xs text-amber-300 font-mono font-extrabold tracking-widest">{devOtp}</p>
-              </div>
-            )}
 
             <button
               type="submit"
