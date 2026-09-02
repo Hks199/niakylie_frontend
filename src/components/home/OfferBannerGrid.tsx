@@ -1,11 +1,40 @@
+import { useState, useEffect } from 'react';
 import { Sparkles, Clock, ArrowRight, Tag } from 'lucide-react';
 import { Banner } from '../../types/banner';
+import { apiClient } from '../../api/client';
 
 interface OfferBannerGridProps {
   banners?: Banner[];
 }
 
 export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
+  const [activeCouponCode, setActiveCouponCode] = useState<string>('');
+
+  useEffect(() => {
+    let isMounted = true;
+    apiClient
+      .get('/coupons/active')
+      .then((res: any) => {
+        if (!isMounted) return;
+        const list = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+          ? res.data
+          : Array.isArray(res?.coupons)
+          ? res.coupons
+          : [];
+        if (list.length > 0 && list[0]?.code) {
+          setActiveCouponCode(list[0].code);
+        }
+      })
+      .catch((err) => {
+        console.log('Active coupons fetch for banner grid offline:', err);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const resolveBannerImg = (path?: string) => {
     if (!path) return 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80';
     return path.startsWith('http') ? path : `http://localhost:3000${path}`;
@@ -14,6 +43,15 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
   const hasDynamicBanners = banners && banners.length > 0;
   const mainBanner = hasDynamicBanners ? banners[0] : null;
   const secondaryBanner = hasDynamicBanners && banners.length > 1 ? banners[1] : null;
+  const extraBanners = hasDynamicBanners && banners.length > 2 ? banners.slice(2) : [];
+
+  // Determine promo code dynamically from banner metadata, coupon code, or fallback
+  const mainPromoCode =
+    mainBanner?.metadata?.promoCode ||
+    mainBanner?.metadata?.code ||
+    mainBanner?.discountBadge ||
+    activeCouponCode ||
+    'FESTIVE50';
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -53,10 +91,10 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
               </h3>
             </div>
 
-            <div className="pt-4 flex items-center justify-between">
+            <div className="pt-4 flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20">
                 <Tag className="w-4 h-4 text-brand-gold" />
-                <span className="text-xs font-bold">Use Code: FESTIVE50</span>
+                <span className="text-xs font-bold uppercase">Use Code: {mainPromoCode}</span>
               </div>
               <a
                 href={mainBanner?.linkUrl || "/category/sarees"}
@@ -97,6 +135,42 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
           </div>
         </div>
       </div>
+
+      {/* Additional Dynamic Offer Banners (If 3 or more offer banners exist) */}
+      {extraBanners.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+          {extraBanners.map((banner) => (
+            <div
+              key={banner._id || banner.id}
+              className="relative rounded-3xl overflow-hidden shadow-card group min-h-[220px]"
+            >
+              <img
+                src={resolveBannerImg(banner.imageUrl)}
+                alt={banner.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent p-6 flex flex-col justify-end text-white">
+                <span className="bg-purple-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full inline-block w-max mb-2 uppercase tracking-wider">
+                  {banner.type || 'SPECIAL OFFER'}
+                </span>
+                <h4 className="text-lg font-extrabold font-display leading-tight mb-1">
+                  {banner.title}
+                </h4>
+                {banner.subtitle && (
+                  <p className="text-xs text-slate-300 mb-3">{banner.subtitle}</p>
+                )}
+                <a
+                  href={banner.linkUrl || "/collection"}
+                  className="bg-white text-brand-slate-dark hover:bg-brand-crimson hover:text-white text-xs font-extrabold px-4 py-2 rounded-xl transition-all flex items-center justify-center space-x-1 uppercase tracking-wider"
+                >
+                  <span>{banner.linkLabel || 'EXPLORE NOW'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
