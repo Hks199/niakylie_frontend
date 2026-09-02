@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Tag,
@@ -51,6 +51,7 @@ const DEFAULT_FORM: CouponModalForm = {
 export function AdminCouponsPanel() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -64,11 +65,19 @@ export function AdminCouponsPanel() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
+  // Debounce search input by 300ms
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ['admin-coupons', search, statusFilter, page, limit],
+    queryKey: ['admin-coupons', debouncedSearch, statusFilter, page, limit],
     queryFn: () =>
       adminApi.getAllCoupons({
-        search: search || undefined,
+        search: debouncedSearch || undefined,
         isActive: statusFilter === '' ? undefined : statusFilter === 'true',
         page,
         limit,
