@@ -460,16 +460,67 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   'shipping-policy': {
     slug: 'shipping-policy',
     title: 'Shipping Policy',
-    lastUpdated: '2026-07-01',
+    lastUpdated: '2026-09-02',
     content: `
-      <h2 id="shipping-partners">Our Logistics Partners</h2>
-      <p>NiaKylie ships via BlueDart Express, Delhivery, and DTDC — India's most reliable courier networks — ensuring safe and timely delivery of your handcrafted garments.</p>
-      <h2 id="delivery-timelines">Delivery Timelines</h2>
-      <p>Standard Delivery: 5-7 business days (FREE above ₹999). Express Delivery: 1-2 business days (₹149 flat). Delivery timelines may vary during festive seasons.</p>
-      <h2 id="tracking">Order Tracking</h2>
-      <p>Once your order is dispatched, you will receive an SMS and email with your courier tracking number and a direct link to track your shipment in real-time.</p>
-      <h2 id="international">International Shipping</h2>
-      <p>We currently ship to India only. International shipping to the USA, UK, UAE, Canada, and Australia is planned for Q4 2026. Join our waitlist at international@niakylie.com.</p>
+      <p class="lead text-base font-semibold text-slate-700 mb-6">
+        At <strong>NIAKYLIE Women Collection</strong>, we aim to make your saree shopping experience simple, reliable, and convenient. This Shipping Policy explains how we process and deliver orders placed through <strong>niakylie.com</strong>, WhatsApp, social media, or other applicable sales channels.
+      </p>
+
+      <h2 id="shipping-across-india">1. Shipping Across India</h2>
+      <p>We currently offer shipping within <strong>India 🇮🇳</strong>. We aim to deliver your NIAKYLIE order safely and conveniently to the address provided at the time of purchase.</p>
+
+      <h2 id="delivery-time">2. Delivery Time</h2>
+      <p><strong>Estimated Delivery: 3–5 Business Days</strong></p>
+      <p>Orders are generally expected to reach customers within 3–5 business days after order confirmation and dispatch. Delivery times may vary depending on location, courier availability, weather, holidays, or festivals.</p>
+
+      <h2 id="order-processing">3. Order Processing</h2>
+      <p>After your order is successfully confirmed, we begin processing it for dispatch. Confirmations may be sent via WhatsApp, Phone, Email, or SMS.</p>
+
+      <h2 id="shipping-charges">4. Shipping Charges</h2>
+      <p>Applicable shipping charges, if any, will be communicated before order confirmation. From time to time, NIAKYLIE may offer free or promotional shipping.</p>
+
+      <h2 id="delivery-address">5. Delivery Address</h2>
+      <p>Customers are responsible for providing accurate and complete delivery information (Full name, house/building number, street, city, state, PIN code, mobile number).</p>
+
+      <h2 id="courier-delivery-partners">6. Courier & Delivery Partners</h2>
+      <p>Orders are delivered through third-party courier and logistics partners across India. Once handed over, delivery is subject to the courier's network and operational timelines.</p>
+
+      <h2 id="order-tracking">7. Order Tracking</h2>
+      <p>Tracking information or links will be provided via WhatsApp/SMS/email where available so customers can monitor shipment status.</p>
+
+      <h2 id="delayed-deliveries">8. Delayed Deliveries</h2>
+      <p>Although we aim for 3–5 business day delivery, unexpected delays may occur. Contact us with your order details if your shipment is delayed.</p>
+
+      <h2 id="failed-delivery">9. Failed Delivery</h2>
+      <p>If delivery fails due to incorrect address or customer unavailability, re-delivery attempts will be coordinated. Additional shipping charges may apply.</p>
+
+      <h2 id="damaged-tampered-package">10. Damaged or Tampered Package</h2>
+      <p>Please inspect the package upon arrival. If damaged or opened, document with photos/videos before opening and contact us immediately.</p>
+
+      <h2 id="wrong-missing-product">11. Wrong or Missing Product</h2>
+      <p>Report wrong or missing items immediately with order number, customer name, mobile number, and clear photos/videos.</p>
+
+      <h2 id="shipping-returns">12. Shipping & Returns</h2>
+      <p>Shipping arrangements for returns are governed by our separate <strong>Refund & Cancellation Policy</strong>.</p>
+
+      <h2 id="shipping-remote-locations">13. Shipping to Remote Locations</h2>
+      <p>We serve customers across India. Remote or rural locations may require additional delivery time or carrier arrangements.</p>
+
+      <h2 id="changes-delivery-information">14. Changes to Delivery Information</h2>
+      <p>Address changes must be requested immediately before dispatch. Once dispatched, address changes cannot be guaranteed.</p>
+
+      <h2 id="contact-us">15. Contact Us</h2>
+      <p><strong>NIAKYLIE Women Collection</strong><br />
+      Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221<br />
+      <strong>Website:</strong> niakylie.com<br />
+      <strong>Instagram:</strong> @niakylie_women_collection<br />
+      <strong>Email:</strong> niakylieofficial@gmail.com<br />
+      <strong>WhatsApp:</strong> +91 95899 28337</p>
+
+      <h2 id="policy-updates">16. Policy Updates</h2>
+      <p>We may update this policy from time to time. Revised versions will feature an updated "Last Updated" date.</p>
+
+      <p class="mt-6 pt-4 border-t border-slate-100 text-center font-extrabold text-brand-crimson font-serif text-base">NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.</p>
     `,
   },
 };

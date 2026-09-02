@@ -28,6 +28,7 @@ import {
   Check,
   Shield,
   HelpCircle,
+  Truck,
 } from 'lucide-react';
 import { cmsApi } from '../api/cms';
 
@@ -2747,6 +2748,545 @@ function RefundPolicyView(_props: { pageContent?: string }) {
   );
 }
 
+const shippingConfig = {
+  lastUpdated: 'September 2, 2026',
+  email: 'niakylieofficial@gmail.com',
+  whatsapp: '+91 95899 28337',
+  whatsappClean: '919589928337',
+  address: 'Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221',
+  instagram: '@niakylie_women_collection',
+  website: 'niakylie.com',
+};
+
+const SHIPPING_NAV_ITEMS = [
+  { id: 'shipping-across-india', label: '1. Shipping Across India' },
+  { id: 'delivery-time', label: '2. Delivery Time (3-5 Days)' },
+  { id: 'order-processing', label: '3. Order Processing' },
+  { id: 'shipping-charges', label: '4. Shipping Charges' },
+  { id: 'delivery-address', label: '5. Delivery Address' },
+  { id: 'courier-delivery-partners', label: '6. Courier Partners' },
+  { id: 'order-tracking', label: '7. Order Tracking' },
+  { id: 'delayed-deliveries', label: '8. Delayed Deliveries' },
+  { id: 'failed-delivery', label: '9. Failed Delivery' },
+  { id: 'damaged-tampered-package', label: '10. Damaged / Tampered Package' },
+  { id: 'wrong-missing-product', label: '11. Wrong / Missing Product' },
+  { id: 'shipping-returns', label: '12. Shipping & Returns' },
+  { id: 'shipping-remote-locations', label: '13. Remote Locations' },
+  { id: 'changes-delivery-information', label: '14. Address Changes' },
+  { id: 'contact-us', label: '15. Contact Us' },
+  { id: 'policy-updates', label: '16. Policy Updates' },
+];
+
+function ShippingPolicyView(_props: { pageContent?: string }) {
+  const [activeSection, setActiveSection] = useState<string>('shipping-across-india');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+
+      const sectionElements = SHIPPING_NAV_ITEMS.map((item) =>
+        document.getElementById(item.id)
+      );
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const el = sectionElements[i];
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 140) {
+            setActiveSection(SHIPPING_NAV_ITEMS[i].id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = -100;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* 1. Hero Header */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-brand-slate-dark to-slate-900 text-white p-8 sm:p-14 shadow-2xl border border-amber-500/20 text-center">
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+          <p className="text-[11px] font-extrabold uppercase tracking-widest text-amber-300">
+            NIAKYLIE WOMEN COLLECTION
+          </p>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Shipping Policy
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-1 font-sans">
+            At <strong>NIAKYLIE Women Collection</strong>, we aim to make your saree shopping experience simple, reliable, and convenient. This Shipping Policy explains how we process and deliver orders placed through <strong>niakylie.com</strong>, WhatsApp, social media, or other sales channels.
+          </p>
+
+          <div className="pt-2 flex items-center justify-center space-x-2 text-[11px] font-bold text-amber-300">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Last Updated: {shippingConfig.lastUpdated}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs font-semibold text-slate-400 py-1">
+        <a href="/" className="hover:text-brand-crimson transition-colors">
+          Home
+        </a>
+        <ChevronRight className="w-3 h-3 text-slate-400" />
+        <span className="text-brand-slate-dark font-bold">Shipping Policy</span>
+      </nav>
+
+      {/* 3. Quick Shipping Summary Box */}
+      <div className="bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-amber-500/10 border border-amber-200 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+        <div className="flex items-center space-x-2">
+          <Truck className="w-5 h-5 text-brand-crimson" />
+          <h3 className="text-base font-extrabold text-brand-slate-dark font-display">
+            Quick Shipping Summary
+          </h3>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+          <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-xs space-y-1 text-center">
+            <span className="text-xs font-extrabold text-brand-slate-dark block">Shipping</span>
+            <p className="text-slate-600 font-bold">Across India 🇮🇳</p>
+          </div>
+          <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-xs space-y-1 text-center">
+            <span className="text-xs font-extrabold text-brand-slate-dark block">Delivery Time</span>
+            <p className="text-brand-crimson font-extrabold">3–5 Business Days</p>
+          </div>
+          <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-xs space-y-1 text-center">
+            <span className="text-xs font-extrabold text-brand-slate-dark block">Tracking</span>
+            <p className="text-emerald-700 font-bold">WhatsApp / SMS / Email</p>
+          </div>
+          <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-xs space-y-1 text-center">
+            <span className="text-xs font-extrabold text-brand-slate-dark block">Delivery Partner</span>
+            <p className="text-slate-600 font-bold">Top Courier Networks</p>
+          </div>
+          <div className="bg-white p-3.5 rounded-2xl border border-amber-100 shadow-xs space-y-1 text-center col-span-2 sm:col-span-1">
+            <span className="text-xs font-extrabold text-brand-slate-dark block">Returns</span>
+            <a href="/pages/refund-policy" className="text-brand-crimson underline font-bold hover:text-rose-700">
+              Refund & Return Policy
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. Mobile Collapsible Navigation Dropdown */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="w-full bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex items-center justify-between font-extrabold text-sm text-brand-slate-dark transition-all hover:bg-slate-50"
+        >
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-brand-crimson" />
+            <span>Shipping Navigation ({SHIPPING_NAV_ITEMS.length} Sections)</span>
+          </div>
+          <ChevronDown
+            className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${
+              mobileMenuOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
+
+        {mobileMenuOpen && (
+          <div className="mt-2 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg space-y-1 animate-in fade-in slide-in-from-top-2 duration-200 max-h-80 overflow-y-auto">
+            {SHIPPING_NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`w-full text-left text-xs font-bold px-3 py-2.5 rounded-xl transition-all ${
+                  activeSection === item.id
+                    ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson'
+                    : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 5. Desktop Main Layout (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Left Column: Sticky Navigation Sidebar */}
+        <aside className="lg:col-span-4 sticky top-24 space-y-6 hidden lg:block">
+          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center space-x-2 pb-3 border-b border-gray-100">
+              <Sparkles className="w-4 h-4 text-brand-crimson" />
+              <h4 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+                Shipping Navigation
+              </h4>
+            </div>
+
+            <nav className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
+              {SHIPPING_NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`w-full text-left text-xs font-bold px-3 py-2 rounded-xl transition-all duration-200 flex items-center justify-between ${
+                      isActive
+                        ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson shadow-xs'
+                        : 'text-slate-600 hover:text-brand-crimson hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-brand-crimson" />}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Sidebar Support Box */}
+          <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-4 border border-slate-800">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold">
+                <Truck className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-white">Track Order?</h4>
+                <p className="text-[11px] text-slate-400">NIAKYLIE Logistics Helpdesk</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Have questions about your order dispatch or tracking status? Message our support team directly.
+            </p>
+
+            <a
+              href={`https://wa.me/${shippingConfig.whatsappClean}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center space-x-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold py-3 rounded-2xl transition-all shadow-md"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>WhatsApp Tracking Support</span>
+            </a>
+          </div>
+        </aside>
+
+        {/* Right Column: Main Shipping Content */}
+        <main className="lg:col-span-8 space-y-8 max-w-3xl">
+          {/* Section 1: Shipping Across India */}
+          <section id="shipping-across-india" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                1. Shipping Across India
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              We currently offer shipping within <strong>India 🇮🇳</strong>.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We aim to deliver your NIAKYLIE order safely and conveniently to the address provided at the time of purchase.
+            </p>
+          </section>
+
+          {/* Section 2: Delivery Time */}
+          <section id="delivery-time" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4 flex items-center justify-between">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                2. Delivery Time
+              </h2>
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">
+                3–5 Business Days
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm font-bold text-slate-800">
+              Estimated Delivery: <strong>3–5 Business Days</strong>
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Orders are generally expected to reach customers within <strong>3–5 business days</strong> after the order has been confirmed and dispatched.
+            </p>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2 text-xs">
+              <p className="font-extrabold text-slate-700">Delivery time may vary depending on:</p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-slate-600 font-semibold">
+                <li>• Delivery location</li>
+                <li>• Courier availability</li>
+                <li>• Order processing time</li>
+                <li>• Weather conditions</li>
+                <li>• Public holidays</li>
+                <li>• Festivals or peak shopping periods</li>
+                <li>• Unexpected transportation delays</li>
+                <li>• Circumstances beyond control</li>
+              </ul>
+            </div>
+            <p className="text-xs text-slate-500 italic">
+              The 3–5 business day timeframe is an estimated delivery period and is not an absolute guarantee. Remote or difficult-to-reach locations may require additional delivery time.
+            </p>
+          </section>
+
+          {/* Section 3: Order Processing */}
+          <section id="order-processing" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                3. Order Processing
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              After your order is successfully confirmed, we will begin processing it for dispatch.
+            </p>
+            <p className="text-xs font-bold text-slate-700">You may receive an order confirmation through:</p>
+            <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-700">
+              <span className="bg-slate-100 px-3 py-1.5 rounded-xl">WhatsApp</span>
+              <span className="bg-slate-100 px-3 py-1.5 rounded-xl">Phone</span>
+              <span className="bg-slate-100 px-3 py-1.5 rounded-xl">Email</span>
+              <span className="bg-slate-100 px-3 py-1.5 rounded-xl">SMS</span>
+            </div>
+            <p className="text-xs text-slate-500">
+              Orders are generally processed as soon as reasonably possible. In certain circumstances, processing may take longer due to product availability, high order volumes, or holidays.
+            </p>
+          </section>
+
+          {/* Section 4: Shipping Charges */}
+          <section id="shipping-charges" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                4. Shipping Charges
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Applicable shipping charges, if any, will be communicated to the customer before order confirmation or displayed during the ordering process.
+            </p>
+            <p className="text-xs text-slate-600 font-semibold">
+              From time to time, NIAKYLIE may offer free shipping, promotional shipping offers, or location-specific delivery offers.
+            </p>
+          </section>
+
+          {/* Section 5: Delivery Address */}
+          <section id="delivery-address" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                5. Delivery Address
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Customers are responsible for providing accurate and complete delivery information. Please carefully check:
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center font-extrabold text-slate-700">
+              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">Full Name</div>
+              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">House/Building #</div>
+              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">Street / Locality</div>
+              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">City, State & PIN</div>
+            </div>
+            <p className="text-xs text-slate-500">
+              NIAKYLIE is not responsible for delays or failed deliveries caused by incorrect delivery information provided by the customer.
+            </p>
+          </section>
+
+          {/* Section 6: Courier & Delivery Partners */}
+          <section id="courier-delivery-partners" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                6. Courier & Delivery Partners
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Orders may be delivered through third-party courier and logistics partners. Once an order has been handed over to the delivery partner, delivery is subject to the courier's operational processes and delivery network.
+            </p>
+          </section>
+
+          {/* Section 7: Order Tracking */}
+          <section id="order-tracking" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                7. Order Tracking
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Where tracking information is available, we may provide the customer with a tracking number or tracking link through the available communication channel.
+            </p>
+            <p className="text-xs text-slate-500">
+              If you have not received your order within the expected 3–5 business day timeframe, please contact us.
+            </p>
+          </section>
+
+          {/* Section 8: Delayed Deliveries */}
+          <section id="delayed-deliveries" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                8. Delayed Deliveries
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Although we aim to deliver orders within <strong>3–5 business days</strong>, unexpected delays may occasionally occur. If your order is delayed, please contact NIAKYLIE with your order details.
+            </p>
+          </section>
+
+          {/* Section 9: Failed Delivery */}
+          <section id="failed-delivery" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                9. Failed Delivery
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If an order is returned to NIAKYLIE because of a failed delivery (unreachable phone, incorrect address, customer unavailable), we will contact you to coordinate re-delivery. Additional shipping charges may apply.
+            </p>
+          </section>
+
+          {/* Section 10: Damaged or Tampered Package */}
+          <section id="damaged-tampered-package" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                10. Damaged or Tampered Package
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We recommend checking the package carefully upon delivery. If damaged, torn, or tampered with, please take clear photographs/videos of the package before opening and contact NIAKYLIE immediately.
+            </p>
+          </section>
+
+          {/* Section 11: Wrong or Missing Product */}
+          <section id="wrong-missing-product" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                11. Wrong or Missing Product
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If you receive a product different from what was ordered or if an item is missing, contact us as soon as possible with order number, customer name, mobile number, and clear photos/videos.
+            </p>
+          </section>
+
+          {/* Section 12: Shipping & Returns */}
+          <section id="shipping-returns" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                12. Shipping & Returns
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Shipping arrangements for returned products are governed by our separate <a href="/pages/refund-policy" className="text-brand-crimson underline font-bold">Refund & Cancellation Policy</a>.
+            </p>
+          </section>
+
+          {/* Section 13: Shipping to Remote Locations */}
+          <section id="shipping-remote-locations" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                13. Shipping to Remote Locations
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We aim to serve customers across India. However, delivery availability and delivery time may vary for remote, rural, or restricted locations. Additional delivery time or charges may apply.
+            </p>
+          </section>
+
+          {/* Section 14: Changes to Delivery Information */}
+          <section id="changes-delivery-information" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                14. Changes to Delivery Information
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If you need to change your delivery address after placing an order, please contact us immediately. Address changes cannot be guaranteed once an order has been dispatched.
+            </p>
+          </section>
+
+          {/* Section 15: Contact Us & Section 16: Policy Updates */}
+          <section id="contact-us" className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-brand-slate-dark to-slate-950 text-white p-8 sm:p-10 shadow-2xl border border-amber-500/20 space-y-6 scroll-mt-28">
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
+                SECTION 15 & 16
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-display">
+                15. Contact Us & 16. Policy Updates
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                If you have questions about shipping, delivery, or your order, please contact NIAKYLIE Women Collection.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-800 text-xs">
+              <div className="space-y-2">
+                <p className="font-extrabold text-white uppercase text-[11px] tracking-wider text-amber-300">
+                  NIAKYLIE Women Collection
+                </p>
+                <div className="flex items-start space-x-2 text-slate-300 leading-relaxed">
+                  <MapPin className="w-4 h-4 text-brand-crimson flex-shrink-0 mt-0.5" />
+                  <span>{shippingConfig.address}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-slate-300">
+                <div className="flex items-center space-x-2">
+                  <Globe className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <span>{shippingConfig.website}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Instagram className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                  <span>{shippingConfig.instagram}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                  <a href={`mailto:${shippingConfig.email}`} className="hover:text-amber-300 transition-colors">
+                    {shippingConfig.email}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <a href={`https://wa.me/${shippingConfig.whatsappClean}`} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 transition-colors">
+                    {shippingConfig.whatsapp}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div id="policy-updates" className="pt-4 border-t border-slate-800 text-[11px] text-slate-300 leading-relaxed">
+              We may update this Shipping Policy from time to time to reflect changes in our shipping services or applicable laws. Any updated version will be published on this page with a revised "Last Updated" date.
+            </div>
+
+            <div className="pt-2 border-t border-slate-800 text-center space-y-1">
+              <p className="text-xs font-bold text-amber-300 font-serif italic">
+                NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.
+              </p>
+              <p className="text-[11px] text-slate-400">
+                © 2026 NIAKYLIE Women Collection. All rights reserved.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          className="fixed bottom-6 right-6 z-50 bg-slate-900 hover:bg-brand-crimson text-white p-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 border border-slate-800 animate-in fade-in"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function CmsPage({ slug }: CmsPageProps) {
   const { data: page, isLoading } = useQuery({
     queryKey: ['cms-page', slug],
@@ -2787,6 +3327,8 @@ export function CmsPage({ slug }: CmsPageProps) {
         <TermsAndConditionsView pageContent={page.content} />
       ) : slug === 'refund-policy' || slug === 'return-refund-policy' || slug === 'cancellation-policy' ? (
         <RefundPolicyView pageContent={page.content} />
+      ) : slug === 'shipping-policy' || slug === 'shipping' ? (
+        <ShippingPolicyView pageContent={page.content} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Table of Contents Sidebar */}
