@@ -187,28 +187,13 @@ export const ordersApi = {
         }
       }
 
-      let rawList = Array.isArray(res)
+      const rawList = Array.isArray(res)
         ? res
         : Array.isArray(res?.data)
         ? res.data
         : Array.isArray(res?.data?.data)
         ? res.data.data
         : (res?.items || []);
-
-      if (!rawList || rawList.length === 0) {
-        try {
-          const adminRes: any = await apiClient.get('/orders/admin');
-          rawList = Array.isArray(adminRes)
-            ? adminRes
-            : Array.isArray(adminRes?.data)
-            ? adminRes.data
-            : Array.isArray(adminRes?.data?.data)
-            ? adminRes.data.data
-            : (adminRes?.items || []);
-        } catch (e) {
-          // ignore
-        }
-      }
 
       return rawList.map((item: any) => {
         const orderId = item.orderNumber || item.orderId || item._id || item.id;
