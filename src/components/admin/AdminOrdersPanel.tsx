@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ShoppingCart,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Search,
   Filter,
   Truck,
@@ -59,6 +61,8 @@ export function AdminOrdersPanel() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [trackingModalOrder, setTrackingModalOrder] = useState<any | null>(null);
@@ -74,29 +78,42 @@ export function AdminOrdersPanel() {
   const [isSubmittingCancel, setIsSubmittingCancel] = useState(false);
 
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ['admin-orders', search, statusFilter],
+    queryKey: ['admin-orders', search, statusFilter, page, limit],
     queryFn: () =>
       adminApi.getAllOrders({
         search: search || undefined,
         status: statusFilter || undefined,
-        limit: 50,
+        page,
+        limit,
       }),
   });
 
   const orders = Array.isArray(data)
     ? data
-    : Array.isArray(data?.orders)
-    ? data.orders
     : Array.isArray(data?.data)
     ? data.data
     : Array.isArray((data as any)?.data?.data)
     ? (data as any).data.data
+    : Array.isArray(data?.orders)
+    ? data.orders
     : Array.isArray((data as any)?.items)
     ? (data as any).items
     : [];
 
+  // Pagination totals
+  const totalCount =
+    (data as any)?.total ??
+    (data as any)?.totalItems ??
+    (data as any)?.data?.total ??
+    (data as any)?.data?.totalItems ??
+    orders.length;
+
+  const totalPages =
+    (data as any)?.totalPages ??
+    (data as any)?.data?.totalPages ??
+    (Math.ceil(totalCount / limit) || 1);
+
   // Metrics counts
-  const totalCount = orders.length;
   const pendingCount = orders.filter(
     (o: any) => o.orderStatus === 'PENDING' || o.status === 'PENDING' || o.orderStatus === 'CONFIRMED' || o.status === 'CONFIRMED'
   ).length;
@@ -235,7 +252,10 @@ export function AdminOrdersPanel() {
         {/* Quick Metric Badges */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
           <div
-            onClick={() => setStatusFilter('')}
+            onClick={() => {
+              setStatusFilter('');
+              setPage(1);
+            }}
             className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
               statusFilter === '' ? 'border-brand-crimson shadow-sm bg-rose-50/20' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
@@ -245,7 +265,10 @@ export function AdminOrdersPanel() {
           </div>
 
           <div
-            onClick={() => setStatusFilter('CONFIRMED')}
+            onClick={() => {
+              setStatusFilter('CONFIRMED');
+              setPage(1);
+            }}
             className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
               statusFilter === 'CONFIRMED' || statusFilter === 'PENDING' ? 'border-blue-500 shadow-sm bg-blue-50/30' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
@@ -258,7 +281,10 @@ export function AdminOrdersPanel() {
           </div>
 
           <div
-            onClick={() => setStatusFilter('SHIPPED')}
+            onClick={() => {
+              setStatusFilter('SHIPPED');
+              setPage(1);
+            }}
             className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
               statusFilter === 'SHIPPED' ? 'border-purple-500 shadow-sm bg-purple-50/30' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
@@ -271,7 +297,10 @@ export function AdminOrdersPanel() {
           </div>
 
           <div
-            onClick={() => setStatusFilter('DELIVERED')}
+            onClick={() => {
+              setStatusFilter('DELIVERED');
+              setPage(1);
+            }}
             className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
               statusFilter === 'DELIVERED' ? 'border-emerald-500 shadow-sm bg-emerald-50/30' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
@@ -284,9 +313,12 @@ export function AdminOrdersPanel() {
           </div>
 
           <div
-            onClick={() => setStatusFilter('CANCELLED')}
+            onClick={() => {
+              setStatusFilter('CANCELLED');
+              setPage(1);
+            }}
             className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
-              statusFilter === 'CANCELLED' ? 'border-rose-500 shadow-sm bg-rose-50/30' : 'border-gray-100 hover:bg-slate-100/60'
+              statusFilter === 'CANCELLED' ? 'border-rose-500 shadow-sm bg-rose-50/20' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
           >
             <div className="flex items-center justify-between">
@@ -305,13 +337,19 @@ export function AdminOrdersPanel() {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Search by order #, customer name, email..."
               className="w-full bg-slate-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2 text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
             />
             {search && (
               <button
-                onClick={() => setSearch('')}
+                onClick={() => {
+                  setSearch('');
+                  setPage(1);
+                }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
                 <X className="w-3.5 h-3.5" />
@@ -325,7 +363,10 @@ export function AdminOrdersPanel() {
               <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
               <select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={(e) => {
+                  setStatusFilter(e.target.value);
+                  setPage(1);
+                }}
                 className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-2xl pl-9 pr-9 py-2 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
               >
                 <option value="">All Statuses</option>
@@ -584,6 +625,68 @@ export function AdminOrdersPanel() {
                 })}
               </tbody>
             </table>
+
+            {/* Pagination Controls Bar */}
+            {totalCount > 0 && (
+              <div className="px-6 py-4 border-t border-gray-100 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                <div className="flex items-center space-x-2 text-slate-500 font-medium">
+                  <span>Showing</span>
+                  <span className="font-bold text-slate-800">
+                    {Math.min((page - 1) * limit + 1, totalCount)}
+                  </span>
+                  <span>to</span>
+                  <span className="font-bold text-slate-800">
+                    {Math.min(page * limit, totalCount)}
+                  </span>
+                  <span>of</span>
+                  <span className="font-bold text-slate-800">{totalCount}</span>
+                  <span>orders</span>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-slate-500 font-medium">Items per page:</span>
+                    <select
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(Number(e.target.value));
+                        setPage(1);
+                      }}
+                      className="bg-white border border-gray-200 rounded-xl px-2.5 py-1 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson cursor-pointer shadow-sm"
+                    >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={page <= 1}
+                      className="p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
+                      title="Previous Page"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    <div className="px-3.5 py-1 bg-white border border-gray-200 rounded-xl font-bold text-slate-700 text-xs shadow-sm">
+                      Page {page} of {totalPages}
+                    </div>
+
+                    <button
+                      onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={page >= totalPages}
+                      className="p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
+                      title="Next Page"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
