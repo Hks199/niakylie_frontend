@@ -3,6 +3,7 @@ import { ShieldCheck, RefreshCw, Truck, Send, Instagram, Facebook, Twitter, Yout
 import { useAuthStore } from '../../store/useAuthStore';
 import { checkIsAdmin } from '../../utils/roleUtils';
 import { cmsApi } from '../../api/cms';
+import { useCategories } from '../../hooks/useCategories';
 
 export function Footer() {
   const { user } = useAuthStore();
@@ -12,6 +13,19 @@ export function Footer() {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Fetch active categories dynamically
+  const { allCategories, isLoading: isCategoriesLoading } = useCategories({ status: true, limit: 500 });
+
+  // Extract subcategories (categories with valid parentId)
+  const subCategories = allCategories.filter((c) => {
+    if (c.status === false || c.isDeleted || c.deletedAt) return false;
+    const pId = typeof c.parentId === 'object' && c.parentId ? (c.parentId as any)._id || (c.parentId as any).id : c.parentId;
+    return pId && pId !== 'null' && pId !== 'undefined';
+  });
+
+  // Fallback to all active categories if subcategories array is empty
+  const categoriesToDisplay = subCategories.length > 0 ? subCategories : allCategories;
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,18 +103,37 @@ export function Footer() {
       {/* 2. Main Footer Links & Newsletter */}
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
-          {/* Column 1: Categories */}
+          {/* Column 1: Dynamic Subcategories */}
           <div className="space-y-3">
             <h4 className="text-xs uppercase font-extrabold tracking-wider text-brand-slate-dark">
               ONLINE SHOPPING
             </h4>
             <ul className="space-y-2 text-xs">
-              <li><a href="/category/women" className="hover:text-brand-crimson transition-colors">Women Ethnic Wear</a></li>
-              <li><a href="/category/sarees" className="hover:text-brand-crimson transition-colors">Banarasi & Silk Sarees</a></li>
-              <li><a href="/category/kurta-sets" className="hover:text-brand-crimson transition-colors">Designer Kurta Sets</a></li>
-              <li><a href="/category/lehengas" className="hover:text-brand-crimson transition-colors">Bridal Lehengas</a></li>
-              <li><a href="/category/dresses" className="hover:text-brand-crimson transition-colors">Indo-Western Fusion</a></li>
-              <li><a href="/category/sale" className="text-brand-crimson font-bold hover:underline">Festive Offers 50% Off</a></li>
+              {isCategoriesLoading ? (
+                <>
+                  <li className="h-3.5 w-24 bg-slate-100 rounded animate-pulse"></li>
+                  <li className="h-3.5 w-28 bg-slate-100 rounded animate-pulse"></li>
+                  <li className="h-3.5 w-20 bg-slate-100 rounded animate-pulse"></li>
+                </>
+              ) : categoriesToDisplay.length > 0 ? (
+                categoriesToDisplay.map((cat) => (
+                  <li key={cat._id || cat.slug}>
+                    <a
+                      href={`/category/${cat.slug}`}
+                      className="hover:text-brand-crimson transition-colors"
+                    >
+                      {cat.name}
+                    </a>
+                  </li>
+                ))
+              ) : (
+                <>
+                  <li><a href="/category/women" className="hover:text-brand-crimson transition-colors">Women Ethnic Wear</a></li>
+                  <li><a href="/category/sarees" className="hover:text-brand-crimson transition-colors">Banarasi & Silk Sarees</a></li>
+                  <li><a href="/category/kurta-sets" className="hover:text-brand-crimson transition-colors">Designer Kurta Sets</a></li>
+                  <li><a href="/category/lehengas" className="hover:text-brand-crimson transition-colors">Bridal Lehengas</a></li>
+                </>
+              )}
             </ul>
           </div>
 
