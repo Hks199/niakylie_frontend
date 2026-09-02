@@ -2166,6 +2166,587 @@ function TermsAndConditionsView(_props: { pageContent?: string }) {
   );
 }
 
+const refundConfig = {
+  lastUpdated: 'September 2, 2026',
+  email: 'niakylieofficial@gmail.com',
+  whatsapp: '+91 95899 28337',
+  whatsappClean: '919589928337',
+  address: 'Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221',
+  instagram: '@niakylie_women_collection',
+  website: 'niakylie.com',
+};
+
+const REFUND_NAV_ITEMS = [
+  { id: 'return-refund-eligibility', label: '1. Return Eligibility' },
+  { id: 'products-not-eligible', label: '2. Non-Returnable Items' },
+  { id: 'how-to-request-a-return', label: '3. Requesting a Return' },
+  { id: 'damaged-or-incorrect-product', label: '4. Damaged / Wrong Item' },
+  { id: 'return-shipping', label: '5. Return Shipping' },
+  { id: 'product-inspection', label: '6. Product Inspection' },
+  { id: 'refund-process', label: '7. Refund Process' },
+  { id: 'shipping-charges', label: '8. Shipping Charges' },
+  { id: 'cancellation-policy', label: '9. Cancellation Policy' },
+  { id: 'cancellation-after-dispatch', label: '10. Post-Dispatch Cancellation' },
+  { id: 'refund-for-cancelled-orders', label: '11. Cancellation Refunds' },
+  { id: 'promotional-discounted-orders', label: '12. Promotional Orders' },
+  { id: 'exchange', label: '13. Exchanges' },
+  { id: 'store-purchases', label: '14. Store Purchases' },
+  { id: 'contact-us', label: '15. Contact Us' },
+  { id: 'policy-updates', label: '16. Policy Updates' },
+];
+
+function RefundPolicyView(_props: { pageContent?: string }) {
+  const [activeSection, setActiveSection] = useState<string>('return-refund-eligibility');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+
+      const sectionElements = REFUND_NAV_ITEMS.map((item) =>
+        document.getElementById(item.id)
+      );
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const el = sectionElements[i];
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 140) {
+            setActiveSection(REFUND_NAV_ITEMS[i].id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = -100;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* 1. Hero Header */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-brand-slate-dark to-slate-900 text-white p-8 sm:p-14 shadow-2xl border border-amber-500/20 text-center">
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+          <p className="text-[11px] font-extrabold uppercase tracking-widest text-amber-300">
+            NIAKYLIE WOMEN COLLECTION
+          </p>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Refund & Cancellation Policy
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-1 font-sans">
+            At <strong>NIAKYLIE Women Collection</strong>, we want you to be happy with your purchase. If you receive a product that is eligible for return, you may request a return and refund in accordance with the terms below.
+          </p>
+
+          <div className="pt-2 flex items-center justify-center space-x-2 text-[11px] font-bold text-amber-300">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Last Updated: {refundConfig.lastUpdated}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs font-semibold text-slate-400 py-1">
+        <a href="/" className="hover:text-brand-crimson transition-colors">
+          Home
+        </a>
+        <ChevronRight className="w-3 h-3 text-slate-400" />
+        <span className="text-brand-slate-dark font-bold">Refund & Cancellation Policy</span>
+      </nav>
+
+      {/* 3. Mobile Collapsible Navigation Dropdown */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="w-full bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex items-center justify-between font-extrabold text-sm text-brand-slate-dark transition-all hover:bg-slate-50"
+        >
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-brand-crimson" />
+            <span>Policy Navigation ({REFUND_NAV_ITEMS.length} Sections)</span>
+          </div>
+          <ChevronDown
+            className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${
+              mobileMenuOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
+
+        {mobileMenuOpen && (
+          <div className="mt-2 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg space-y-1 animate-in fade-in slide-in-from-top-2 duration-200 max-h-80 overflow-y-auto">
+            {REFUND_NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`w-full text-left text-xs font-bold px-3 py-2.5 rounded-xl transition-all ${
+                  activeSection === item.id
+                    ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson'
+                    : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 4. Desktop Main Layout (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Left Column: Sticky Navigation Sidebar */}
+        <aside className="lg:col-span-4 sticky top-24 space-y-6 hidden lg:block">
+          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center space-x-2 pb-3 border-b border-gray-100">
+              <Sparkles className="w-4 h-4 text-brand-crimson" />
+              <h4 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+                Policy Navigation
+              </h4>
+            </div>
+
+            <nav className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
+              {REFUND_NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`w-full text-left text-xs font-bold px-3 py-2 rounded-xl transition-all duration-200 flex items-center justify-between ${
+                      isActive
+                        ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson shadow-xs'
+                        : 'text-slate-600 hover:text-brand-crimson hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-brand-crimson" />}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Sidebar Support Box */}
+          <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-4 border border-slate-800">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold">
+                <FileText className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-white">Need Support?</h4>
+                <p className="text-[11px] text-slate-400">NIAKYLIE Customer Desk</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              To submit return photos/videos or inquire about an order refund, reach out directly to our team.
+            </p>
+
+            <a
+              href={`https://wa.me/${refundConfig.whatsappClean}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center space-x-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold py-3 rounded-2xl transition-all shadow-md"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>WhatsApp Support</span>
+            </a>
+          </div>
+        </aside>
+
+        {/* Right Column: Main Refund Content */}
+        <main className="lg:col-span-8 space-y-8 max-w-3xl">
+          {/* Quick Key Highlights Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-white border border-gray-100 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+              <span className="text-lg font-extrabold text-brand-crimson font-display">7 Days</span>
+              <p className="text-[11px] font-bold text-slate-600">Return Window</p>
+            </div>
+            <div className="bg-white border border-gray-100 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+              <span className="text-lg font-extrabold text-amber-600 font-display">48 Hours</span>
+              <p className="text-[11px] font-bold text-slate-600">Defect Reporting</p>
+            </div>
+            <div className="bg-white border border-gray-100 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+              <span className="text-lg font-extrabold text-emerald-600 font-display">100%</span>
+              <p className="text-[11px] font-bold text-slate-600">Verified Refunds</p>
+            </div>
+            <div className="bg-white border border-gray-100 p-4 rounded-2xl text-center space-y-1 shadow-sm">
+              <span className="text-lg font-extrabold text-purple-600 font-display">Pre-Dispatch</span>
+              <p className="text-[11px] font-bold text-slate-600">Free Cancellation</p>
+            </div>
+          </div>
+
+          {/* Section 1: Return & Refund Eligibility */}
+          <section id="return-refund-eligibility" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                1. Return & Refund Eligibility
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              We accept returns and refunds within <strong>7 days of delivery</strong> for eligible items.
+            </p>
+            <p className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+              To be eligible for a return:
+            </p>
+            <ul className="space-y-2 text-xs text-slate-700">
+              {[
+                'The return request must be made within 7 days from the date of delivery.',
+                'The saree must be unused and unworn.',
+                'The product must be in its original condition.',
+                'The product must be returned in its original packaging, where applicable.',
+                'All original tags, labels, accessories, and packaging should be intact.',
+                'The product must not have stains, marks, odors, damage, alterations, or signs of use.',
+              ].map((condition, idx) => (
+                <li key={idx} className="flex items-start space-x-2.5 bg-slate-50 p-3 rounded-2xl border border-slate-100 font-semibold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                  <span>{condition}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-slate-500 italic pt-1">
+              Products that do not meet these conditions may not be eligible for return or refund.
+            </p>
+          </section>
+
+          {/* Section 2: Products Not Eligible for Return */}
+          <section id="products-not-eligible" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                2. Products Not Eligible for Return
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Certain products may not be eligible for return or refund due to their nature. Unless otherwise stated by NIAKYLIE, the following are non-returnable:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              {[
+                'Products that have been worn or used',
+                'Products that have been washed or altered',
+                'Products with removed or damaged tags',
+                'Products with stains, makeup marks, perfume smell, or signs of use',
+                'Products damaged after delivery due to customer handling',
+                'Customized or specially prepared products',
+                'Products specifically identified as Final Sale / Non-Returnable',
+              ].map((item, idx) => (
+                <div key={idx} className="bg-rose-50/50 border border-rose-100 p-3 rounded-xl text-rose-900 font-semibold flex items-center space-x-2">
+                  <ShieldAlert className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Section 3: How to Request a Return */}
+          <section id="how-to-request-a-return" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-5 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                3. How to Request a Return
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              To request a return, contact NIAKYLIE through our official WhatsApp, email, or customer-support channel within <strong>7 days of delivery</strong>.
+            </p>
+
+            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-3 text-xs">
+              <p className="font-extrabold text-brand-slate-dark">Please provide the following details in your request:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-slate-700 font-semibold">
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Order Number</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Customer Name</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">WhatsApp Number</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Product Name</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Reason for Return</div>
+                <div className="bg-white p-2.5 rounded-xl border border-slate-200 text-center">Photos / Videos</div>
+              </div>
+            </div>
+
+            <div className="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-xs font-extrabold text-brand-crimson text-center">
+              Please do not send a product back without contacting us first.
+            </div>
+          </section>
+
+          {/* Section 4: Damaged or Incorrect Product */}
+          <section id="damaged-or-incorrect-product" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-5 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4 flex items-center justify-between">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                4. Damaged or Incorrect Product
+              </h2>
+              <span className="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase">
+                48-Hour Priority Window
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If you receive a damaged product, defective product, wrong product, or product different from what was ordered, please contact us as soon as possible and preferably within <strong>48 hours of delivery</strong>.
+            </p>
+
+            <div className="bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-2 text-xs text-amber-900">
+              <p className="font-extrabold">Please provide clear photographs or a video showing:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-bold">
+                <div className="bg-white/80 p-2 rounded-xl border border-amber-200">1. Product</div>
+                <div className="bg-white/80 p-2 rounded-xl border border-amber-200">2. Issue / Damage</div>
+                <div className="bg-white/80 p-2 rounded-xl border border-amber-200">3. Outer Packaging</div>
+                <div className="bg-white/80 p-2 rounded-xl border border-amber-200">4. Shipping Label</div>
+              </div>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <p className="font-bold text-slate-800">Resolution Options Available:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center font-bold text-slate-700">
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">Replacement</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">Exchange</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">Full Refund</div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">Agreed Solution</div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 5: Return Shipping */}
+          <section id="return-shipping" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                5. Return Shipping
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl space-y-2">
+                <h4 className="font-extrabold text-brand-slate-dark">Customer Responsibility</h4>
+                <p className="text-slate-600 leading-relaxed">
+                  For returns due to change of mind, incorrect selection, or personal preference, the customer is responsible for applicable return shipping costs.
+                </p>
+              </div>
+              <div className="bg-emerald-50/60 border border-emerald-100 p-4 rounded-2xl space-y-2">
+                <h4 className="font-extrabold text-emerald-900">NIAKYLIE Responsibility</h4>
+                <p className="text-emerald-800 leading-relaxed">
+                  For confirmed damaged, defective, or incorrectly supplied items, NIAKYLIE will arrange or bear the applicable return shipping cost.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 6: Product Inspection */}
+          <section id="product-inspection" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                6. Product Inspection
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              After receiving a returned product, NIAKYLIE will inspect it to confirm that it meets all return conditions. A refund or replacement will be processed only after successful verification.
+            </p>
+            <p className="text-xs text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              If the returned product does not meet eligibility requirements, the return may be rejected and sent back to the customer, with applicable shipping charges applying.
+            </p>
+          </section>
+
+          {/* Section 7: Refund Process */}
+          <section id="refund-process" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                7. Refund Process
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Once your return is approved and inspected, we will initiate the applicable refund through the original payment method where technically possible.
+            </p>
+            <p className="text-xs text-slate-500">
+              The time required for the refund to reflect in your account depends on your banking institution or payment gateway provider.
+            </p>
+          </section>
+
+          {/* Section 8: Shipping Charges */}
+          <section id="shipping-charges" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                8. Shipping Charges
+              </h2>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-700">
+              <li className="bg-slate-50 p-3 rounded-xl border border-slate-100 font-semibold">
+                Original delivery/shipping charges are non-refundable for preference-based returns.
+              </li>
+              <li className="bg-slate-50 p-3 rounded-xl border border-slate-100 font-semibold">
+                Return shipping charges may be deducted from the refund where the customer is responsible.
+              </li>
+              <li className="bg-slate-50 p-3 rounded-xl border border-slate-100 font-semibold">
+                Shipping charges are waived where the product was damaged, defective, or incorrectly supplied.
+              </li>
+            </ul>
+          </section>
+
+          {/* Section 9: Cancellation Policy */}
+          <section id="cancellation-policy" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                9. Cancellation Policy
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Customers may request cancellation of an order by contacting NIAKYLIE as soon as possible after placing the order. Cancellation requests should be made <strong>before the order is dispatched</strong>.
+            </p>
+          </section>
+
+          {/* Section 10: Cancellation After Dispatch */}
+          <section id="cancellation-after-dispatch" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                10. Cancellation After Dispatch
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If an order has already been dispatched, we cannot cancel it directly. If the customer refuses delivery or requests a return after dispatch, standard return and shipping conditions apply.
+            </p>
+          </section>
+
+          {/* Section 11: Refund for Cancelled Orders */}
+          <section id="refund-for-cancelled-orders" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                11. Refund for Cancelled Orders
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If an eligible order is successfully cancelled before dispatch and payment has already been received, the applicable refund will be initiated promptly upon cancellation confirmation.
+            </p>
+          </section>
+
+          {/* Section 12: Promotional & Discounted Orders */}
+          <section id="promotional-discounted-orders" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                12. Promotional & Discounted Orders
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Products purchased using promotional offers, discount codes, coupons, or special campaigns may be subject to additional terms. Original discounts may be adjusted when calculating refunds.
+            </p>
+          </section>
+
+          {/* Section 13: Exchange */}
+          <section id="exchange" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                13. Exchange
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              If NIAKYLIE offers an exchange for a particular saree, the item must satisfy all return eligibility conditions. Exchange availability depends on product stock. If the replacement is unavailable, another resolution will be provided.
+            </p>
+          </section>
+
+          {/* Section 14: Store Purchases */}
+          <section id="store-purchases" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                14. Store Purchases
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Products purchased directly from our physical store in Raipur are subject to separate store return, exchange, or refund conditions communicated at the time of purchase.
+            </p>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs font-semibold text-slate-700 flex items-center space-x-2">
+              <MapPin className="w-4 h-4 text-brand-crimson flex-shrink-0" />
+              <span>{refundConfig.address}</span>
+            </div>
+          </section>
+
+          {/* Section 15: Contact Us & Section 16: Policy Updates */}
+          <section id="contact-us" className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-brand-slate-dark to-slate-950 text-white p-8 sm:p-10 shadow-2xl border border-amber-500/20 space-y-6 scroll-mt-28">
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
+                SECTION 15 & 16
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-display">
+                15. Contact Us & 16. Policy Updates
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                For return, refund, exchange, or cancellation requests, please contact NIAKYLIE Women Collection.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-800 text-xs">
+              <div className="space-y-2">
+                <p className="font-extrabold text-white uppercase text-[11px] tracking-wider text-amber-300">
+                  NIAKYLIE Women Collection
+                </p>
+                <div className="flex items-start space-x-2 text-slate-300 leading-relaxed">
+                  <MapPin className="w-4 h-4 text-brand-crimson flex-shrink-0 mt-0.5" />
+                  <span>{refundConfig.address}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-slate-300">
+                <div className="flex items-center space-x-2">
+                  <Globe className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <span>{refundConfig.website}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Instagram className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                  <span>{refundConfig.instagram}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                  <a href={`mailto:${refundConfig.email}`} className="hover:text-amber-300 transition-colors">
+                    {refundConfig.email}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <a href={`https://wa.me/${refundConfig.whatsappClean}`} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 transition-colors">
+                    {refundConfig.whatsapp}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Legal Notice */}
+            <div id="policy-updates" className="pt-4 border-t border-slate-800 text-[11px] text-slate-300 leading-relaxed bg-slate-800/40 p-4 rounded-2xl border border-slate-700">
+              <span className="font-bold text-amber-300 block mb-1">Statutory Protections:</span>
+              Nothing in this policy is intended to limit any rights or protections that cannot legally be excluded or restricted under applicable Indian consumer or other laws.
+            </div>
+
+            <div className="pt-2 border-t border-slate-800 text-center space-y-1">
+              <p className="text-xs font-bold text-amber-300 font-serif italic">
+                NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.
+              </p>
+              <p className="text-[11px] text-slate-400">
+                © 2026 NIAKYLIE Women Collection. All rights reserved.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          className="fixed bottom-6 right-6 z-50 bg-slate-900 hover:bg-brand-crimson text-white p-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 border border-slate-800 animate-in fade-in"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function CmsPage({ slug }: CmsPageProps) {
   const { data: page, isLoading } = useQuery({
     queryKey: ['cms-page', slug],
@@ -2204,6 +2785,8 @@ export function CmsPage({ slug }: CmsPageProps) {
         <PrivacyPolicyView pageContent={page.content} />
       ) : slug === 'terms-and-conditions' || slug === 'terms' ? (
         <TermsAndConditionsView pageContent={page.content} />
+      ) : slug === 'refund-policy' || slug === 'return-refund-policy' || slug === 'cancellation-policy' ? (
+        <RefundPolicyView pageContent={page.content} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Table of Contents Sidebar */}

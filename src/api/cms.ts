@@ -368,17 +368,93 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   },
   'refund-policy': {
     slug: 'refund-policy',
-    title: 'Refund & Return Policy',
-    lastUpdated: '2026-07-01',
+    title: 'Refund & Cancellation Policy',
+    lastUpdated: '2026-09-02',
     content: `
-      <h2 id="return-window">7-Day Easy Return Window</h2>
-      <p>We offer a hassle-free 7-day return policy for most products. To initiate a return, navigate to My Orders in your account dashboard and click "Return Item" within 7 days of delivery.</p>
-      <h2 id="eligibility">Return Eligibility</h2>
-      <p>Items must be returned in original, unworn condition with all tags intact. Products that have been altered, customized, or dry-cleaned are not eligible for returns. Sale items are final sale.</p>
-      <h2 id="refund-timeline">Refund Timeline</h2>
-      <p>Once your return is received and inspected, we will process your refund within 5-7 business days. Refunds are credited to your original payment method or NiaKylie Store Credit at your preference.</p>
-      <h2 id="exchange">Exchange Policy</h2>
-      <p>We offer free size and color exchanges subject to availability. To request an exchange, follow the same return process and select "Exchange" instead of "Refund".</p>
+      <p class="lead text-base font-semibold text-slate-700 mb-6">
+        At <strong>NIAKYLIE Women Collection</strong>, we want you to be happy with your purchase. If you receive a product that is eligible for return, you may request a return and refund in accordance with the terms below.
+      </p>
+
+      <p class="mb-6">
+        This policy applies to purchases made through <strong>niakylie.com</strong>, WhatsApp, social media, or other applicable sales channels of NIAKYLIE Women Collection.
+      </p>
+
+      <h2 id="return-refund-eligibility">1. Return & Refund Eligibility</h2>
+      <p>We accept returns and refunds within <strong>7 days of delivery</strong> for eligible items.</p>
+      <p>To be eligible for a return:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>The return request must be made within <strong>7 days from the date of delivery</strong>.</li>
+        <li>The saree must be <strong>unused and unworn</strong>.</li>
+        <li>The product must be in its <strong>original condition</strong>.</li>
+        <li>The product must be returned in its <strong>original packaging</strong>, where applicable.</li>
+        <li>All original tags, labels, accessories, and packaging should be intact.</li>
+        <li>The product must not have stains, marks, odors, damage, alterations, or signs of use.</li>
+      </ul>
+      <p>Products that do not meet these conditions may not be eligible for return or refund.</p>
+
+      <h2 id="products-not-eligible">2. Products Not Eligible for Return</h2>
+      <p>Certain products may not be eligible for return or refund due to their nature. Unless otherwise stated by NIAKYLIE, the following may not be eligible:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Products that have been worn or used</li>
+        <li>Products that have been washed or altered</li>
+        <li>Products with removed or damaged tags</li>
+        <li>Products with stains, makeup marks, perfume smell, or other signs of use</li>
+        <li>Products damaged after delivery due to customer handling</li>
+        <li>Customized or specially prepared products</li>
+        <li>Products specifically identified as <strong>Final Sale / Non-Returnable</strong></li>
+      </ul>
+
+      <h2 id="how-to-request-a-return">3. How to Request a Return</h2>
+      <p>To request a return, contact NIAKYLIE through our official WhatsApp, email, or customer-support channel within <strong>7 days of delivery</strong>.</p>
+      <p>Please provide: Order number, Customer name, Mobile/WhatsApp number, Product name, Reason for return, Clear photographs/videos of the product.</p>
+      <p><strong>Please do not send a product back without contacting us first.</strong></p>
+
+      <h2 id="damaged-or-incorrect-product">4. Damaged or Incorrect Product</h2>
+      <p>If you receive a damaged, defective, or wrong product, please contact us as soon as possible and preferably within <strong>48 hours of delivery</strong> with clear photos or video showing the product, issue, packaging, and shipping label.</p>
+      <p>Resolutions may include: Replacement, Exchange, Refund, or another mutually agreed solution.</p>
+
+      <h2 id="return-shipping">5. Return Shipping</h2>
+      <p>For change of mind or personal preference returns, the customer is responsible for return shipping costs. For confirmed damaged, defective, or incorrectly supplied items, NIAKYLIE will arrange or bear the return shipping cost.</p>
+
+      <h2 id="product-inspection">6. Product Inspection</h2>
+      <p>All returned products are inspected upon receipt. A refund or replacement will be processed only after successful verification. Ineligible returns may be rejected and sent back at customer expense.</p>
+
+      <h2 id="refund-process">7. Refund Process</h2>
+      <p>Once approved and inspected, refunds will be initiated through the original payment method where technically possible. Processing timelines depend on your bank or payment provider.</p>
+
+      <h2 id="shipping-charges">8. Shipping Charges</h2>
+      <p>Original shipping charges are non-refundable for preference returns. Return shipping costs may be deducted from the refund where applicable.</p>
+
+      <h2 id="cancellation-policy">9. Cancellation Policy</h2>
+      <p>Cancellation requests should be made <strong>before the order is dispatched</strong>. Once dispatched, cancellation is no longer possible and return procedures apply.</p>
+
+      <h2 id="cancellation-after-dispatch">10. Cancellation After Dispatch</h2>
+      <p>Orders cannot be cancelled after dispatch. Delivery refusals are treated under standard return and shipping conditions.</p>
+
+      <h2 id="refund-for-cancelled-orders">11. Refund for Cancelled Orders</h2>
+      <p>Pre-dispatch cancellations with received payments will be refunded promptly upon cancellation confirmation.</p>
+
+      <h2 id="promotional-discounted-orders">12. Promotional & Discounted Orders</h2>
+      <p>Discounts may be adjusted upon refund calculation. Promotional cards or coupons are non-cashable.</p>
+
+      <h2 id="exchange">13. Exchange</h2>
+      <p>Exchanges are subject to eligibility and stock availability. Alternatives will be offered if requested replacement is out of stock.</p>
+
+      <h2 id="store-purchases">14. Store Purchases</h2>
+      <p>Physical store purchases in Raipur are subject to separate store conditions communicated at the time of purchase.</p>
+
+      <h2 id="contact-us">15. Contact Us</h2>
+      <p>For return, refund, exchange, or cancellation requests, contact NIAKYLIE Women Collection:<br />
+      <strong>Address:</strong> Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221<br />
+      <strong>Website:</strong> niakylie.com<br />
+      <strong>Instagram:</strong> @niakylie_women_collection<br />
+      <strong>Email:</strong> niakylieofficial@gmail.com<br />
+      <strong>WhatsApp:</strong> +91 95899 28337</p>
+
+      <h2 id="policy-updates">16. Policy Updates</h2>
+      <p>We may update this policy periodically with a revised "Last Updated" date.</p>
+
+      <p class="mt-6 pt-4 border-t border-slate-100 text-center font-extrabold text-brand-crimson font-serif text-base">NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.</p>
     `,
   },
   'shipping-policy': {
