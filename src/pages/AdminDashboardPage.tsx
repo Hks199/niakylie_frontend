@@ -1,6 +1,20 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Bell, Search, RefreshCw, Menu } from 'lucide-react';
+import {
+  Loader2,
+  Bell,
+  Search,
+  RefreshCw,
+  Menu,
+  X,
+  AlertTriangle,
+  Package,
+  Tag,
+  ShoppingBag,
+  CheckCheck,
+  ChevronRight,
+  Sparkles,
+} from 'lucide-react';
 import { adminApi } from '../api/admin';
 import { AdminSidebar, NAV_ITEMS } from '../components/admin/AdminSidebar';
 import { KpiSummaryGrid } from '../components/admin/KpiSummaryGrid';
@@ -34,6 +48,11 @@ export function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [unreadReadStatus, setUnreadReadStatus] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const notifRef = useRef<HTMLDivElement>(null);
 
   const { data: kpis, isLoading, refetch } = useQuery({
     queryKey: ['admin-summary'],
@@ -42,6 +61,21 @@ export function AdminDashboardPage() {
   });
 
   const activeKpis = kpis || DEFAULT_KPIS;
+
+  const outOfStockCount = activeKpis.inventoryAlerts?.outOfStockCount || 0;
+  const lowStockCount = activeKpis.inventoryAlerts?.lowStockCount || 0;
+  const totalAlerts = outOfStockCount + lowStockCount;
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setIsNotificationsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleClearCache = async () => {
     setIsClearingCache(true);
@@ -54,6 +88,17 @@ export function AdminDashboardPage() {
     } finally {
       setIsClearingCache(false);
     }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    setActiveTab('orders');
+  };
+
+  const handleNavigateTab = (tab: string) => {
+    setActiveTab(tab);
+    setIsNotificationsOpen(false);
   };
 
   if (isLoading && !kpis) {
@@ -99,19 +144,186 @@ export function AdminDashboardPage() {
             <span className="hidden sm:inline">Clear Cache</span>
           </button>
 
-          <div className="relative hidden sm:block">
+          {/* Quick Search Input */}
+          <form onSubmit={handleSearchSubmit} className="relative hidden sm:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search orders, products..."
-              className="bg-slate-50 border border-gray-200 rounded-2xl pl-9 pr-4 py-2 text-xs font-medium text-slate-700 outline-none focus:border-brand-crimson w-48 md:w-56"
+              className="bg-slate-50 border border-gray-200 rounded-2xl pl-9 pr-4 py-2 text-xs font-medium text-slate-700 outline-none focus:border-brand-crimson focus:bg-white w-48 md:w-56 transition-all"
             />
-          </div>
+          </form>
 
-          <button className="relative p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors">
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
-          </button>
+          {/* Notification Bell Button & Interactive Dropdown Menu */}
+          <div className="relative" ref={notifRef}>
+            <button
+              onClick={() => {
+                setIsNotificationsOpen((prev) => !prev);
+                setUnreadReadStatus(false);
+              }}
+              aria-label="View Admin Notifications"
+              className={`relative p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border transition-colors cursor-pointer ${
+                isNotificationsOpen
+                  ? 'bg-rose-50 border-brand-crimson text-brand-crimson'
+                  : 'border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson bg-white'
+              }`}
+            >
+              <Bell className="w-4 h-4" />
+              {unreadReadStatus && totalAlerts > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center border-2 border-white animate-pulse">
+                  {totalAlerts}
+                </span>
+              )}
+            </button>
+
+            {/* Notifications Popover Menu */}
+            {isNotificationsOpen && (
+              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+                  <div className="flex items-center space-x-2">
+                    <Bell className="w-4 h-4 text-brand-crimson" />
+                    <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">
+                      Admin Notifications
+                    </h3>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => setUnreadReadStatus(false)}
+                      className="text-[10px] font-bold text-slate-400 hover:text-brand-crimson flex items-center space-x-1"
+                    >
+                      <CheckCheck className="w-3 h-3" />
+                      <span>Mark Read</span>
+                    </button>
+                    <button
+                      onClick={() => setIsNotificationsOpen(false)}
+                      className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+                  {/* Out of stock inventory notification */}
+                  {outOfStockCount > 0 && (
+                    <div
+                      onClick={() => handleNavigateTab('inventory')}
+                      className="p-3.5 hover:bg-rose-50/50 transition-colors cursor-pointer flex items-start space-x-3 group"
+                    >
+                      <div className="p-2 rounded-xl bg-rose-100 text-rose-600 flex-shrink-0">
+                        <AlertTriangle className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-extrabold text-rose-900">
+                            {outOfStockCount} Items Out of Stock!
+                          </p>
+                          <span className="text-[9px] font-bold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 uppercase">
+                            Urgent
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          Products have reached zero stock level and require inventory restocking.
+                        </p>
+                        <span className="inline-flex items-center text-[10px] font-extrabold text-brand-crimson group-hover:underline mt-1">
+                          View Out of Stock Inventory <ChevronRight className="w-3 h-3 ml-0.5" />
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Low stock inventory notification */}
+                  {lowStockCount > 0 && (
+                    <div
+                      onClick={() => handleNavigateTab('inventory')}
+                      className="p-3.5 hover:bg-amber-50/50 transition-colors cursor-pointer flex items-start space-x-3 group"
+                    >
+                      <div className="p-2 rounded-xl bg-amber-100 text-amber-600 flex-shrink-0">
+                        <Package className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-extrabold text-amber-900">
+                            {lowStockCount} Products Low on Stock
+                          </p>
+                          <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 uppercase">
+                            Warning
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          Inventory quantity is below minimum threshold limit.
+                        </p>
+                        <span className="inline-flex items-center text-[10px] font-extrabold text-amber-700 group-hover:underline mt-1">
+                          Manage Low Stock Alert List <ChevronRight className="w-3 h-3 ml-0.5" />
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Orders notification */}
+                  <div
+                    onClick={() => handleNavigateTab('orders')}
+                    className="p-3.5 hover:bg-slate-50 transition-colors cursor-pointer flex items-start space-x-3 group"
+                  >
+                    <div className="p-2 rounded-xl bg-blue-100 text-blue-600 flex-shrink-0">
+                      <ShoppingBag className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-extrabold text-slate-800">
+                          {activeKpis.totalOrders} Total Orders Processed
+                        </p>
+                        <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 uppercase">
+                          Orders
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Track customer dispatches, courier tracking IDs & order statuses.
+                      </p>
+                      <span className="inline-flex items-center text-[10px] font-extrabold text-blue-600 group-hover:underline mt-1">
+                        Go to Orders Control Panel <ChevronRight className="w-3 h-3 ml-0.5" />
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Promo Coupons Notification */}
+                  <div
+                    onClick={() => handleNavigateTab('coupons')}
+                    className="p-3.5 hover:bg-slate-50 transition-colors cursor-pointer flex items-start space-x-3 group"
+                  >
+                    <div className="p-2 rounded-xl bg-emerald-100 text-emerald-600 flex-shrink-0">
+                      <Tag className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs font-extrabold text-slate-800">
+                          Promo Codes & Coupons
+                        </p>
+                        <Sparkles className="w-3 h-3 text-amber-500" />
+                      </div>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Create, activate or edit flat ₹ and percentage % discount codes.
+                      </p>
+                      <span className="inline-flex items-center text-[10px] font-extrabold text-emerald-600 group-hover:underline mt-1">
+                        Manage Promo Codes <ChevronRight className="w-3 h-3 ml-0.5" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-slate-50 border-t border-gray-100 text-center">
+                  <button
+                    onClick={() => handleNavigateTab('dashboard')}
+                    className="text-xs font-extrabold text-brand-crimson hover:underline"
+                  >
+                    View Complete Dashboard Analytics
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
