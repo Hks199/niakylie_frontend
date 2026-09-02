@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   ChevronRight,
@@ -20,6 +21,13 @@ import {
   Lock,
   FileText,
   ShieldAlert,
+  ChevronDown,
+  ArrowUp,
+  CheckCircle2,
+  ExternalLink,
+  Check,
+  Shield,
+  HelpCircle,
 } from 'lucide-react';
 import { cmsApi } from '../api/cms';
 
@@ -596,109 +604,182 @@ function AboutUsView() {
   );
 }
 
-function PrivacyPolicyView({ pageContent }: { pageContent?: string }) {
-  const headings = [
-    { id: 'information-we-collect', label: '1. Information We Collect' },
-    { id: 'how-we-use-your-information', label: '2. How We Use Your Information' },
-    { id: 'whatsapp-instagram-facebook', label: '3. Social Platforms & Messaging' },
-    { id: 'orders-and-payments', label: '4. Orders and Payments' },
-    { id: 'sharing-of-information', label: '5. Sharing of Information' },
-    { id: 'cookies', label: '6. Cookies & Tracking' },
-    { id: 'marketing-communications', label: '7. Marketing Communications' },
-    { id: 'data-security', label: '8. Data Security' },
-    { id: 'data-retention', label: '9. Data Retention' },
-    { id: 'childrens-privacy', label: '10. Children\'s Privacy' },
-    { id: 'third-party-websites', label: '11. Third-Party Links' },
-    { id: 'your-privacy-rights', label: '12. Your Privacy Rights' },
-    { id: 'changes-to-this-privacy-policy', label: '13. Policy Updates' },
-    { id: 'contact-us', label: '14. Contact Us' },
-  ];
+const privacyPolicyConfig = {
+  lastUpdated: 'September 2, 2026',
+  email: 'niakylieofficial@gmail.com',
+  whatsapp: '+91 95899 28337',
+  whatsappClean: '919589928337',
+  address: 'Ward No. 39, Kabir Chaura, Bajar Chauk, Sarora, Gondwara Basti, Raipur, Chhattisgarh – 493221',
+  instagram: '@niakylie_women_collection',
+  facebook: 'NIAKYLIE Women Collection',
+  website: 'niakylie.com',
+};
+
+const POLICY_NAV_ITEMS = [
+  { id: 'information-we-collect', label: '1. Information We Collect' },
+  { id: 'how-we-use-your-information', label: '2. How We Use Your Information' },
+  { id: 'whatsapp-instagram-facebook', label: '3. Social Platforms & Messaging' },
+  { id: 'orders-and-payments', label: '4. Orders and Payments' },
+  { id: 'sharing-of-information', label: '5. Sharing of Information' },
+  { id: 'cookies', label: '6. Cookies & Tracking' },
+  { id: 'marketing-communications', label: '7. Marketing Communications' },
+  { id: 'data-security', label: '8. Data Security' },
+  { id: 'data-retention', label: '9. Data Retention' },
+  { id: 'childrens-privacy', label: "10. Children's Privacy" },
+  { id: 'third-party-websites', label: '11. Third-Party Links' },
+  { id: 'your-privacy-rights', label: '12. Your Privacy Rights' },
+  { id: 'changes-to-this-privacy-policy', label: '13. Policy Updates' },
+];
+
+function PrivacyPolicyView(_props: { pageContent?: string }) {
+  const [activeSection, setActiveSection] = useState<string>('information-we-collect');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 400);
+
+      const sectionElements = POLICY_NAV_ITEMS.map((item) =>
+        document.getElementById(item.id)
+      );
+
+      for (let i = sectionElements.length - 1; i >= 0; i--) {
+        const el = sectionElements[i];
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 140) {
+            setActiveSection(POLICY_NAV_ITEMS[i].id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      const yOffset = -100;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500">
-      {/* 1. Hero Banner */}
+    <div className="space-y-8 animate-in fade-in duration-500 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      {/* 1. Page Header (Hero Section) */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-brand-slate-dark to-slate-900 text-white p-8 sm:p-14 shadow-2xl border border-amber-500/20 text-center">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500/20 to-brand-crimson/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-amber-500/30 text-amber-300 text-xs font-extrabold uppercase tracking-widest">
-            <ShieldCheck className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span>TRUST & TRANSPARENCY</span>
-          </div>
+          <p className="text-[11px] font-extrabold uppercase tracking-widest text-amber-300">
+            NIAKYLIE WOMEN COLLECTION
+          </p>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
             Privacy Policy
           </h1>
 
-          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-1">
-            Welcome to <strong>NIAKYLIE Women Collection</strong>. We respect your privacy and are committed to protecting the personal information you share with us across <strong>niakylie.com</strong>.
+          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-1 font-sans">
+            Your privacy matters to us. This Privacy Policy explains how NIAKYLIE Women Collection collects, uses, protects, and manages your information when you interact with our website, products, and services.
           </p>
 
           <div className="pt-2 flex items-center justify-center space-x-2 text-[11px] font-bold text-amber-300">
             <Clock className="w-3.5 h-3.5" />
-            <span>Last Updated: September 2, 2026</span>
+            <span>Last Updated: {privacyPolicyConfig.lastUpdated}</span>
           </div>
         </div>
       </div>
 
-      {/* 2. Highlight Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-brand-crimson flex items-center justify-center font-extrabold">
-            <Lock className="w-6 h-6" />
-          </div>
-          <h3 className="font-extrabold text-base text-brand-slate-dark font-display">Zero Data Selling</h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            We never rent, sell, or trade your personal information to any third parties for marketing purposes.
-          </p>
-        </div>
+      {/* 2. Breadcrumb */}
+      <nav className="flex items-center space-x-2 text-xs font-semibold text-slate-400 py-1">
+        <a href="/" className="hover:text-brand-crimson transition-colors">
+          Home
+        </a>
+        <ChevronRight className="w-3 h-3 text-slate-400" />
+        <span className="text-brand-slate-dark font-bold">Privacy Policy</span>
+      </nav>
 
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-extrabold">
-            <ShieldCheck className="w-6 h-6" />
+      {/* 3. Mobile Collapsible Navigation Dropdown */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="w-full bg-white border border-gray-200 rounded-2xl p-4 shadow-sm flex items-center justify-between font-extrabold text-sm text-brand-slate-dark transition-all hover:bg-slate-50"
+        >
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-brand-crimson" />
+            <span>Policy Navigation</span>
           </div>
-          <h3 className="font-extrabold text-base text-brand-slate-dark font-display">Secure Transactions</h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            Payment details are handled strictly by trusted encryption gateways. We do not store card credentials.
-          </p>
-        </div>
+          <ChevronDown
+            className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${
+              mobileMenuOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
 
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-extrabold">
-            <FileText className="w-6 h-6" />
+        {mobileMenuOpen && (
+          <div className="mt-2 bg-white border border-gray-200 rounded-2xl p-4 shadow-lg space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
+            {POLICY_NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`w-full text-left text-xs font-bold px-3 py-2.5 rounded-xl transition-all ${
+                  activeSection === item.id
+                    ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson'
+                    : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
-          <h3 className="font-extrabold text-base text-brand-slate-dark font-display">Full Rights & Control</h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            Easily request access, update, or remove your personal data anytime by contacting our support care.
-          </p>
-        </div>
+        )}
       </div>
 
-      {/* 3. Main Policy Layout (Sticky Sidebar + Styled Content) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Sticky Table of Contents Sidebar */}
+      {/* 4. Desktop Main Layout (2 Columns) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Left Column: Sticky Navigation Sidebar (~260px) */}
         <aside className="lg:col-span-4 sticky top-24 space-y-6 hidden lg:block">
           <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
             <div className="flex items-center space-x-2 pb-3 border-b border-gray-100">
               <Sparkles className="w-4 h-4 text-brand-crimson" />
-              <h4 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">Policy Navigation</h4>
+              <h4 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+                Policy Navigation
+              </h4>
             </div>
 
-            <nav className="space-y-1 max-h-[460px] overflow-y-auto pr-1">
-              {headings.map(({ id, label }) => (
-                <a
-                  key={id}
-                  href={`#${id}`}
-                  className="block text-xs font-bold text-slate-600 hover:text-brand-crimson hover:bg-rose-50/50 rounded-xl px-3 py-2 transition-all border-l-2 border-transparent hover:border-brand-crimson"
-                >
-                  {label}
-                </a>
-              ))}
+            <nav className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
+              {POLICY_NAV_ITEMS.map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`w-full text-left text-xs font-bold px-3 py-2 rounded-xl transition-all duration-200 flex items-center justify-between ${
+                      isActive
+                        ? 'bg-rose-50 text-brand-crimson font-extrabold border-l-4 border-brand-crimson shadow-xs'
+                        : 'text-slate-600 hover:text-brand-crimson hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 text-brand-crimson" />}
+                  </button>
+                );
+              })}
             </nav>
           </div>
 
-          {/* Quick Privacy Support Box */}
+          {/* Sidebar Quick Contact Support */}
           <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-4 border border-slate-800">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold">
@@ -715,7 +796,7 @@ function PrivacyPolicyView({ pageContent }: { pageContent?: string }) {
             </p>
 
             <a
-              href="https://wa.me/919589928337"
+              href={`https://wa.me/${privacyPolicyConfig.whatsappClean}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center space-x-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold py-3 rounded-2xl transition-all shadow-md"
@@ -726,23 +807,595 @@ function PrivacyPolicyView({ pageContent }: { pageContent?: string }) {
           </div>
         </aside>
 
-        {/* Policy Content Body */}
-        <main className="lg:col-span-8 space-y-8">
-          <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm space-y-8">
-            {pageContent ? (
-              <div
-                className="prose prose-sm max-w-none text-slate-600 leading-relaxed
-                  [&_h2]:text-xl [&_h2]:font-extrabold [&_h2]:text-brand-slate-dark [&_h2]:font-display [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:pt-4 [&_h2]:border-t [&_h2]:border-slate-100 [&_h2]:scroll-mt-24
-                  [&_h3]:text-sm [&_h3]:font-extrabold [&_h3]:text-brand-slate-dark [&_h3]:mt-6 [&_h3]:mb-2
-                  [&_p]:mb-4 [&_p]:text-slate-600 [&_p]:text-xs sm:[&_p]:text-sm [&_p]:leading-relaxed
-                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:mb-4 [&_ul]:text-xs sm:[&_ul]:text-sm
-                  [&_strong]:font-extrabold [&_strong]:text-brand-slate-dark"
-                dangerouslySetInnerHTML={{ __html: pageContent }}
-              />
-            ) : null}
+        {/* Right Column: Main Privacy Policy Content (Max width 750px - 850px) */}
+        <main className="lg:col-span-8 space-y-8 max-w-3xl">
+          {/* Introduction Card */}
+          <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4">
+            <div className="inline-flex items-center space-x-2 text-rose-600 bg-rose-50 px-3 py-1 rounded-full text-xs font-bold">
+              <Heart className="w-3.5 h-3.5" />
+              <span>Your Privacy Matters</span>
+            </div>
+            <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display">
+              Your Privacy Matters
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Welcome to <strong>NIAKYLIE Women Collection</strong>. We respect your privacy and are committed to protecting the personal information you share with us.
+            </p>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              This Privacy Policy explains how NIAKYLIE Women Collection ("NIAKYLIE", "we", "us", or "our") collects, uses, stores, and protects your information when you visit or use our website <strong>niakylie.com</strong>, contact us, or purchase our products.
+            </p>
+          </div>
+
+          {/* Section 1: Information We Collect */}
+          <section id="information-we-collect" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                1. Information We Collect
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Depending on how you interact with us, we may collect certain information necessary to provide our products and services.
+              </p>
+            </div>
+
+            {/* Subsection 1.1: Personal Information */}
+            <div className="space-y-3">
+              <h3 className="text-sm font-extrabold text-brand-slate-dark flex items-center space-x-2">
+                <div className="w-2 h-2 rounded-full bg-brand-crimson" />
+                <span>Personal Information</span>
+              </h3>
+              <p className="text-xs text-slate-600">
+                When you contact us, place an order, make an enquiry, or otherwise interact with NIAKYLIE, we may collect information such as:
+              </p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                {[
+                  'Full name',
+                  'Mobile or WhatsApp number',
+                  'Email address',
+                  'Delivery address',
+                  'Billing address, where applicable',
+                  'Order and purchase details',
+                  'Information voluntarily provided when contacting us',
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center space-x-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Subsection 1.2: Technical Information */}
+            <div className="space-y-3 pt-2">
+              <h3 className="text-sm font-extrabold text-brand-slate-dark flex items-center space-x-2">
+                <div className="w-2 h-2 rounded-full bg-brand-crimson" />
+                <span>Technical Information</span>
+              </h3>
+              <p className="text-xs text-slate-600">
+                When you visit our website, certain technical information may be collected automatically:
+              </p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                {[
+                  'IP address',
+                  'Browser type',
+                  'Device type',
+                  'Operating system',
+                  'Pages visited',
+                  'Date and time of your visit',
+                  'General website usage information',
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center space-x-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Highlight Box */}
+            <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-5 text-amber-900 text-xs space-y-1">
+              <div className="font-extrabold flex items-center space-x-1.5 text-amber-950">
+                <HelpCircle className="w-4 h-4 text-amber-600" />
+                <span>Why do we collect this information?</span>
+              </div>
+              <p className="leading-relaxed text-amber-900/90 pl-5">
+                This information helps us operate our website, understand how visitors use it, improve performance, and provide a better customer experience.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 2: How We Use Your Information */}
+          <section id="how-we-use-your-information" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                2. How We Use Your Information
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                We may use the information we collect for legitimate business and customer-service purposes, including:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                'Processing and fulfilling orders',
+                'Communicating with you about your orders',
+                'Responding to enquiries and customer support requests',
+                'Providing information about our sarees and collections',
+                'Sending promotional communications where permitted',
+                'Improving our website and customer experience',
+                'Maintaining website security',
+                'Preventing fraud, misuse, or unauthorized activity',
+                'Complying with applicable laws and legal requirements',
+              ].map((purpose, index) => (
+                <div key={index} className="bg-slate-50/80 border border-slate-100 rounded-2xl p-3.5 flex items-start space-x-3 hover:border-rose-200 transition-colors">
+                  <div className="w-6 h-6 rounded-lg bg-rose-100 text-brand-crimson flex items-center justify-center font-extrabold text-xs flex-shrink-0 mt-0.5">
+                    {index + 1}
+                  </div>
+                  <span className="text-xs font-semibold text-slate-700 leading-snug">{purpose}</span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs font-semibold text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+              We use your personal information only for legitimate business purposes and in accordance with applicable laws.
+            </p>
+          </section>
+
+          {/* Section 3: Social Platforms & Messaging */}
+          <section id="whatsapp-instagram-facebook" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                3. Social Platforms & Messaging
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Customers may contact NIAKYLIE through WhatsApp, Instagram, Facebook, or other communication platforms.
+              </p>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              When you communicate with us through these services, your information may also be processed according to the privacy policies and terms of those platforms.
+            </p>
+
+            <div className="space-y-3">
+              <h3 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+                Our Social Presence
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <a
+                  href="https://www.instagram.com/niakylie_women_collection"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-rose-50/50 border border-rose-100 rounded-2xl p-4 hover:bg-rose-100/50 transition-all group"
+                >
+                  <Instagram className="w-5 h-5 text-brand-crimson mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-[10px] font-bold text-slate-400 uppercase">Instagram</div>
+                  <div className="text-xs font-extrabold text-brand-slate-dark group-hover:text-brand-crimson">
+                    {privacyPolicyConfig.instagram}
+                  </div>
+                </a>
+
+                <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-4">
+                  <Facebook className="w-5 h-5 text-blue-600 mb-2" />
+                  <div className="text-[10px] font-bold text-slate-400 uppercase">Facebook</div>
+                  <div className="text-xs font-extrabold text-brand-slate-dark">
+                    {privacyPolicyConfig.facebook}
+                  </div>
+                </div>
+
+                <a
+                  href={`https://wa.me/${privacyPolicyConfig.whatsappClean}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-4 hover:bg-emerald-100/50 transition-all group"
+                >
+                  <Phone className="w-5 h-5 text-emerald-600 mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-[10px] font-bold text-slate-400 uppercase">WhatsApp</div>
+                  <div className="text-xs font-extrabold text-brand-slate-dark group-hover:text-emerald-600">
+                    NIAKYLIE Business WhatsApp
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-500 italic bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              We may use information you voluntarily provide through these platforms to respond to enquiries, assist with orders, and provide customer service.
+            </p>
+          </section>
+
+          {/* Section 4: Orders and Payments */}
+          <section id="orders-and-payments" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                4. Orders and Payments
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                If you purchase products from NIAKYLIE, we may collect information necessary to process and fulfill your order.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 font-semibold">Customer / Order details</div>
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 font-semibold">Delivery information</div>
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 font-semibold">Billing information where applicable</div>
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 font-semibold">Payment-related status verification</div>
+            </div>
+
+            {/* Important Payment Security Box */}
+            <div className="bg-slate-900 text-white rounded-2xl p-5 space-y-2 border border-slate-800">
+              <div className="flex items-center space-x-2 text-amber-400 font-extrabold text-xs">
+                <Lock className="w-4 h-4" />
+                <span>Important Payment Security Note</span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                If payment is processed through a third-party payment provider, your payment information may be handled directly by that provider. We do not store complete debit card, credit card, banking passwords, or similar sensitive payment credentials on our own systems.
+              </p>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              Third-party payment providers may have their own privacy policies and terms that apply to their services.
+            </p>
+          </section>
+
+          {/* Section 5: Sharing of Information */}
+          <section id="sharing-of-information" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                5. Sharing of Information
+              </h2>
+            </div>
+
+            {/* Prominent Statement */}
+            <div className="bg-rose-50 border border-rose-200 rounded-2xl p-5 text-center text-brand-crimson font-extrabold text-sm sm:text-base">
+              We do not sell or rent your personal information to third parties.
+            </div>
+
+            <p className="text-xs text-slate-600">
+              We may share necessary information with trusted service providers when required to operate our business, such as:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              {[
+                'Delivery and logistics partners',
+                'Payment service providers',
+                'Website hosting and technology providers',
+                'Analytics or website service providers',
+                'Customer communication services',
+                'Professional advisers',
+                'Legal or regulatory authorities where required by law',
+              ].map((provider, index) => (
+                <div key={index} className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-center space-x-2 font-semibold text-slate-700">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span>{provider}</span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-slate-500 italic">
+              We only intend to share information that is reasonably necessary for the relevant purpose.
+            </p>
+          </section>
+
+          {/* Section 6: Cookies & Tracking */}
+          <section id="cookies" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                6. Cookies & Tracking
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Our website may use cookies and similar technologies to improve your browsing experience and understand website usage.
+              </p>
+            </div>
+
+            <div className="space-y-2 text-xs text-slate-700">
+              <p className="font-bold text-slate-800">Cookies may help us:</p>
+              <ul className="space-y-2">
+                {[
+                  'Keep the website functioning properly',
+                  'Remember certain preferences',
+                  'Understand website traffic',
+                  'Improve website performance',
+                  'Measure the effectiveness of marketing activities',
+                ].map((item, index) => (
+                  <li key={index} className="flex items-center space-x-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <Check className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Managing Cookies Box */}
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-1 text-xs">
+              <div className="font-extrabold text-brand-slate-dark flex items-center space-x-2">
+                <FileText className="w-4 h-4 text-brand-crimson" />
+                <span>Managing Cookies</span>
+              </div>
+              <p className="text-slate-600 leading-relaxed pl-6">
+                You can manage or disable cookies through your browser settings. However, disabling certain cookies may affect some website functionality.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 7: Marketing Communications */}
+          <section id="marketing-communications" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                7. Marketing Communications
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                If you provide your contact information and consent to receive promotional communications, we may contact you about NIAKYLIE products, collections, offers, and updates.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-center font-bold text-slate-700">
+              {[
+                'New saree collections',
+                'Special offers',
+                'Discounts',
+                'Promotions',
+                'Events',
+                'NIAKYLIE updates',
+              ].map((item, index) => (
+                <div key={index} className="bg-rose-50/60 border border-rose-100 p-3.5 rounded-2xl text-brand-crimson">
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            <p className="text-xs text-slate-500 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+              You can request to stop receiving promotional communications at any time by contacting us or using the available unsubscribe option, where applicable.
+            </p>
+          </section>
+
+          {/* Section 8: Data Security */}
+          <section id="data-security" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                  8. Data Security
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Safeguards for your personal information
+                </p>
+              </div>
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-extrabold">
+                <Shield className="w-5 h-5" />
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We take reasonable measures to protect your personal information from unauthorized access, misuse, alteration, disclosure, or destruction.
+            </p>
+
+            {/* Security Warning Box */}
+            <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 text-xs text-amber-900 space-y-1">
+              <div className="font-extrabold text-amber-950 flex items-center space-x-2">
+                <ShieldAlert className="w-4 h-4 text-amber-600" />
+                <span>Please note:</span>
+              </div>
+              <p className="pl-6 leading-relaxed">
+                No method of transmitting or storing information online can be guaranteed to be completely secure. While we take reasonable precautions to protect your information, we cannot guarantee absolute security.
+              </p>
+            </div>
+          </section>
+
+          {/* Section 9: Data Retention */}
+          <section id="data-retention" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                9. Data Retention
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                We retain personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy.
+              </p>
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <p className="font-bold text-slate-800">Information retention purposes include:</p>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  'Fulfilling orders',
+                  'Providing customer service',
+                  'Maintaining business records',
+                  'Resolving disputes',
+                  'Complying with legal obligations',
+                ].map((item, index) => (
+                  <li key={index} className="bg-slate-50 p-3 rounded-xl border border-slate-100 font-semibold text-slate-700 flex items-center space-x-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-brand-crimson flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              When information is no longer required, we may delete or securely dispose of it, subject to applicable legal requirements.
+            </p>
+          </section>
+
+          {/* Section 10: Children's Privacy */}
+          <section id="childrens-privacy" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                10. Children's Privacy
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Our website and services are not intentionally directed toward children.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We do not knowingly collect personal information from children without appropriate consent where such consent is required by applicable law.
+            </p>
+          </section>
+
+          {/* Section 11: Third-Party Links */}
+          <section id="third-party-websites" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                  11. Third-Party Links
+                </h2>
+              </div>
+              <ExternalLink className="w-5 h-5 text-slate-400" />
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Our website may contain links to third-party websites or platforms, including social media platforms such as Instagram, Facebook, and WhatsApp.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              We are not responsible for the privacy practices, content, or security of third-party websites. We recommend reviewing the privacy policies of those platforms before providing them with personal information.
+            </p>
+          </section>
+
+          {/* Section 12: Your Privacy Rights */}
+          <section id="your-privacy-rights" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-6 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                12. Your Privacy Rights
+              </h2>
+              <p className="text-xs text-slate-500 mt-1">
+                Depending on applicable law, you may have certain rights regarding your personal information.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">Access</h3>
+                <p className="text-xs text-slate-500">Request access to personal information we hold about you.</p>
+              </div>
+
+              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">Correction</h3>
+                <p className="text-xs text-slate-500">Request correction of inaccurate or incomplete information.</p>
+              </div>
+
+              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">Deletion</h3>
+                <p className="text-xs text-slate-500">Request deletion of information where legally applicable.</p>
+              </div>
+
+              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">Withdraw Consent</h3>
+                <p className="text-xs text-slate-500">Withdraw consent where processing is based on consent.</p>
+              </div>
+
+              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">Object</h3>
+                <p className="text-xs text-slate-500">Object to certain uses of your information where applicable.</p>
+              </div>
+
+              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-4 space-y-1">
+                <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">Information</h3>
+                <p className="text-xs text-slate-500">Request information about how your personal information is used.</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-500 italic">
+              To make a privacy-related request, please contact us using the details provided below.
+            </p>
+          </section>
+
+          {/* Section 13: Policy Updates */}
+          <section id="changes-to-this-privacy-policy" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm space-y-4 scroll-mt-28">
+            <div className="border-b border-gray-100 pb-4">
+              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+                13. Policy Updates
+              </h2>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              We may update this Privacy Policy from time to time to reflect changes in our business, website, services, or applicable laws.
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Any updated version will be posted on this page with a revised "Last Updated" date.
+            </p>
+
+            <div className="inline-flex items-center space-x-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold mt-2">
+              <Clock className="w-3.5 h-3.5 text-brand-crimson" />
+              <span>Last Updated: {privacyPolicyConfig.lastUpdated}</span>
+            </div>
+          </section>
+
+          {/* Contact Us Card Section */}
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-brand-slate-dark to-slate-950 text-white p-8 sm:p-10 shadow-2xl border border-amber-500/20 space-y-6">
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">
+                GET IN TOUCH
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-extrabold font-display">
+                Questions About Your Privacy?
+              </h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                If you have any questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact NIAKYLIE Women Collection.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2 border-t border-slate-800 text-xs">
+              <div className="space-y-2">
+                <p className="font-extrabold text-white uppercase text-[11px] tracking-wider text-amber-300">
+                  NIAKYLIE Women Collection
+                </p>
+                <div className="flex items-start space-x-2 text-slate-300 leading-relaxed">
+                  <MapPin className="w-4 h-4 text-brand-crimson flex-shrink-0 mt-0.5" />
+                  <span>{privacyPolicyConfig.address}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-slate-300">
+                <div className="flex items-center space-x-2">
+                  <Globe className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <span>{privacyPolicyConfig.website}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Instagram className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                  <span>{privacyPolicyConfig.instagram}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                  <a href={`mailto:${privacyPolicyConfig.email}`} className="hover:text-amber-300 transition-colors">
+                    {privacyPolicyConfig.email}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Phone className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <a href={`https://wa.me/${privacyPolicyConfig.whatsappClean}`} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 transition-colors">
+                    {privacyPolicyConfig.whatsapp}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-slate-800">
+              <a
+                href="/pages/contact-us"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-rose-700 text-white text-xs font-extrabold px-6 py-3 rounded-2xl shadow-lg transition-all"
+              >
+                <Mail className="w-4 h-4" />
+                <span>Contact Us</span>
+              </a>
+
+              <a
+                href={`https://wa.me/${privacyPolicyConfig.whatsappClean}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold px-6 py-3 rounded-2xl shadow-lg transition-all"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>WhatsApp Us</span>
+              </a>
+            </div>
           </div>
         </main>
       </div>
+
+      {/* Floating Back to Top Button */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Back to top"
+          className="fixed bottom-6 right-6 z-50 bg-slate-900 hover:bg-brand-crimson text-white p-3 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 border border-slate-800 animate-in fade-in"
+        >
+          <ArrowUp className="w-5 h-5" />
+        </button>
+      )}
     </div>
   );
 }
