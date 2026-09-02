@@ -83,7 +83,17 @@ export function AdminOrdersPanel() {
       }),
   });
 
-  const orders = data?.orders || (data as any)?.data || (data as any)?.items || (Array.isArray(data) ? data : []);
+  const orders = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.orders)
+    ? data.orders
+    : Array.isArray(data?.data)
+    ? data.data
+    : Array.isArray((data as any)?.data?.data)
+    ? (data as any).data.data
+    : Array.isArray((data as any)?.items)
+    ? (data as any).items
+    : [];
 
   // Metrics counts
   const totalCount = orders.length;
@@ -116,7 +126,9 @@ export function AdminOrdersPanel() {
 
   const handleOpenTrackingModal = (order: any) => {
     setTrackingModalOrder(order);
-    setCourierPartner(order.shippingInfo?.courierPartner || order.courierPartner || 'NiaKylie Express Logistics');
+    setCourierPartner(
+      order.shippingInfo?.courierPartner || order.courierPartner || 'NiaKylie Express Logistics'
+    );
     setTrackingNumber(order.shippingInfo?.trackingNumber || order.trackingNumber || '');
   };
 
@@ -125,15 +137,39 @@ export function AdminOrdersPanel() {
     if (!trackingModalOrder) return;
     setIsSubmittingTracking(true);
     try {
-      await adminApi.updateTracking(trackingModalOrder._id, {
+      const orderId =
+        trackingModalOrder._id || trackingModalOrder.id || trackingModalOrder.orderNumber;
+      await adminApi.updateTracking(orderId, {
         courierPartner,
         trackingNumber,
       });
+
       // Optionally transition status to SHIPPED if currently CONFIRMED or PACKED
       const currentStatus = trackingModalOrder.orderStatus || trackingModalOrder.status;
+      let newStatus = currentStatus;
       if (currentStatus === 'CONFIRMED' || currentStatus === 'PACKED') {
-        await adminApi.updateOrderStatus(trackingModalOrder._id, 'SHIPPED', `Tracking assigned: ${trackingNumber}`);
+        try {
+          await adminApi.updateOrderStatus(orderId, 'SHIPPED', `Tracking assigned: ${trackingNumber}`);
+          newStatus = 'SHIPPED';
+        } catch (statusErr) {
+          console.warn('Could not auto-transition status to SHIPPED:', statusErr);
+        }
       }
+
+      // If details modal is open for this order, update local selectedOrder state
+      if (selectedOrder && (selectedOrder._id === orderId || selectedOrder.orderNumber === orderId)) {
+        setSelectedOrder((prev: any) => ({
+          ...prev,
+          orderStatus: newStatus,
+          status: newStatus,
+          shippingInfo: {
+            ...prev?.shippingInfo,
+            courierPartner,
+            trackingNumber,
+          },
+        }));
+      }
+
       setTrackingModalOrder(null);
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       await refetch();
@@ -334,6 +370,7 @@ export function AdminOrdersPanel() {
                   <th className="py-3.5 px-4">Items</th>
                   <th className="py-3.5 px-4">Grand Total</th>
                   <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Courier & Tracking</th>
                   <th className="py-3.5 px-4">Date</th>
                   <th className="py-3.5 px-5 text-right">Admin Controls</th>
                 </tr>
@@ -357,6 +394,9 @@ export function AdminOrdersPanel() {
                   const grandTotal = order.pricing?.grandTotal ?? order.totalAmount ?? 0;
                   const paymentMethod = order.paymentInfo?.method || 'COD';
                   const paymentStatus = order.paymentInfo?.status || (currentStatus === 'DELIVERED' ? 'PAID' : 'PENDING');
+
+                  const courierPartner = order.shippingInfo?.courierPartner || order.courierPartner;
+                  const trackingNumber = order.shippingInfo?.trackingNumber || order.trackingNumber;
 
                   const isCancelled = currentStatus === 'CANCELLED';
 
@@ -447,6 +487,29 @@ export function AdminOrdersPanel() {
                         >
                           {currentStatus}
                         </span>
+                      </td>
+
+                      {/* Courier & Tracking */}
+                      <td className="py-4 px-4">
+                        {trackingNumber ? (
+                          <div className="space-y-0.5">
+                            <p className="font-bold text-brand-slate-dark text-[11px]">
+                              {courierPartner || 'NiaKylie Express'}
+                            </p>
+                            <span className="inline-block font-mono text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200 px-1.5 py-0.5 rounded">
+                              {trackingNumber}
+                            </span>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleOpenTrackingModal(order)}
+                            disabled={isCancelled}
+                            className="inline-flex items-center space-x-1 text-[10px] font-extrabold text-slate-500 bg-slate-50 border border-slate-200 hover:border-brand-crimson hover:text-brand-crimson px-2 py-1 rounded-lg transition-colors disabled:opacity-30"
+                          >
+                            <Truck className="w-3 h-3 text-slate-400" />
+                            <span>+ Assign AWB</span>
+                          </button>
+                        )}
                       </td>
 
                       {/* Date */}
@@ -727,9 +790,25 @@ export function AdminOrdersPanel() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] font-extrabold uppercase text-slate-400">Tracking Info</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] font-extrabold uppercase text-slate-400">Tracking Info</p>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenTrackingModal(selectedOrder)}
+                    className="text-[9px] font-bold text-brand-crimson hover:underline"
+                  >
+                    Edit
+                  </button>
+                </div>
                 <p className="font-bold text-brand-slate-dark mt-1 truncate">
-                  {selectedOrder.shippingInfo?.trackingNumber || selectedOrder.trackingNumber || 'Not assigned'}
+                  {selectedOrder.shippingInfo?.trackingNumber || selectedOrder.trackingNumber ? (
+                    <span>
+                      {selectedOrder.shippingInfo?.courierPartner || selectedOrder.courierPartner || 'Courier'}:{' '}
+                      {selectedOrder.shippingInfo?.trackingNumber || selectedOrder.trackingNumber}
+                    </span>
+                  ) : (
+                    <span className="text-slate-400 italic">Not assigned</span>
+                  )}
                 </p>
               </div>
             </div>
