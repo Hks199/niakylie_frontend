@@ -83,7 +83,7 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-900/60 to-transparent p-6 sm:p-10 flex flex-col justify-between text-white">
             <div className="space-y-2">
               <span className="bg-brand-crimson text-white text-xs font-extrabold px-3 py-1 rounded-full inline-block shadow-md uppercase tracking-wider">
-                {mainBanner?.type || 'DEAL OF THE DAY'}
+                {mainBanner?.discountBadge || mainBanner?.type || 'DEAL OF THE DAY'}
               </span>
               <h3 className="text-2xl sm:text-4xl font-extrabold font-display leading-tight">
                 {mainBanner?.title || 'Banarasi Silk Sarees'} <br />
@@ -116,7 +116,7 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent p-6 flex flex-col justify-end text-white">
             <span className="bg-emerald-500 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full inline-block w-max mb-2 uppercase tracking-wider">
-              {secondaryBanner?.type || 'BUY 1 GET 1 FREE'}
+              {secondaryBanner?.discountBadge || secondaryBanner?.type || 'BUY 1 GET 1 FREE'}
             </span>
             <h4 className="text-xl sm:text-2xl font-extrabold font-display leading-tight mb-1">
               {secondaryBanner?.title || 'Anarkali & Sharara Suits'}
@@ -151,7 +151,7 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent p-6 flex flex-col justify-end text-white">
                 <span className="bg-purple-600 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-full inline-block w-max mb-2 uppercase tracking-wider">
-                  {banner.type || 'SPECIAL OFFER'}
+                  {banner.discountBadge || banner.type || 'SPECIAL OFFER'}
                 </span>
                 <h4 className="text-lg font-extrabold font-display leading-tight mb-1">
                   {banner.title}

@@ -7,6 +7,7 @@ import { Banner, BannerType, BannerPosition } from '../../types/banner';
 interface BannerFormData {
   title: string;
   subtitle: string;
+  discountBadge: string;
   type: BannerType | string;
   position: BannerPosition | string;
   linkUrl: string;
@@ -22,6 +23,7 @@ interface BannerFormData {
 const DEFAULT_FORM: BannerFormData = {
   title: '',
   subtitle: '',
+  discountBadge: '',
   type: BannerType.HOMEPAGE,
   position: BannerPosition.TOP,
   linkUrl: '',
@@ -33,6 +35,15 @@ const DEFAULT_FORM: BannerFormData = {
   imageFile: null,
   mobileImageFile: null,
 };
+
+const BADGE_PRESET_OPTIONS = [
+  'DEAL OF THE DAY',
+  'BUY 1 GET 1 FREE',
+  'FESTIVE SALE',
+  'FLAT 50% OFF',
+  'LIMITED TIME OFFER',
+  'SPECIAL OFFER',
+];
 
 export function AdminBannersPanel() {
   const queryClient = useQueryClient();
@@ -81,6 +92,7 @@ export function AdminBannersPanel() {
     setFormData({
       title: banner.title || '',
       subtitle: banner.subtitle || '',
+      discountBadge: banner.discountBadge || '',
       type: banner.type || BannerType.HOMEPAGE,
       position: banner.position || BannerPosition.TOP,
       linkUrl: banner.linkUrl || '',
@@ -132,6 +144,7 @@ export function AdminBannersPanel() {
       fd.append('title', formData.title.trim());
       fd.append('type', formData.type);
       if (formData.subtitle) fd.append('subtitle', formData.subtitle);
+      if (formData.discountBadge) fd.append('discountBadge', formData.discountBadge);
       if (formData.position) fd.append('position', formData.position);
       if (formData.linkUrl) fd.append('linkUrl', formData.linkUrl);
       if (formData.linkLabel) fd.append('linkLabel', formData.linkLabel);
@@ -354,6 +367,11 @@ export function AdminBannersPanel() {
                     </div>
 
                     <div>
+                      {banner.discountBadge && (
+                        <span className="bg-brand-crimson text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full inline-block uppercase tracking-wider mb-1 shadow-sm">
+                          {banner.discountBadge}
+                        </span>
+                      )}
                       <h3 className="text-white font-extrabold text-sm line-clamp-1">{banner.title}</h3>
                       {banner.subtitle && (
                         <p className="text-slate-300 text-[11px] line-clamp-1">{banner.subtitle}</p>
@@ -484,6 +502,39 @@ export function AdminBannersPanel() {
                   placeholder="e.g. Flat 40% Off on Designer Wear"
                   className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
+              </div>
+
+              {/* Offer Badge / Tag */}
+              <div>
+                <label className="block text-xs font-extrabold text-slate-700 mb-1">
+                  Offer Badge Tag (e.g. DEAL OF THE DAY, BUY 1 GET 1 FREE)
+                </label>
+                <input
+                  type="text"
+                  name="discountBadge"
+                  value={formData.discountBadge}
+                  onChange={handleInputChange}
+                  placeholder="e.g. DEAL OF THE DAY, BUY 1 GET 1 FREE, FESTIVE SALE"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                />
+                {/* Preset Chips */}
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  <span className="text-[10px] text-slate-400 font-bold self-center mr-1">Quick Presets:</span>
+                  {BADGE_PRESET_OPTIONS.map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, discountBadge: preset }))}
+                      className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg border transition-all ${
+                        formData.discountBadge === preset
+                          ? 'bg-brand-crimson text-white border-brand-crimson'
+                          : 'bg-slate-100 text-slate-600 border-gray-200 hover:border-slate-300'
+                      }`}
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Type & Position Grid */}
