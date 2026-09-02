@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ShoppingBag, Heart, Star, Share2, Check, ChevronRight } from 'lucide-react';
+import { ShoppingBag, Heart, Star, Share2, Check, ChevronRight, Tag, Copy, Sparkles } from 'lucide-react';
 import { ProductGallery } from '../components/pdp/ProductGallery';
 import { VariantSelector } from '../components/pdp/VariantSelector';
 import { PincodeChecker } from '../components/pdp/PincodeChecker';
@@ -20,6 +20,7 @@ interface ProductDetailsPageProps {
 
 export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }: ProductDetailsPageProps) {
   const [isAdding, setIsAdding] = useState(false);
+  const [copiedPromo, setCopiedPromo] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
   const { addToCart } = useCartStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
@@ -195,6 +196,49 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
               )}
             </div>
             <p className="text-[11px] text-slate-400 font-semibold">Inclusive of all taxes</p>
+          </div>
+
+          {/* Available Store Offers Banner */}
+          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-1.5 text-xs font-black text-amber-900 uppercase tracking-wider">
+                <Tag className="w-3.5 h-3.5 text-brand-crimson" />
+                <span>AVAILABLE STORE PROMO OFFERS</span>
+              </div>
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            </div>
+
+            <div className="flex items-center justify-between bg-white border border-amber-200 rounded-xl p-2.5 text-xs shadow-xs">
+              <div className="flex items-center space-x-2">
+                <span className="font-mono font-black text-xs text-brand-crimson bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-lg uppercase">
+                  FLAT100
+                </span>
+                <span className="text-[11px] font-bold text-slate-700">
+                  Flat ₹100 OFF on all products
+                </span>
+              </div>
+
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText('FLAT100');
+                  setCopiedPromo('FLAT100');
+                  setTimeout(() => setCopiedPromo(null), 2000);
+                }}
+                className="flex items-center space-x-1 text-[10px] font-extrabold bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded-lg transition-colors border border-amber-300"
+              >
+                {copiedPromo === 'FLAT100' ? (
+                  <>
+                    <Check className="w-3 h-3 text-emerald-600" />
+                    <span>COPIED</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3 h-3" />
+                    <span>COPY CODE</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Variant Selector (Colors & Sizes) */}

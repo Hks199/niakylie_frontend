@@ -380,4 +380,25 @@ export const adminApi = {
       return null;
     }
   },
+
+  // ─── 7. COUPON / PROMO CODE MANAGEMENT ───────────────────
+  getAllCoupons: async (params?: { page?: number; limit?: number; search?: string; isActive?: boolean }): Promise<{ coupons?: any[]; data?: any[]; items?: any[]; total?: number; page?: number; totalPages?: number }> => {
+    return await apiClient.get('/coupons', { params });
+  },
+
+  createCoupon: async (payload: any) => {
+    return await apiClient.post('/coupons', payload);
+  },
+
+  updateCoupon: async (id: string, payload: any) => {
+    return await apiClient.put(`/coupons/${id}`, payload);
+  },
+
+  toggleCouponStatus: async (id: string) => {
+    return await apiClient.patch(`/coupons/${id}/status`);
+  },
+
+  deleteCoupon: async (id: string) => {
+    return await apiClient.delete(`/coupons/${id}`);
+  },
 };

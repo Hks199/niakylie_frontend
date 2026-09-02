@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingCart, Users, AlertTriangle, MessageSquare, Image, LogOut, FolderTree, Award, HelpCircle, X } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, AlertTriangle, MessageSquare, Image, LogOut, FolderTree, Award, HelpCircle, X, Tag } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 
 interface AdminSidebarProps {
@@ -10,6 +10,7 @@ interface AdminSidebarProps {
 export const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
+  { id: 'coupons', label: 'Promo & Coupons', icon: Tag },
   { id: 'categories', label: 'Categories', icon: FolderTree },
   { id: 'brands', label: 'Brands & Designers', icon: Award },
   { id: 'products', label: 'Products & Catalog', icon: Package },
