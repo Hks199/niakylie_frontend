@@ -401,4 +401,25 @@ export const adminApi = {
   deleteCoupon: async (id: string) => {
     return await apiClient.delete(`/coupons/${id}`);
   },
+
+  // ─── 8. ANNOUNCEMENT BAR MANAGEMENT ───────────────────────
+  getAllAnnouncements: async (params?: { page?: number; limit?: number; search?: string; isActive?: boolean }): Promise<{ announcements?: any[]; data?: any[]; items?: any[]; total?: number; page?: number; totalPages?: number; stats?: { total: number; active: number } }> => {
+    return await apiClient.get('/announcements', { params });
+  },
+
+  createAnnouncement: async (payload: any) => {
+    return await apiClient.post('/announcements', payload);
+  },
+
+  updateAnnouncement: async (id: string, payload: any) => {
+    return await apiClient.put(`/announcements/${id}`, payload);
+  },
+
+  toggleAnnouncementStatus: async (id: string) => {
+    return await apiClient.patch(`/announcements/${id}/toggle`);
+  },
+
+  deleteAnnouncement: async (id: string) => {
+    return await apiClient.delete(`/announcements/${id}`);
+  },
 };
