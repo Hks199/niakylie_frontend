@@ -14,6 +14,8 @@ interface AuthState {
   adminLogin: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<RegisterResponse>;
   adminRegister: (payload: { email: string; password: string; firstName: string; lastName: string; adminSecretKey?: string }) => Promise<any>;
+  sendOtp: (email: string) => Promise<{ message: string; email: string; otp?: string }>;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
   logout: () => Promise<void>;
   fetchProfile: () => Promise<void>;
   setUser: (user: User | null) => void;
@@ -103,6 +105,44 @@ export const useAuthStore = create<AuthState>()(
           const res = await authApi.adminRegister(payload);
           set({ isLoading: false });
           return res;
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      sendOtp: async (email: string) => {
+        set({ isLoading: true });
+        try {
+          const res = await authApi.sendOtp(email);
+          set({ isLoading: false });
+          return res;
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      verifyOtp: async (email: string, otp: string) => {
+        set({ isLoading: true });
+        try {
+          const res = await authApi.verifyOtp(email, otp);
+          if (res.accessToken) {
+            localStorage.setItem('access_token', res.accessToken);
+          }
+          if (res.refreshToken) {
+            localStorage.setItem('refresh_token', res.refreshToken);
+          }
+          set({
+            user: res.user as unknown as User,
+            token: res.accessToken,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+
+          useCartStore.getState().mergeGuestCart().catch(() => {});
+          useCartStore.getState().fetchCart().catch(() => {});
+          useWishlistStore.getState().fetchWishlist().catch(() => {});
         } catch (error) {
           set({ isLoading: false });
           throw error;

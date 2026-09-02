@@ -75,8 +75,11 @@ export interface RegisterPayload {
 
 export interface RegisterResponse {
   message: string;
-  verificationToken: string; // dev only
-  user: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>;
+  verificationToken?: string; // dev only
+  otp?: string; // dev fallback OTP
+  email?: string;
+  isEmailVerified?: boolean;
+  user?: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>;
 }
 
 export interface AuthResponse {

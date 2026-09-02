@@ -74,16 +74,36 @@ export const authApi = {
     apiClient.post('/auth/verify-email', { token }),
 
   /**
-   * Request password reset email.
+   * Send / Resend 5-minute 6-digit OTP code to email.
    */
-  forgotPassword: (email: string) =>
+  sendOtp: (email: string): Promise<{ message: string; email: string; otp?: string }> =>
+    apiClient.post('/auth/send-otp', { email }),
+
+  /**
+   * Verify 6-digit OTP code and retrieve access & refresh tokens.
+   */
+  verifyOtp: async (email: string, otp: string): Promise<AuthResponse> => {
+    const data = await apiClient.post<AuthResponse>('/auth/verify-otp', { email, otp });
+    if (data.accessToken) {
+      localStorage.setItem('access_token', data.accessToken);
+    }
+    if (data.refreshToken) {
+      localStorage.setItem('refresh_token', data.refreshToken);
+    }
+    return data;
+  },
+
+  /**
+   * Request password reset OTP email. Checks if email is registered.
+   */
+  forgotPassword: (email: string): Promise<{ message: string; email: string; otp?: string }> =>
     apiClient.post('/auth/forgot-password', { email }),
 
   /**
-   * Reset password using reset token.
+   * Reset password using OTP code.
    */
-  resetPassword: (token: string, password: string) =>
-    apiClient.post('/auth/reset-password', { token, password }),
+  resetPassword: (token: string, password: string, email?: string): Promise<{ message: string }> =>
+    apiClient.post('/auth/reset-password', { token, password, email }),
 
   /**
    * Refresh access token.
