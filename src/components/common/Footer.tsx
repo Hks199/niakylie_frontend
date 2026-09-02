@@ -1,20 +1,52 @@
 import { useState } from 'react';
-import { ShieldCheck, RefreshCw, Truck, Send, Instagram, Facebook, Twitter, Youtube, Shield, MapPin, Phone, Mail } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Truck, Send, Instagram, Facebook, Twitter, Youtube, Shield, MapPin, Phone, Mail, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { checkIsAdmin } from '../../utils/roleUtils';
+import { cmsApi } from '../../api/cms';
 
 export function Footer() {
   const { user } = useAuthStore();
   const isAdmin = checkIsAdmin(user);
   const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    setIsSubscribed(true);
-    setEmail('');
-    setTimeout(() => setIsSubscribed(false), 4000);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    const cleanEmail = email.trim();
+    const cleanPhone = phone.trim();
+
+    if (!cleanEmail && !cleanPhone) {
+      setErrorMessage('Please enter an email address or mobile number.');
+      return;
+    }
+
+    if (cleanPhone && !/^[6-9]\d{9}$/.test(cleanPhone.replace(/[\s\-\+]/g, '').slice(-10))) {
+      setErrorMessage('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await cmsApi.subscribeNewsletter({
+        email: cleanEmail || undefined,
+        phone: cleanPhone || undefined,
+        source: 'FOOTER',
+      });
+      setSuccessMessage(res.message || 'Thank you for subscribing! We will send exclusive offers.');
+      setEmail('');
+      setPhone('');
+      setTimeout(() => setSuccessMessage(null), 6000);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Subscription failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -116,30 +148,66 @@ export function Footer() {
               STAY IN TOUCH & EXCLUSIVE OFFERS
             </h4>
             <p className="text-xs text-slate-500">
-              Subscribe to get special discount codes, secret sale invites, and trend reports.
+              Provide your email address and mobile number to receive instant SMS updates, exclusive promo codes, and festive sale alerts.
             </p>
 
-            <form onSubmit={handleSubscribe} className="flex max-w-sm">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address..."
-                className="w-full bg-slate-100 text-xs text-brand-slate px-3.5 py-2.5 rounded-l-xl border border-transparent focus:border-brand-crimson focus:bg-white outline-none"
-              />
+            <form onSubmit={handleSubscribe} className="space-y-2.5 max-w-md">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="relative">
+                  <Mail className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email Address"
+                    className="w-full bg-slate-100 text-xs text-brand-slate pl-9 pr-3 py-2.5 rounded-xl border border-slate-200/60 focus:border-brand-crimson focus:bg-white outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="relative">
+                  <span className="text-xs font-bold text-slate-500 absolute left-3 top-2.5">+91</span>
+                  <input
+                    type="tel"
+                    value={phone}
+                    maxLength={10}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                    placeholder="Mobile Number"
+                    className="w-full bg-slate-100 text-xs text-brand-slate pl-11 pr-3 py-2.5 rounded-xl border border-slate-200/60 focus:border-brand-crimson focus:bg-white outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
               <button
                 type="submit"
-                className="bg-brand-crimson hover:bg-brand-crimson-dark text-white font-bold text-xs px-4 rounded-r-xl flex items-center justify-center transition-colors"
+                disabled={loading}
+                className="w-full bg-brand-crimson hover:bg-brand-crimson-dark disabled:bg-brand-crimson/60 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center space-x-2 transition-colors shadow-sm"
               >
-                <Send className="w-4 h-4" />
+                {loading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Saving details...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Subscribe for Offers</span>
+                  </>
+                )}
               </button>
             </form>
 
-            {isSubscribed && (
-              <p className="text-xs text-emerald-600 font-bold">
-                Thank you for subscribing! Check your inbox for your ₹500 welcome coupon.
-              </p>
+            {successMessage && (
+              <div className="flex items-center space-x-2 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-medium">
+                <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>{successMessage}</span>
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="flex items-center space-x-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-medium">
+                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
             )}
 
             {/* Store & Contact Info */}

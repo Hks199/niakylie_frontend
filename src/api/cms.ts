@@ -298,4 +298,8 @@ export const cmsApi = {
       return [];
     }
   },
+
+  subscribeNewsletter: async (payload: { email?: string; phone?: string; source?: string }): Promise<{ message: string }> => {
+    return await apiClient.post('/cms/subscribe', payload);
+  },
 };
