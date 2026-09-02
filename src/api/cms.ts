@@ -86,18 +86,152 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   'privacy-policy': {
     slug: 'privacy-policy',
     title: 'Privacy Policy',
-    lastUpdated: '2026-06-15',
+    lastUpdated: '2026-09-02',
     content: `
-      <h2 id="introduction">Introduction</h2>
-      <p>Your privacy is of utmost importance to NiaKylie Fashion Private Limited ("NiaKylie", "we", "us"). This Privacy Policy explains how we collect, use, store, and share your personal information when you use our platform.</p>
-      <h2 id="data-collection">Information We Collect</h2>
-      <p>We collect information you provide directly to us including: Name, Email address, Delivery address, Phone number, Payment details (processed securely via Razorpay/Stripe — we never store card numbers), and Purchase history.</p>
-      <h2 id="data-usage">How We Use Your Data</h2>
-      <p>Your data is used to: Process and deliver orders, Provide customer support, Send order updates and promotional communications (with your consent), Improve our platform and product recommendations.</p>
-      <h2 id="data-sharing">Data Sharing</h2>
-      <p>We do not sell or rent your personal data. We share data only with trusted logistics partners (BlueDart, Delhivery), payment processors (Razorpay, Stripe), and cloud infrastructure providers under strict data processing agreements.</p>
-      <h2 id="your-rights">Your Rights</h2>
-      <p>You have the right to access, update, or delete your personal data at any time from your Account Settings page or by contacting privacy@niakylie.com.</p>
+      <p class="text-sm text-slate-600 leading-relaxed mb-6">
+        Welcome to <strong>NIAKYLIE Women Collection</strong>. We respect your privacy and are committed to protecting the personal information you share with us.
+      </p>
+      <p class="text-sm text-slate-600 leading-relaxed mb-6">
+        This Privacy Policy explains how NIAKYLIE Women Collection ("NIAKYLIE", "we", "us", or "our") collects, uses, stores, and protects your information when you visit or use our website <strong>niakylie.com</strong>, contact us, or purchase our products.
+      </p>
+
+      <h2 id="information-we-collect">1. Information We Collect</h2>
+      <p>Depending on how you interact with us, we may collect the following information:</p>
+
+      <h3 class="text-base font-extrabold text-brand-slate-dark mt-4 mb-2">Personal Information</h3>
+      <p>When you contact us, place an order, or make an enquiry, we may collect:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Full name</li>
+        <li>Mobile/WhatsApp number</li>
+        <li>Email address</li>
+        <li>Delivery address</li>
+        <li>Billing address, where applicable</li>
+        <li>Order and purchase details</li>
+        <li>Information you provide when contacting us</li>
+      </ul>
+
+      <h3 class="text-base font-extrabold text-brand-slate-dark mt-4 mb-2">Technical Information</h3>
+      <p>When you visit our website, certain technical information may be collected automatically, such as:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>IP address</li>
+        <li>Browser type</li>
+        <li>Device type</li>
+        <li>Operating system</li>
+        <li>Pages visited</li>
+        <li>Date and time of your visit</li>
+        <li>General website usage information</li>
+      </ul>
+      <p>This information helps us understand how visitors use our website and improve our services.</p>
+
+      <h2 id="how-we-use-your-information">2. How We Use Your Information</h2>
+      <p>We may use your information to:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Process and fulfill your orders</li>
+        <li>Communicate with you about your orders or enquiries</li>
+        <li>Respond to customer support requests</li>
+        <li>Provide information about our sarees and collections</li>
+        <li>Send promotional or marketing communications when permitted</li>
+        <li>Improve our website, products, and customer experience</li>
+        <li>Maintain website security</li>
+        <li>Prevent fraud, misuse, or unauthorized activity</li>
+        <li>Comply with applicable laws and legal requirements</li>
+      </ul>
+      <p>We will use your personal information only for legitimate business purposes and in accordance with applicable laws.</p>
+
+      <h2 id="whatsapp-instagram-facebook">3. WhatsApp, Instagram and Facebook</h2>
+      <p>Customers may contact NIAKYLIE through WhatsApp, Instagram, Facebook, or other communication platforms.</p>
+      <p>When you contact us through these platforms, your information may also be processed according to the privacy policies of the respective platforms.</p>
+      <p>Our official Instagram account is: <strong>@niakylie_women_collection</strong></p>
+      <p>We may use information you voluntarily provide through these platforms to respond to enquiries, assist with orders, and provide customer service.</p>
+
+      <h2 id="orders-and-payments">4. Orders and Payments</h2>
+      <p>If you purchase products from NIAKYLIE, we may collect information necessary to process and fulfill your order.</p>
+      <p>If payment is processed through a third-party payment provider, your payment information may be handled directly by that provider. We do not intend to store complete debit card, credit card, banking passwords, or similar sensitive payment credentials on our own systems.</p>
+      <p>Third-party payment providers may have their own privacy policies and terms that apply to their services.</p>
+
+      <h2 id="sharing-of-information">5. Sharing of Information</h2>
+      <p>We do not sell or rent your personal information to third parties.</p>
+      <p>We may share necessary information with trusted service providers when required to operate our business, such as:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Delivery and logistics partners</li>
+        <li>Payment service providers</li>
+        <li>Website hosting and technology providers</li>
+        <li>Analytics or website service providers</li>
+        <li>Customer communication services</li>
+        <li>Professional advisers or legal authorities when required by law</li>
+      </ul>
+      <p>We only intend to share information that is reasonably necessary for the relevant purpose.</p>
+
+      <h2 id="cookies">6. Cookies</h2>
+      <p>Our website may use cookies and similar technologies to improve your browsing experience and understand website usage.</p>
+      <p>Cookies may help us:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Keep the website functioning properly</li>
+        <li>Remember certain preferences</li>
+        <li>Understand website traffic</li>
+        <li>Improve website performance</li>
+        <li>Measure the effectiveness of marketing activities</li>
+      </ul>
+      <p>You can manage or disable cookies through your browser settings. However, disabling certain cookies may affect some website functionality.</p>
+
+      <h2 id="marketing-communications">7. Marketing Communications</h2>
+      <p>If you provide your contact information and consent to receive promotional communications, we may contact you about:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>New saree collections</li>
+        <li>Special offers</li>
+        <li>Discounts</li>
+        <li>Promotions</li>
+        <li>Events</li>
+        <li>Other NIAKYLIE updates</li>
+      </ul>
+      <p>You can request to stop receiving promotional communications at any time by contacting us or using the available unsubscribe option, where applicable.</p>
+
+      <h2 id="data-security">8. Data Security</h2>
+      <p>We take reasonable measures to protect your personal information from unauthorized access, misuse, alteration, disclosure, or destruction.</p>
+      <p>However, no method of transmitting or storing information online can be guaranteed to be completely secure.</p>
+
+      <h2 id="data-retention">9. Data Retention</h2>
+      <p>We retain personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy, including fulfilling orders, providing customer service, maintaining business records, resolving disputes, and complying with legal obligations.</p>
+      <p>When information is no longer required, we may delete or securely dispose of it, subject to applicable legal requirements.</p>
+
+      <h2 id="childrens-privacy">10. Children's Privacy</h2>
+      <p>Our website and services are not intentionally directed toward children.</p>
+      <p>We do not knowingly collect personal information from children without appropriate consent where such consent is required by applicable law.</p>
+
+      <h2 id="third-party-websites">11. Third-Party Websites</h2>
+      <p>Our website may contain links to third-party websites or platforms, including social media platforms such as Instagram, Facebook, and WhatsApp.</p>
+      <p>We are not responsible for the privacy practices, content, or security of third-party websites. We recommend reviewing the privacy policies of those platforms before providing them with personal information.</p>
+
+      <h2 id="your-privacy-rights">12. Your Privacy Rights</h2>
+      <p>Depending on applicable law, you may have rights regarding your personal information, including the right to:</p>
+      <ul class="list-disc pl-5 space-y-1 mb-4">
+        <li>Request access to personal information we hold about you</li>
+        <li>Request correction of inaccurate information</li>
+        <li>Request deletion of information where legally applicable</li>
+        <li>Withdraw consent where processing is based on consent</li>
+        <li>Object to certain uses of your information</li>
+        <li>Request information about how your personal information is used</li>
+      </ul>
+      <p>To make a privacy-related request, please contact us using the details below.</p>
+
+      <h2 id="changes-to-this-privacy-policy">13. Changes to This Privacy Policy</h2>
+      <p>We may update this Privacy Policy from time to time to reflect changes in our business, website, services, or applicable laws.</p>
+      <p>Any updated version will be posted on this page with a revised "Last Updated" date.</p>
+
+      <h2 id="contact-us">14. Contact Us</h2>
+      <p>If you have any questions, concerns, or requests regarding this Privacy Policy or your personal information, please contact us.</p>
+
+      <p class="mt-4"><strong>NIAKYLIE Women Collection</strong></p>
+      <p><strong>Address:</strong><br />
+      Ward No. 39, Kabir Chaura, Bajar Chauk,<br />
+      Sarora, Gondwara Basti,<br />
+      Raipur, Chhattisgarh – 493221</p>
+      <p><strong>Website:</strong> <a href="https://niakylie.com" target="_blank" class="text-brand-crimson hover:underline">niakylie.com</a><br />
+      <strong>Instagram:</strong> <a href="https://www.instagram.com/niakylie_women_collection" target="_blank" class="text-brand-crimson hover:underline">@niakylie_women_collection</a><br />
+      <strong>Email:</strong> <a href="mailto:niakylieofficial@gmail.com" class="text-brand-crimson hover:underline">niakylieofficial@gmail.com</a><br />
+      <strong>WhatsApp:</strong> <a href="https://wa.me/919589928337" target="_blank" class="text-emerald-600 font-bold hover:underline">+91 95899 28337</a></p>
+
+      <p class="mt-6 pt-4 border-t border-slate-100 text-center font-extrabold text-brand-crimson font-serif text-base">NIAKYLIE Women Collection — Wear Beauty, Feel Beauty.</p>
     `,
   },
   'terms-and-conditions': {

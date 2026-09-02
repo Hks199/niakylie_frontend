@@ -17,6 +17,9 @@ import {
   ShoppingBag,
   Mail,
   MessageSquare,
+  Lock,
+  FileText,
+  ShieldAlert,
 } from 'lucide-react';
 import { cmsApi } from '../api/cms';
 
@@ -593,6 +596,157 @@ function AboutUsView() {
   );
 }
 
+function PrivacyPolicyView({ pageContent }: { pageContent?: string }) {
+  const headings = [
+    { id: 'information-we-collect', label: '1. Information We Collect' },
+    { id: 'how-we-use-your-information', label: '2. How We Use Your Information' },
+    { id: 'whatsapp-instagram-facebook', label: '3. Social Platforms & Messaging' },
+    { id: 'orders-and-payments', label: '4. Orders and Payments' },
+    { id: 'sharing-of-information', label: '5. Sharing of Information' },
+    { id: 'cookies', label: '6. Cookies & Tracking' },
+    { id: 'marketing-communications', label: '7. Marketing Communications' },
+    { id: 'data-security', label: '8. Data Security' },
+    { id: 'data-retention', label: '9. Data Retention' },
+    { id: 'childrens-privacy', label: '10. Children\'s Privacy' },
+    { id: 'third-party-websites', label: '11. Third-Party Links' },
+    { id: 'your-privacy-rights', label: '12. Your Privacy Rights' },
+    { id: 'changes-to-this-privacy-policy', label: '13. Policy Updates' },
+    { id: 'contact-us', label: '14. Contact Us' },
+  ];
+
+  return (
+    <div className="space-y-10 animate-in fade-in duration-500">
+      {/* 1. Hero Banner */}
+      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-brand-slate-dark to-slate-900 text-white p-8 sm:p-14 shadow-2xl border border-amber-500/20 text-center">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-amber-500/20 to-brand-crimson/20 backdrop-blur-md px-4 py-1.5 rounded-full border border-amber-500/30 text-amber-300 text-xs font-extrabold uppercase tracking-widest">
+            <ShieldCheck className="w-4 h-4 text-amber-400 animate-pulse" />
+            <span>TRUST & TRANSPARENCY</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight text-white leading-tight">
+            Privacy Policy
+          </h1>
+
+          <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mx-auto leading-relaxed pt-1">
+            Welcome to <strong>NIAKYLIE Women Collection</strong>. We respect your privacy and are committed to protecting the personal information you share with us across <strong>niakylie.com</strong>.
+          </p>
+
+          <div className="pt-2 flex items-center justify-center space-x-2 text-[11px] font-bold text-amber-300">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Last Updated: September 2, 2026</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Highlight Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-brand-crimson flex items-center justify-center font-extrabold">
+            <Lock className="w-6 h-6" />
+          </div>
+          <h3 className="font-extrabold text-base text-brand-slate-dark font-display">Zero Data Selling</h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            We never rent, sell, or trade your personal information to any third parties for marketing purposes.
+          </p>
+        </div>
+
+        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-extrabold">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <h3 className="font-extrabold text-base text-brand-slate-dark font-display">Secure Transactions</h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Payment details are handled strictly by trusted encryption gateways. We do not store card credentials.
+          </p>
+        </div>
+
+        <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all space-y-3">
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-extrabold">
+            <FileText className="w-6 h-6" />
+          </div>
+          <h3 className="font-extrabold text-base text-brand-slate-dark font-display">Full Rights & Control</h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Easily request access, update, or remove your personal data anytime by contacting our support care.
+          </p>
+        </div>
+      </div>
+
+      {/* 3. Main Policy Layout (Sticky Sidebar + Styled Content) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Sticky Table of Contents Sidebar */}
+        <aside className="lg:col-span-4 sticky top-24 space-y-6 hidden lg:block">
+          <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center space-x-2 pb-3 border-b border-gray-100">
+              <Sparkles className="w-4 h-4 text-brand-crimson" />
+              <h4 className="text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">Policy Navigation</h4>
+            </div>
+
+            <nav className="space-y-1 max-h-[460px] overflow-y-auto pr-1">
+              {headings.map(({ id, label }) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className="block text-xs font-bold text-slate-600 hover:text-brand-crimson hover:bg-rose-50/50 rounded-xl px-3 py-2 transition-all border-l-2 border-transparent hover:border-brand-crimson"
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          {/* Quick Privacy Support Box */}
+          <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-3xl p-6 shadow-xl space-y-4 border border-slate-800">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-extrabold">
+                <ShieldAlert className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-white">Privacy Concerns?</h4>
+                <p className="text-[11px] text-slate-400">Our care team is here to assist</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Have questions regarding data handling or privacy rights? Reach out directly to our team.
+            </p>
+
+            <a
+              href="https://wa.me/919589928337"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center space-x-2 w-full bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold py-3 rounded-2xl transition-all shadow-md"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>WhatsApp Privacy Care</span>
+            </a>
+          </div>
+        </aside>
+
+        {/* Policy Content Body */}
+        <main className="lg:col-span-8 space-y-8">
+          <div className="bg-white border border-gray-100 rounded-3xl p-8 sm:p-10 shadow-sm space-y-8">
+            {pageContent ? (
+              <div
+                className="prose prose-sm max-w-none text-slate-600 leading-relaxed
+                  [&_h2]:text-xl [&_h2]:font-extrabold [&_h2]:text-brand-slate-dark [&_h2]:font-display [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:pt-4 [&_h2]:border-t [&_h2]:border-slate-100 [&_h2]:scroll-mt-24
+                  [&_h3]:text-sm [&_h3]:font-extrabold [&_h3]:text-brand-slate-dark [&_h3]:mt-6 [&_h3]:mb-2
+                  [&_p]:mb-4 [&_p]:text-slate-600 [&_p]:text-xs sm:[&_p]:text-sm [&_p]:leading-relaxed
+                  [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:mb-4 [&_ul]:text-xs sm:[&_ul]:text-sm
+                  [&_strong]:font-extrabold [&_strong]:text-brand-slate-dark"
+                dangerouslySetInnerHTML={{ __html: pageContent }}
+              />
+            ) : null}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 export function CmsPage({ slug }: CmsPageProps) {
   const { data: page, isLoading } = useQuery({
     queryKey: ['cms-page', slug],
@@ -627,6 +781,8 @@ export function CmsPage({ slug }: CmsPageProps) {
         <AboutUsView />
       ) : slug === 'contact-us' ? (
         <ContactUsView />
+      ) : slug === 'privacy-policy' ? (
+        <PrivacyPolicyView pageContent={page.content} />
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Table of Contents Sidebar */}
