@@ -1,71 +1,109 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 import { Banner } from '../../types';
 
 interface HeroBannerCarouselProps {
-  banners: Banner[];
+  banners?: Banner[];
 }
 
+const DEFAULT_HERO_BANNERS: Banner[] = [
+  {
+    _id: 'default-1',
+    title: 'Exquisite Handcrafted Sarees',
+    subtitle: 'Discover timeless elegance with our handcrafted Pure Silk, Kanjivaram & Banarasi sarees.',
+    imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80',
+    discountBadge: 'NEW COLLECTION 2026',
+    ctaText: 'SHOP SAREES NOW',
+    linkUrl: '/collections',
+    type: 'HOMEPAGE',
+    isActive: true,
+  },
+  {
+    _id: 'default-2',
+    title: 'Royal Bridal Saree Edition',
+    subtitle: 'Elevate your wedding festivities with authentic Zari embroidery & luxurious heritage weaves.',
+    imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=80',
+    discountBadge: 'FLAT 25% OFF',
+    ctaText: 'DISCOVER BRIDAL',
+    linkUrl: '/collections',
+    type: 'HOMEPAGE',
+    isActive: true,
+  },
+  {
+    _id: 'default-3',
+    title: 'Festive Chanderi & Organza',
+    subtitle: 'Lightweight luxury for every occasion. Experience graceful silhouettes & modern pastels.',
+    imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=80',
+    discountBadge: 'FESTIVE SPECIAL',
+    ctaText: 'EXPLORE DESIGNS',
+    linkUrl: '/collections',
+    type: 'HOMEPAGE',
+    isActive: true,
+  },
+];
+
 export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
+  // Stabilize display banners list so there are always at least 3 slides
+  const displayBanners = useMemo(() => {
+    if (banners && banners.length >= 2) {
+      return banners;
+    }
+    if (banners && banners.length === 1) {
+      return [...banners, ...DEFAULT_HERO_BANNERS];
+    }
+    return DEFAULT_HERO_BANNERS;
+  }, [banners]);
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
-  const bannersLength = banners?.length || 0;
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % displayBanners.length);
+  }, [displayBanners.length]);
 
-  // Auto-slide effect: automatically transition slides every 4 seconds unless paused
+  const handlePrev = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + displayBanners.length) % displayBanners.length);
+  }, [displayBanners.length]);
+
+  // Unconditional 3-second auto-slide timer (3000ms)
   useEffect(() => {
-    if (isPaused || bannersLength <= 1) return;
+    if (displayBanners.length <= 1) return;
 
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % bannersLength);
-    }, 4000);
+      setCurrentIndex((prev) => (prev + 1) % displayBanners.length);
+    }, 3000);
 
     return () => clearInterval(timer);
-  }, [isPaused, bannersLength]);
+  }, [displayBanners.length]);
 
-  // Keep index within bounds if banners list changes
+  // Reset index if displayBanners length changes
   useEffect(() => {
-    if (bannersLength > 0 && currentIndex >= bannersLength) {
+    if (currentIndex >= displayBanners.length) {
       setCurrentIndex(0);
     }
-  }, [bannersLength, currentIndex]);
+  }, [displayBanners.length, currentIndex]);
 
-  if (!banners || banners.length === 0) return null;
-
-  const currentBanner = banners[currentIndex];
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % bannersLength);
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + bannersLength) % bannersLength);
-  };
+  const currentBanner = displayBanners[currentIndex] || displayBanners[0];
 
   const resolveBannerImg = (path?: string) => {
     if (!path || path === 'undefined' || path === 'null' || path.trim() === '') return '';
     return path.startsWith('http') ? path : `http://localhost:3000${path}`;
   };
 
-  const desktopImg = resolveBannerImg(currentBanner.imageUrl) || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80';
+  const desktopImg =
+    resolveBannerImg(currentBanner.imageUrl) ||
+    'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80';
   const mobileImg = resolveBannerImg(currentBanner.mobileImageUrl) || desktopImg;
 
   return (
-    <div
-      className="relative w-full h-[420px] sm:h-[550px] lg:h-[620px] bg-slate-950 overflow-hidden group"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
-    >
+    <div className="relative w-full h-[420px] sm:h-[550px] lg:h-[620px] bg-slate-950 overflow-hidden group select-none">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
-          initial={{ opacity: 0, scale: 1.05 }}
+          initial={{ opacity: 0, scale: 1.03 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.7, ease: 'easeInOut' }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
           className="absolute inset-0 w-full h-full"
         >
           {/* Desktop Image */}
@@ -90,13 +128,13 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
             className="block sm:hidden w-full h-full object-cover object-center"
           />
 
-          {/* Gradient Overlay */}
+          {/* Gradient Overlay & Content */}
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent flex items-center">
             <div className="max-w-7xl mx-auto px-5 sm:px-12 lg:px-16 w-full pb-10 sm:pb-0">
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 15, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                transition={{ delay: 0.15, duration: 0.4 }}
                 className="max-w-xl text-white space-y-3 sm:space-y-4 pr-4"
               >
                 {currentBanner.discountBadge && (
@@ -132,7 +170,7 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
       </AnimatePresence>
 
       {/* Slide Navigation Controls */}
-      {banners.length > 1 && (
+      {displayBanners.length > 1 && (
         <>
           <button
             onClick={handlePrev}
@@ -151,7 +189,7 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
 
           {/* Indicator Dots */}
           <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-1.5 z-20">
-            {banners.map((_, idx) => (
+            {displayBanners.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
