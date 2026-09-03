@@ -15,6 +15,10 @@ import {
   Layers,
   ShieldAlert,
   ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from 'lucide-react';
 import { categoriesApi } from '../../api/categories';
 import { Category } from '../../types/category';
@@ -50,6 +54,15 @@ export function AdminCategoriesPanel() {
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'parent' | 'sub'>('all');
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  // Reset pagination to page 1 on search or filter change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterType]);
 
   // Create Modal State
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -141,6 +154,14 @@ export function AdminCategoriesPanel() {
     }
     return true;
   });
+
+  // Pagination Calculations
+  const totalItems = filteredCategories.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const validPage = Math.min(currentPage, totalPages);
+  const startIndex = (validPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, totalItems);
+  const paginatedCategories = filteredCategories.slice(startIndex, endIndex);
 
   // 5. Proactive Cache Management & Immediate Refetching
   const invalidateAllCaches = async () => {
@@ -461,7 +482,7 @@ export function AdminCategoriesPanel() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-xs font-semibold">
-                {filteredCategories.map((cat, idx) => {
+                {paginatedCategories.map((cat, idx) => {
                   const parentIdVal = typeof cat.parentId === 'object' && cat.parentId
                     ? ((cat.parentId as any)._id || (cat.parentId as any).id)
                     : cat.parentId;
@@ -596,6 +617,106 @@ export function AdminCategoriesPanel() {
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {filteredCategories.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 mt-2 border-t border-slate-100 text-xs text-slate-500 font-semibold">
+            {/* Info & Page Size Selector */}
+            <div className="flex items-center space-x-3">
+              <span>
+                Showing <strong className="text-slate-900 font-extrabold">{totalItems > 0 ? startIndex + 1 : 0}</strong> to{' '}
+                <strong className="text-slate-900 font-extrabold">{endIndex}</strong> of{' '}
+                <strong className="text-slate-900 font-extrabold">{totalItems}</strong> categories
+              </span>
+
+              <div className="flex items-center space-x-1.5 pl-2 border-l border-slate-200">
+                <span className="text-[11px] text-slate-400 font-medium">Per page:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs font-bold text-slate-800 outline-none focus:border-brand-crimson"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
+            {totalPages > 1 && (
+              <div className="flex items-center space-x-1">
+                {/* First Page */}
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={validPage === 1}
+                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  title="First Page"
+                >
+                  <ChevronsLeft className="w-4 h-4" />
+                </button>
+
+                {/* Previous Page */}
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={validPage === 1}
+                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  title="Previous Page"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                {/* Page Number Buttons */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter((page) => page === 1 || page === totalPages || Math.abs(page - validPage) <= 1)
+                  .map((page, idx, arr) => {
+                    const prevPage = arr[idx - 1];
+                    const showEllipsis = prevPage && page - prevPage > 1;
+
+                    return (
+                      <div key={page} className="flex items-center">
+                        {showEllipsis && <span className="px-1 text-slate-400">...</span>}
+                        <button
+                          onClick={() => setCurrentPage(page)}
+                          className={`min-w-[32px] h-8 px-2 rounded-xl text-xs font-extrabold transition-all ${
+                            validPage === page
+                              ? 'bg-brand-crimson text-white shadow-sm'
+                              : 'bg-slate-50 text-slate-700 hover:bg-slate-200'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      </div>
+                    );
+                  })}
+
+                {/* Next Page */}
+                <button
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={validPage === totalPages}
+                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  title="Next Page"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+
+                {/* Last Page */}
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={validPage === totalPages}
+                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  title="Last Page"
+                >
+                  <ChevronsRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
