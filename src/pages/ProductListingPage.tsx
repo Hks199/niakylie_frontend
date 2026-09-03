@@ -31,13 +31,18 @@ export function ProductListingPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterState>(initialFilterState);
 
-  // Sync state from URL query params on mount
+  // Sync state from URL query params on mount & location changes
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cat = params.get('category');
     const brand = params.get('brand');
+    const colorParam = params.get('color');
     const pageParam = params.get('page');
     const sortParam = params.get('sort');
+    const minPriceParam = params.get('minPrice');
+    const maxPriceParam = params.get('maxPrice');
+    const discountParam = params.get('discount');
+    const ratingParam = params.get('rating');
     const qParam = params.get('q') || params.get('search') || '';
 
     let pathCat: string | undefined;
@@ -47,23 +52,37 @@ export function ProductListingPage() {
 
     setSearchQuery(qParam);
 
-    setFilters((prev) => ({
-      ...prev,
-      categories: pathCat ? [pathCat] : (cat ? [cat] : prev.categories),
-      brands: brand ? [brand] : prev.brands,
-    }));
+    let categoriesArr: string[] = [];
+    if (cat) {
+      categoriesArr = cat.split(',').map((c) => c.trim()).filter(Boolean);
+    } else if (pathCat) {
+      categoriesArr = [pathCat];
+    }
+
+    const brandsArr = brand ? brand.split(',').map((b) => b.trim()).filter(Boolean) : [];
+    const colorsArr = colorParam ? colorParam.split(',').map((c) => c.trim()).filter(Boolean) : [];
+
+    setFilters({
+      categories: categoriesArr,
+      brands: brandsArr,
+      colors: colorsArr,
+      minPrice: minPriceParam ? parseFloat(minPriceParam) : undefined,
+      maxPrice: maxPriceParam ? parseFloat(maxPriceParam) : undefined,
+      discount: discountParam ? parseFloat(discountParam) : undefined,
+      rating: ratingParam ? parseFloat(ratingParam) : undefined,
+    });
 
     if (pageParam) setPage(parseInt(pageParam, 10));
     if (sortParam) setSort(sortParam);
-  }, []);
+  }, [window.location.pathname, window.location.search]);
 
   // Update URL search parameters when filters change
   const updateURLParams = (newFilters: FilterState, newSort: string, newPage: number) => {
     const params = new URLSearchParams();
     if (searchQuery) params.set('q', searchQuery);
-    if (newFilters.categories.length > 0) params.set('category', newFilters.categories[0]);
-    if (newFilters.brands.length > 0) params.set('brand', newFilters.brands[0]);
-    if (newFilters.colors.length > 0) params.set('color', newFilters.colors[0]);
+    if (newFilters.categories.length > 0) params.set('category', newFilters.categories.join(','));
+    if (newFilters.brands.length > 0) params.set('brand', newFilters.brands.join(','));
+    if (newFilters.colors.length > 0) params.set('color', newFilters.colors.join(','));
     if (newFilters.minPrice !== undefined) params.set('minPrice', newFilters.minPrice.toString());
     if (newFilters.maxPrice !== undefined) params.set('maxPrice', newFilters.maxPrice.toString());
     if (newFilters.discount !== undefined) params.set('discount', newFilters.discount.toString());
@@ -108,9 +127,9 @@ export function ProductListingPage() {
         page,
         limit: 12,
         search: searchQuery || undefined,
-        category: filters.categories[0],
-        brand: filters.brands[0],
-        color: filters.colors[0],
+        category: filters.categories.length > 0 ? filters.categories.join(',') : undefined,
+        brand: filters.brands.length > 0 ? filters.brands.join(',') : undefined,
+        color: filters.colors.length > 0 ? filters.colors.join(',') : undefined,
         minPrice: filters.minPrice,
         maxPrice: filters.maxPrice,
         discount: filters.discount,
