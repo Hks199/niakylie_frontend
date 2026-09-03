@@ -1,5 +1,7 @@
 import { ShoppingBag, Heart, MapPin, User, Bell, LogOut, Shield } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/useAuthStore';
+import { notificationsApi } from '../../api/notifications';
 
 interface AccountSidebarProps {
   activePage: string;
@@ -16,6 +18,15 @@ const NAV_ITEMS = [
 
 export function AccountSidebar({ activePage, onNavigate }: AccountSidebarProps) {
   const { user, logout } = useAuthStore();
+
+  const { data: unreadData } = useQuery({
+    queryKey: ['unreadNotificationsCount'],
+    queryFn: () => notificationsApi.getUnreadCount(),
+    enabled: !!user,
+    refetchInterval: 30000,
+  });
+
+  const unreadCount = unreadData?.unreadCount ?? 0;
 
   const firstName = user?.firstName || '';
   const lastName = user?.lastName || '';
@@ -51,14 +62,25 @@ export function AccountSidebar({ activePage, onNavigate }: AccountSidebarProps) 
             <button
               key={id}
               onClick={() => onNavigate(id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold transition-all ${
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                 isActive
                   ? 'bg-brand-crimson text-white shadow-md'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-brand-slate-dark'
               }`}
             >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              <span>{label}</span>
+              <div className="flex items-center space-x-3">
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                <span>{label}</span>
+              </div>
+              {id === 'notifications' && unreadCount > 0 && (
+                <span
+                  className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                    isActive ? 'bg-white text-brand-crimson' : 'bg-brand-crimson text-white'
+                  }`}
+                >
+                  {unreadCount}
+                </span>
+              )}
             </button>
           );
         })}

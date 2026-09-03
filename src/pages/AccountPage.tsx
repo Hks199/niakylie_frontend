@@ -5,6 +5,7 @@ import { OrderDetailsPage } from './account/OrderDetailsPage';
 import { ProfilePage } from './account/ProfilePage';
 import { AddressesPage } from './account/AddressesPage';
 import { MyWishlistPage } from './account/MyWishlistPage';
+import { NotificationsPage } from './account/NotificationsPage';
 
 // Derive initial page from URL sub-path
 function getInitialPage(pathname: string): string {
@@ -12,6 +13,7 @@ function getInitialPage(pathname: string): string {
   if (pathname.includes('/account/profile')) return 'profile';
   if (pathname.includes('/account/addresses')) return 'addresses';
   if (pathname.includes('/account/wishlist')) return 'wishlist';
+  if (pathname.includes('/account/notifications')) return 'notifications';
   return 'orders';
 }
 
@@ -44,12 +46,7 @@ export function AccountPage() {
       case 'wishlist':
         return <MyWishlistPage />;
       case 'notifications':
-        return (
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm text-center text-sm text-slate-400 py-12">
-            <p className="font-bold text-brand-slate-dark mb-1">Notifications</p>
-            <p>You have no new notifications right now.</p>
-          </div>
-        );
+        return <NotificationsPage />;
       default:
         return <MyOrdersPage onViewDetails={handleViewOrderDetails} />;
     }
