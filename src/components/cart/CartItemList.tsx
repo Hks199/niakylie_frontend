@@ -14,17 +14,21 @@ export function CartItemList({ items }: CartItemListProps) {
   return (
     <div className="space-y-4">
       {items.map((item) => {
-        const product: any = typeof item.productId === 'object' ? item.productId : item.product || {};
-        const variant: any = typeof item.variantId === 'object' ? item.variantId : item.variant || {};
+        const product: any = typeof item.productId === 'object' && item.productId !== null ? item.productId : item.product || {};
+        const variant: any = typeof item.variantId === 'object' && item.variantId !== null ? item.variantId : item.variant || {};
 
-        const title = product.title || 'Ethnic Couture Garment';
-        const rawBrand = product.brand;
+        const title = item.name || item.title || product.name || product.title || 'Fashion Garment';
+        const rawBrand = product.brand || item.brand;
         const brand = typeof rawBrand === 'object' && rawBrand !== null ? (rawBrand as any).name : (rawBrand || 'NiaKylie Signature');
-        const image = product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
-        const size = variant.size || 'M';
-        const color = variant.color || 'Crimson Red';
-        const originalPrice = item.originalPrice || Math.round(item.price * 2);
-        const discount = item.discount || Math.round(((originalPrice - item.price) / originalPrice) * 100);
+        
+        const rawImg = item.image || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
+        const image = rawImg
+          ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+          : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
+        const size = item.size || variant.size || 'Free Size';
+        const color = item.color || variant.color || 'Standard';
+        const originalPrice = item.originalPrice || Math.round(item.price * 1.33);
+        const discount = item.discount || (originalPrice > item.price ? Math.round(((originalPrice - item.price) / originalPrice) * 100) : 0);
 
         const productIdStr =
           typeof item.productId === 'string'

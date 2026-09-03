@@ -52,15 +52,15 @@ const normalizeCartResponse = (rawCart: any) => {
     const originalPrice = Number(item.unitMrp ?? item.originalPrice ?? item.mrp ?? pObj.mrp ?? Math.round(price * 1.33));
     const skuVal = item.sku || item._id || item.id || (pObj._id ? `SKU-${pObj._id}` : `SKU-${Math.random()}`);
 
-    const rawImg = item.image || pObj.thumbnail || pObj.images?.[0] || '';
+    const rawImg = item.image || pObj.thumbnail || (Array.isArray(pObj.images) ? pObj.images[0] : '') || '';
     const image = rawImg
-      ? (rawImg.startsWith('http') ? rawImg : `http://localhost:3000${rawImg}`)
+      ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
       : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
 
-    const pTitle = pObj.title || pObj.name || 'Ethnic Couture Garment';
+    const pTitle = item.name || item.title || pObj.name || pObj.title || 'Fashion Garment';
     const pBrand = typeof pObj.brand === 'object' && pObj.brand !== null
       ? pObj.brand.name
-      : (pObj.brand || 'NiaKylie Signature');
+      : (pObj.brand || item.brand || 'NiaKylie Signature');
 
     return {
       id: skuVal,

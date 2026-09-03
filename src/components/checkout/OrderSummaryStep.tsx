@@ -39,8 +39,11 @@ export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBac
         {cartItems.map((item) => {
           const product: any = typeof item.productId === 'object' ? item.productId : item.product || {};
           const variant: any = typeof item.variantId === 'object' ? item.variantId : item.variant || {};
-          const image = product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
-          const title = product.title || 'Ethnic Couture Garment';
+          const title = item.name || item.title || product.name || product.title || 'Fashion Garment';
+          const rawImg = item.image || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
+          const image = rawImg
+            ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+            : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
 
           return (
             <div key={item.id || item._id} className="flex items-center space-x-4 p-4">

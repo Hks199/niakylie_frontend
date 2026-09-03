@@ -23,9 +23,16 @@ export interface CartItem {
   price: number;
   originalPrice?: number;
   discount?: number;
-  subtotal: number;
+  subtotal?: number;
   product?: CartProduct;
   variant?: ProductVariant;
+  name?: string;
+  title?: string;
+  brand?: string;
+  image?: string;
+  color?: string;
+  size?: string;
+  sku?: string;
 }
 
 export interface CartTotals {

@@ -37,15 +37,15 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 no-scrollbar">
           {cartItems.length > 0 ? (
             cartItems.map((item) => {
-              const product = typeof item.productId === 'object' ? item.productId : item.product;
-              const variant = typeof item.variantId === 'object' ? item.variantId : item.variant;
-              const title = product?.title || 'Silk Saree / Ethnic Outfit';
-              const image =
-                variant?.imageUrl ||
-                product?.thumbnail ||
-                'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
-              const size = variant?.size || 'Free Size';
-              const color = variant?.color || 'Red';
+              const product = typeof item.productId === 'object' && item.productId !== null ? item.productId : item.product;
+              const variant = typeof item.variantId === 'object' && item.variantId !== null ? item.variantId : item.variant;
+              const title = item.name || item.title || (product as any)?.name || (product as any)?.title || 'Fashion Garment';
+              const rawImg = item.image || (variant as any)?.imageUrl || (product as any)?.thumbnail || (Array.isArray((product as any)?.images) ? (product as any)?.images[0] : (product as any)?.images) || '';
+              const image = rawImg
+                ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+                : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
+              const size = item.size || (variant as any)?.size || 'Free Size';
+              const color = item.color || (variant as any)?.color || 'Standard';
 
               return (
                 <div
