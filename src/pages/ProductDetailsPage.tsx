@@ -9,6 +9,7 @@ import { ReviewsSection } from '../components/pdp/ReviewsSection';
 import { SimilarProducts } from '../components/pdp/SimilarProducts';
 import { productsApi } from '../api/products';
 import { reviewsApi } from '../api/reviews';
+import { apiClient } from '../api/client';
 import { useCartStore, useWishlistStore } from '../store';
 import { ProductVariant } from '../types';
 import { useCategories } from '../hooks/useCategories';
@@ -25,6 +26,36 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
   const { addToCart } = useCartStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
   const { allCategories } = useCategories();
+
+  // Fetch Active Store Coupons (Only show promo banner if admin has created active coupons)
+  const { data: activeCoupons = [] } = useQuery({
+    queryKey: ['public-active-coupons'],
+    queryFn: async () => {
+      try {
+        let res: any;
+        try {
+          res = await apiClient.get('/coupons/active');
+        } catch {
+          res = await apiClient.get('/coupons', { params: { isActive: true } });
+        }
+        const list = Array.isArray(res)
+          ? res
+          : Array.isArray(res?.data)
+          ? res.data
+          : Array.isArray(res?.coupons)
+          ? res.coupons
+          : Array.isArray(res?.items)
+          ? res.items
+          : [];
+        const now = new Date();
+        return list.filter(
+          (c: any) => c.isActive !== false && (!c.endDate || new Date(c.endDate) >= now)
+        );
+      } catch {
+        return [];
+      }
+    },
+  });
 
   const { data: product } = useQuery({
     queryKey: ['product', slug],
@@ -198,48 +229,66 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
             <p className="text-[11px] text-slate-400 font-semibold">Inclusive of all taxes</p>
           </div>
 
-          {/* Available Store Offers Banner */}
-          <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-1.5 text-xs font-black text-amber-900 uppercase tracking-wider">
-                <Tag className="w-3.5 h-3.5 text-brand-crimson" />
-                <span>AVAILABLE STORE PROMO OFFERS</span>
-              </div>
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            </div>
-
-            <div className="flex items-center justify-between bg-white border border-amber-200 rounded-xl p-2.5 text-xs shadow-xs">
-              <div className="flex items-center space-x-2">
-                <span className="font-mono font-black text-xs text-brand-crimson bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-lg uppercase">
-                  FLAT100
-                </span>
-                <span className="text-[11px] font-bold text-slate-700">
-                  Flat ₹100 OFF on all products
-                </span>
+          {/* Available Store Offers Banner (Only render if admin created active coupons) */}
+          {activeCoupons.length > 0 && (
+            <div className="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3.5 space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-1.5 text-xs font-black text-amber-900 uppercase tracking-wider">
+                  <Tag className="w-3.5 h-3.5 text-brand-crimson" />
+                  <span>AVAILABLE STORE PROMO OFFERS</span>
+                </div>
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
               </div>
 
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText('FLAT100');
-                  setCopiedPromo('FLAT100');
-                  setTimeout(() => setCopiedPromo(null), 2000);
-                }}
-                className="flex items-center space-x-1 text-[10px] font-extrabold bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded-lg transition-colors border border-amber-300"
-              >
-                {copiedPromo === 'FLAT100' ? (
-                  <>
-                    <Check className="w-3 h-3 text-emerald-600" />
-                    <span>COPIED</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3 h-3" />
-                    <span>COPY CODE</span>
-                  </>
-                )}
-              </button>
+              <div className="space-y-2">
+                {activeCoupons.map((coupon: any) => {
+                  const couponCode = coupon.code || '';
+                  const isFlat = coupon.type === 'FLAT';
+                  const discountLabel = isFlat
+                    ? `Flat ₹${coupon.value} OFF`
+                    : `${coupon.value}% OFF${coupon.maxDiscount ? ` up to ₹${coupon.maxDiscount}` : ''}`;
+                  const offerText = coupon.description || coupon.title || `${discountLabel} on all products`;
+
+                  return (
+                    <div
+                      key={coupon._id || couponCode}
+                      className="flex items-center justify-between bg-white border border-amber-200 rounded-xl p-2.5 text-xs shadow-xs"
+                    >
+                      <div className="flex items-center space-x-2 overflow-hidden pr-2">
+                        <span className="font-mono font-black text-xs text-brand-crimson bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-lg uppercase flex-shrink-0">
+                          {couponCode}
+                        </span>
+                        <span className="text-[11px] font-bold text-slate-700 truncate">
+                          {offerText}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(couponCode);
+                          setCopiedPromo(couponCode);
+                          setTimeout(() => setCopiedPromo(null), 2000);
+                        }}
+                        className="flex-shrink-0 flex items-center space-x-1 text-[10px] font-extrabold bg-amber-100 hover:bg-amber-200 text-amber-900 px-2.5 py-1 rounded-lg transition-colors border border-amber-300"
+                      >
+                        {copiedPromo === couponCode ? (
+                          <>
+                            <Check className="w-3 h-3 text-emerald-600" />
+                            <span>COPIED</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3 h-3" />
+                            <span>COPY CODE</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Variant Selector (Colors & Sizes) */}
           <VariantSelector
