@@ -247,11 +247,27 @@ export const productsApi = {
       const rawList = extractProductList(response);
       const normalizedItems = rawList.map(normalizeProduct);
 
-      const finalItems = normalizedItems.length > 0
-        ? (normalizedItems.length < 4 ? [...normalizedItems, ...MOCK_PRODUCTS.slice(0, 4 - normalizedItems.length)] : normalizedItems)
-        : MOCK_PRODUCTS;
+      const hasFilterParams = Boolean(
+        params?.search ||
+        params?.category ||
+        params?.categoryId ||
+        params?.brand ||
+        params?.brandId ||
+        params?.minPrice ||
+        params?.maxPrice ||
+        params?.color ||
+        params?.discount ||
+        params?.rating ||
+        params?.isFeatured ||
+        params?.isTrending ||
+        params?.isBestSeller
+      );
 
-      const total = Math.max(finalItems.length, response?.meta?.total || response?.total || 0);
+      const finalItems = normalizedItems.length > 0
+        ? normalizedItems
+        : (hasFilterParams ? [] : MOCK_PRODUCTS);
+
+      const total = response?.meta?.total ?? response?.total ?? (normalizedItems.length > 0 ? normalizedItems.length : finalItems.length);
       const page = params?.page || 1;
       const limit = params?.limit || 12;
       const totalPages = Math.ceil(total / limit) || 1;
