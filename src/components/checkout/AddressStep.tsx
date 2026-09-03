@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Plus, Check, X, Loader2 } from 'lucide-react';
 import { addressesApi } from '../../api/addresses';
 import { Address } from '../../types/auth';
+import { INDIAN_STATES_AND_UTS } from '../../constants/indiaStates';
 
 interface AddressStepProps {
   selectedAddressId: string;
@@ -10,12 +11,10 @@ interface AddressStepProps {
   onNext: () => void;
 }
 
-const STATES = ['Andhra Pradesh', 'Delhi', 'Goa', 'Gujarat', 'Karnataka', 'Kerala', 'Maharashtra', 'Punjab', 'Rajasthan', 'Tamil Nadu', 'Telangana', 'Uttar Pradesh', 'West Bengal'];
-
 const INITIAL_FORM = {
   street: '',
   city: '',
-  state: 'Maharashtra',
+  state: 'Chhattisgarh',
   postalCode: '',
   country: 'India',
   phone: '',
@@ -161,7 +160,11 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
                   onChange={(e) => setForm({ ...form, state: e.target.value })}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson bg-white"
                 >
-                  {STATES.map((s) => <option key={s}>{s}</option>)}
+                  {INDIAN_STATES_AND_UTS.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>

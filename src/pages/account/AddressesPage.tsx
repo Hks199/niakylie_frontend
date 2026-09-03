@@ -3,18 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 import { MapPin, Plus, Trash2, X, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { addressesApi } from '../../api/addresses';
 import { Address } from '../../types/auth';
+import { INDIAN_STATES_AND_UTS } from '../../constants/indiaStates';
 
 const COUNTRIES = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Singapore'];
-const STATES_INDIA = [
-  'Andhra Pradesh', 'Delhi', 'Goa', 'Gujarat', 'Karnataka', 'Kerala',
-  'Maharashtra', 'Punjab', 'Rajasthan', 'Tamil Nadu', 'Telangana',
-  'Uttar Pradesh', 'West Bengal'
-];
 
 const INITIAL_FORM = {
   street: '',
   city: '',
-  state: 'Maharashtra',
+  state: 'Chhattisgarh',
   postalCode: '',
   country: 'India',
   phone: '',
@@ -216,7 +212,11 @@ export function AddressesPage() {
                       onChange={(e) => setForm({ ...form, state: e.target.value })}
                       className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson bg-white"
                     >
-                      {STATES_INDIA.map((s) => <option key={s}>{s}</option>)}
+                      {INDIAN_STATES_AND_UTS.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>
