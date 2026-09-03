@@ -85,22 +85,17 @@ export function AdminCategoriesPanel() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // 1. Full List Retrieval via GET /api/v1/categories?limit=500
+  // 1. Full List Retrieval via GET /api/v1/categories?limit=500 (Manual Refresh Only)
   const { data: categoriesResponse, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ['admin-categories'],
     queryFn: async () => {
       return await categoriesApi.getCategories({ limit: 500 });
     },
-    staleTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: 'always',
-    refetchInterval: 3000, // Dynamic background sync with backend DB
+    staleTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: false,
   });
-
-  // Force refetching on page refresh / mount
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   const extractCategoriesArray = (data: any): Category[] => {
     if (!data) return [];
