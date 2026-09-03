@@ -76,17 +76,52 @@ apiClient.interceptors.response.use(
     }
     return response.data;
   },
-  (error: AxiosError<any>) => {
-    if (error.response?.status === 401) {
-      const requestUrl = (error.config as any)?.url || '';
-      const storedToken = localStorage.getItem('access_token');
+  async (error: AxiosError<any>) => {
+    const originalRequest = error.config as any;
 
-      // Only fire auth:unauthorized for explicit profile verification routes like /users/profile or /auth/me
-      const isProfileVerificationRoute = requestUrl.includes('/users/profile') || requestUrl.includes('/auth/me');
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+      const requestUrl = originalRequest.url || '';
+      const isAuthRoute =
+        requestUrl.includes('/auth/login') ||
+        requestUrl.includes('/auth/register') ||
+        requestUrl.includes('/auth/refresh') ||
+        requestUrl.includes('/auth/admin/login');
 
-      if (isProfileVerificationRoute && storedToken) {
-        localStorage.removeItem('access_token');
-        window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+      if (!isAuthRoute) {
+        originalRequest._retry = true;
+        const refreshToken = localStorage.getItem('refresh_token');
+
+        if (refreshToken) {
+          try {
+            // Attempt to silently refresh access token behind the scenes
+            const refreshRes = await axios.post(
+              `${API_BASE_URL}/auth/refresh`,
+              {},
+              { headers: { Authorization: `Bearer ${refreshToken}` } }
+            );
+
+            const newTokens = refreshRes.data?.data || refreshRes.data;
+            if (newTokens?.accessToken) {
+              localStorage.setItem('access_token', newTokens.accessToken);
+              if (newTokens.refreshToken) {
+                localStorage.setItem('refresh_token', newTokens.refreshToken);
+              }
+
+              // Retry original request with new token
+              originalRequest.headers = originalRequest.headers || {};
+              originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+              return apiClient(originalRequest);
+            }
+          } catch {
+            // Refresh token expired or revoked — clear auth and signal logout
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+          }
+        } else {
+          localStorage.removeItem('access_token');
+          window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+        }
       }
     }
 
