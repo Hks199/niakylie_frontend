@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Star, ShieldCheck, ThumbsUp, MessageSquarePlus } from 'lucide-react';
+import { Star, ShieldCheck, ThumbsUp } from 'lucide-react';
 import { reviewsApi } from '../../api/reviews';
-import { WriteReviewModal } from '../account/WriteReviewModal';
 
 interface ReviewsSectionProps {
   productId: string;
   productTitle?: string;
 }
 
-export function ReviewsSection({ productId, productTitle }: ReviewsSectionProps) {
+export function ReviewsSection({ productId }: ReviewsSectionProps) {
   const [likesMap, setLikesMap] = useState<Record<string, number>>({});
-  const [isWriteReviewOpen, setIsWriteReviewOpen] = useState(false);
 
-  const { data, refetch, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['reviews', productId],
     queryFn: () => reviewsApi.getProductReviews(productId),
   });
@@ -39,21 +37,11 @@ export function ReviewsSection({ productId, productTitle }: ReviewsSectionProps)
 
   return (
     <section className="py-12 border-t border-gray-100 my-12">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display">
-            Ratings & Verified Reviews
-          </h2>
-          <p className="text-xs text-slate-400 mt-1">Real ratings submitted by verified customers</p>
-        </div>
-
-        <button
-          onClick={() => setIsWriteReviewOpen(true)}
-          className="bg-brand-crimson hover:bg-brand-crimson-dark text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-md flex items-center space-x-1.5 transition-all uppercase tracking-wider"
-        >
-          <MessageSquarePlus className="w-4 h-4" />
-          <span>WRITE A REVIEW</span>
-        </button>
+      <div className="mb-8">
+        <h2 className="text-2xl font-extrabold text-brand-slate-dark font-display">
+          Ratings & Verified Reviews
+        </h2>
+        <p className="text-xs text-slate-400 mt-1">Real ratings submitted by verified customers after delivery</p>
       </div>
 
       {/* Ratings Summary Card */}
@@ -189,27 +177,10 @@ export function ReviewsSection({ productId, productTitle }: ReviewsSectionProps)
           </div>
           <h4 className="font-extrabold text-sm text-brand-slate-dark">No reviews yet</h4>
           <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Be the first customer to review this product and share your feedback!
+            Only verified buyers who have purchased this product can leave a review after order delivery.
           </p>
-          <button
-            onClick={() => setIsWriteReviewOpen(true)}
-            className="inline-block bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-2.5 rounded-xl uppercase tracking-wider transition-all"
-          >
-            WRITE A REVIEW
-          </button>
         </div>
       )}
-
-      {/* Review Submission Modal */}
-      <WriteReviewModal
-        isOpen={isWriteReviewOpen}
-        productId={productId}
-        productTitle={productTitle}
-        onClose={() => {
-          setIsWriteReviewOpen(false);
-          refetch();
-        }}
-      />
     </section>
   );
 }
