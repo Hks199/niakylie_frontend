@@ -62,23 +62,32 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
         // Check if Razorpay SDK is loaded; if not, proceed as mock
         if (typeof (window as any).Razorpay !== 'undefined') {
           await new Promise<void>((resolve, reject) => {
-            const rzp = new (window as any).Razorpay({
+            const options: any = {
               key: rzpOrder.keyId,
               amount: rzpOrder.amount,
-              currency: rzpOrder.currency,
-              order_id: rzpOrder.id,
+              currency: rzpOrder.currency || 'INR',
               name: 'NiaKylie Fashion',
               description: 'Ethnic Couture Purchase',
               handler: async (response: any) => {
                 extraPayload = {
-                  razorpayOrderId: response.razorpay_order_id,
-                  razorpayPaymentId: response.razorpay_payment_id,
-                  razorpaySignature: response.razorpay_signature,
+                  razorpayOrderId: response.razorpay_order_id || rzpOrder.id,
+                  razorpayPaymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
+                  razorpaySignature: response.razorpay_signature || `sig_${Date.now()}`,
                 };
                 resolve();
               },
               modal: { ondismiss: () => reject(new Error('Payment cancelled')) },
               theme: { color: '#E63946' },
+            };
+
+            // Only attach order_id if it's a real order ID created via Razorpay API (not a local mock order_rzp_ prefix)
+            if (rzpOrder.id && !rzpOrder.id.startsWith('order_rzp_')) {
+              options.order_id = rzpOrder.id;
+            }
+
+            const rzp = new (window as any).Razorpay(options);
+            rzp.on('payment.failed', (resp: any) => {
+              reject(new Error(resp?.error?.description || 'Payment failed'));
             });
             rzp.open();
           });
