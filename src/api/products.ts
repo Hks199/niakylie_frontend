@@ -263,11 +263,23 @@ export const productsApi = {
         params?.isBestSeller
       );
 
-      const finalItems = normalizedItems.length > 0
-        ? normalizedItems
-        : (hasFilterParams ? [] : MOCK_PRODUCTS);
+      const getBrandStr = (b: any): string => (typeof b === 'string' ? b : b?.name || '');
 
-      const total = response?.meta?.total ?? response?.total ?? (normalizedItems.length > 0 ? normalizedItems.length : finalItems.length);
+      let finalItems = normalizedItems;
+      if (normalizedItems.length === 0) {
+        if (params?.brand) {
+          const bInput = params.brand.toLowerCase();
+          const matched = MOCK_PRODUCTS.filter((p) => {
+            const bStr = getBrandStr(p.brand).toLowerCase();
+            return bStr.includes(bInput) || bInput.includes(bStr);
+          });
+          finalItems = matched.length > 0 ? matched : [];
+        } else if (!hasFilterParams) {
+          finalItems = MOCK_PRODUCTS;
+        }
+      }
+
+      const total = response?.meta?.total ?? response?.total ?? finalItems.length;
       const page = params?.page || 1;
       const limit = params?.limit || 12;
       const totalPages = Math.ceil(total / limit) || 1;
@@ -280,9 +292,18 @@ export const productsApi = {
       };
     } catch (error) {
       console.warn('GET /products failed, returning fallback mock products:', error);
+      let items = MOCK_PRODUCTS;
+      if (params?.brand) {
+        const bInput = params.brand.toLowerCase();
+        const matched = MOCK_PRODUCTS.filter((p) => {
+          const bStr = (typeof p.brand === 'string' ? p.brand : (p.brand as any)?.name || '').toLowerCase();
+          return bStr.includes(bInput) || bInput.includes(bStr);
+        });
+        if (matched.length > 0) items = matched;
+      }
       return {
-        items: MOCK_PRODUCTS,
-        total: MOCK_PRODUCTS.length,
+        items,
+        total: items.length,
         page: 1,
         totalPages: 1,
       };

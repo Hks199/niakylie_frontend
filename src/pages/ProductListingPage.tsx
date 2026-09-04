@@ -144,7 +144,14 @@ export function ProductListingPage() {
 
   const { allCategories } = useCategories();
   const currentCategory = filters.categories[0];
-  const currentTitle = searchQuery ? `Search Results for "${searchQuery}"` : currentCategory || 'All Ethnic Couture';
+  const currentBrand = filters.brands[0];
+  const currentTitle = searchQuery
+    ? `Search Results for "${searchQuery}"`
+    : currentBrand
+    ? `${currentBrand} Collection`
+    : currentCategory
+    ? allCategories.find((c) => c.slug === currentCategory || c.name === currentCategory)?.name || currentCategory
+    : 'All Ethnic Couture';
   const breadcrumbs = buildBreadcrumbTrail(currentCategory, allCategories);
 
   return (
