@@ -9,6 +9,25 @@ interface AdminDataTablesProps {
   showTopProductsAndCustomers?: boolean;
 }
 
+const resolveProductImage = (item: any): string => {
+  if (!item) return '';
+  const imgPath =
+    item.image ||
+    item.imageUrl ||
+    (Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null) ||
+    item.productImage ||
+    item.thumbnail ||
+    item.product?.image ||
+    item.product?.imageUrl ||
+    (Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null);
+
+  if (!imgPath || typeof imgPath !== 'string') return '';
+  if (imgPath.startsWith('http://') || imgPath.startsWith('https://') || imgPath.startsWith('data:') || imgPath.startsWith('blob:')) {
+    return imgPath;
+  }
+  return `http://localhost:3000${imgPath.startsWith('/') ? imgPath : '/' + imgPath}`;
+};
+
 export function AdminDataTables({
   showInventoryAlerts = true,
   showTopProductsAndCustomers = true,
@@ -83,36 +102,69 @@ export function AdminDataTables({
             <table className="w-full text-left border-collapse min-w-[550px]">
               <thead>
                 <tr className="border-b border-gray-100 text-[9px] sm:text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">
-                  <th className="pb-2.5 pl-1.5">Product</th>
-                  <th className="pb-2.5">SKU</th>
-                  <th className="pb-2.5">Available Stock</th>
-                  <th className="pb-2.5">Reorder Threshold</th>
-                  <th className="pb-2.5">Status</th>
-                  <th className="pb-2.5 pr-1.5 text-right">Action</th>
+                  <th className="py-2 sm:py-3 pl-1">Product Info</th>
+                  <th className="py-2 sm:py-3 px-2">SKU</th>
+                  <th className="py-2 sm:py-3 px-2 text-center">Available</th>
+                  <th className="py-2 sm:py-3 px-2 text-center">Threshold</th>
+                  <th className="py-2 sm:py-3 px-2 text-center">Status</th>
+                  <th className="py-2 sm:py-3 pr-1 text-right">Quick Restock</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50 text-[11px] sm:text-xs font-semibold">
+              <tbody className="divide-y divide-gray-50 text-xs font-medium text-slate-700">
                 {allAlertItems.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-6 text-center text-slate-400 text-[11px] sm:text-xs font-medium">
-                      All inventory levels are healthy! No restock alerts needed right now.
+                    <td colSpan={6} className="py-8 text-center text-slate-400 text-xs font-semibold">
+                      ✓ Healthy stock levels! No inventory alerts recorded.
                     </td>
                   </tr>
                 ) : (
                   allAlertItems.map((item) => {
-                    const isOut = item.availableQuantity === 0;
+                    const isOut = item.availableQuantity <= 0;
+                    const itemImg = resolveProductImage(item);
                     return (
-                      <tr key={item.inventoryId || item.sku} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="py-2.5 pl-1.5 flex items-center space-x-2 sm:space-x-2.5">
-                          <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-slate-100 border border-gray-100 flex items-center justify-center flex-shrink-0 text-brand-slate font-bold text-[10px] sm:text-xs">
-                            {item.productName ? item.productName[0] : 'P'}
+                      <tr key={item.sku} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-2.5 pl-1">
+                          <div className="flex items-center space-x-2.5">
+                            {itemImg ? (
+                              <img
+                                src={itemImg}
+                                alt={item.productName}
+                                className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = 'none';
+                                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                  if (fallback) fallback.style.display = 'flex';
+                                }}
+                              />
+                            ) : null}
+                            <div
+                              className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 text-[9px] sm:text-xs font-extrabold flex-shrink-0"
+                              style={{ display: itemImg ? 'none' : 'flex' }}
+                            >
+                              NK
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate max-w-[100px] sm:max-w-none">
+                                {item.productName}
+                              </p>
+                              {item.attributes && (
+                                <p className="text-[9px] sm:text-[10px] text-slate-400 font-semibold truncate">
+                                  {Object.entries(item.attributes).map(([k, v]) => `${k}: ${v}`).join(' · ')}
+                                </p>
+                              )}
+                            </div>
                           </div>
-                          <span className="font-extrabold text-brand-slate-dark text-[11px] sm:text-xs truncate max-w-[100px] sm:max-w-none">{item.productName || item.sku}</span>
                         </td>
-                        <td className="py-2.5 text-slate-500 font-mono text-[9px] sm:text-[11px]">{item.sku}</td>
-                        <td className="py-2.5 font-extrabold text-brand-slate-dark text-[10px] sm:text-xs">{item.availableQuantity} units</td>
-                        <td className="py-2.5 text-slate-400 text-[10px] sm:text-xs">{item.lowStockThreshold ?? 5} units</td>
-                        <td className="py-2.5">
+                        <td className="py-2.5 px-2 text-[9px] sm:text-[11px] font-mono text-slate-500 font-bold whitespace-nowrap">
+                          {item.sku}
+                        </td>
+                        <td className="py-2.5 px-2 text-center text-[10px] sm:text-xs font-extrabold text-rose-600">
+                          {item.availableQuantity}
+                        </td>
+                        <td className="py-2.5 px-2 text-center text-[10px] sm:text-xs font-semibold text-slate-400">
+                          {item.lowStockThreshold ?? 5}
+                        </td>
+                        <td className="py-2.5 px-2 text-center whitespace-nowrap">
                           <span
                             className={`text-[8px] sm:text-[9px] font-extrabold uppercase px-1.5 sm:px-2 py-0.5 rounded-full ${
                               isOut ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
@@ -121,7 +173,7 @@ export function AdminDataTables({
                             {isOut ? 'Out of Stock' : 'Low Stock'}
                           </span>
                         </td>
-                        <td className="py-2.5 pr-1.5 text-right">
+                        <td className="py-2.5 pr-1 text-right">
                           <button
                             onClick={() => handleRestock(item)}
                             disabled={restockingSku === item.sku}
@@ -169,30 +221,44 @@ export function AdminDataTables({
               {topProducts.length === 0 ? (
                 <p className="text-[11px] sm:text-xs text-slate-400 py-4 text-center font-semibold">No product sales recorded yet.</p>
               ) : (
-                topProducts.map((prod, index) => (
-                  <div key={prod.productId || prod.sku} className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors border border-gray-100/80">
-                    <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                      <span className="text-[10px] sm:text-xs font-black text-slate-400 w-4 text-center flex-shrink-0">
-                        #{index + 1}
-                      </span>
-                      {prod.image ? (
-                        <img src={prod.image} alt={prod.productName} className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0" />
-                      ) : (
-                        <div className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl bg-slate-200 flex items-center justify-center font-bold text-slate-500 text-[10px] sm:text-xs flex-shrink-0">
+                topProducts.map((prod, index) => {
+                  const prodImg = resolveProductImage(prod);
+                  return (
+                    <div key={prod.productId || prod.sku} className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors border border-gray-100/80">
+                      <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                        <span className="text-[10px] sm:text-xs font-black text-slate-400 w-4 text-center flex-shrink-0">
+                          #{index + 1}
+                        </span>
+                        {prodImg ? (
+                          <img
+                            src={prodImg}
+                            alt={prod.productName}
+                            className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl bg-slate-200 flex items-center justify-center font-bold text-slate-500 text-[10px] sm:text-xs flex-shrink-0"
+                          style={{ display: prodImg ? 'none' : 'flex' }}
+                        >
                           NK
                         </div>
-                      )}
-                      <div className="min-w-0">
-                        <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate">{prod.productName}</p>
-                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate">{prod.sku}</p>
+                        <div className="min-w-0">
+                          <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate">{prod.productName}</p>
+                          <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate">{prod.sku}</p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0 ml-2">
+                        <p className="text-[11px] sm:text-xs font-extrabold text-brand-crimson">₹{(prod.totalRevenue || 0).toLocaleString('en-IN')}</p>
+                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-semibold">{prod.totalQuantitySold} sold</p>
                       </div>
                     </div>
-                    <div className="text-right flex-shrink-0 ml-2">
-                      <p className="text-[11px] sm:text-xs font-extrabold text-brand-crimson">₹{(prod.totalRevenue || 0).toLocaleString('en-IN')}</p>
-                      <p className="text-[9px] sm:text-[10px] text-slate-400 font-semibold">{prod.totalQuantitySold} sold</p>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

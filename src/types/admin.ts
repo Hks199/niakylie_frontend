@@ -43,6 +43,11 @@ export interface TopProductItem {
   productName: string;
   sku: string;
   image?: string;
+  imageUrl?: string;
+  images?: string[];
+  productImage?: string;
+  thumbnail?: string;
+  product?: any;
   totalQuantitySold: number;
   totalRevenue: number;
   orderCount?: number;
@@ -70,10 +75,14 @@ export interface InventoryAlertItem {
   productId: string;
   productName?: string;
   sku: string;
+  image?: string;
+  imageUrl?: string;
+  images?: string[];
   availableQuantity: number;
   reservedQuantity?: number;
   lowStockThreshold?: number;
   status?: 'OUT_OF_STOCK' | 'LOW_STOCK';
+  attributes?: Record<string, string>;
 }
 
 export interface InventoryAlertsReport {
