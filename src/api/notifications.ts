@@ -79,4 +79,11 @@ export const notificationsApi = {
   updateNotificationPreferences: async (preferences: NotificationPreferences): Promise<any> => {
     return apiClient.patch('/users/profile/notifications', preferences);
   },
+
+  /**
+   * Send test push notification
+   */
+  testPushNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification; pushEnabled: boolean }> => {
+    return apiClient.post('/notifications/test-push', {});
+  },
 };

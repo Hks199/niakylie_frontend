@@ -14,6 +14,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Filter,
+  BellRing,
+  Send,
 } from 'lucide-react';
 import { notificationsApi, AppNotification, NotificationPreferences } from '../../api/notifications';
 import { profileApi } from '../../api/profile';
@@ -25,6 +27,16 @@ export function NotificationsPage() {
   const [filterType, setFilterType] = useState<string>('all');
   const [prefSuccess, setPrefSuccess] = useState('');
   const [prefError, setPrefError] = useState('');
+  const [permissionStatus, setPermissionStatus] = useState<string>('default');
+
+  // Check browser notification permission status on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setPermissionStatus(Notification.permission);
+    } else {
+      setPermissionStatus('unsupported');
+    }
+  }, []);
 
   // 1. Fetch user notifications
   const { data: notificationsData, isLoading: loadingNotifications } = useQuery({
@@ -94,17 +106,85 @@ export function NotificationsPage() {
           setUser({ ...user, notificationPreferences: updatedUser.notificationPreferences });
         }
       }
-      setTimeout(() => setPrefSuccess(''), 3000);
+      setTimeout(() => setPrefSuccess(''), 4000);
     },
     onError: (err: any) => {
       setPrefError(err?.message || 'Failed to update preferences.');
+      setTimeout(() => setPrefError(''), 4000);
     },
   });
 
-  const handleTogglePref = (key: keyof NotificationPreferences) => {
-    const updated = { ...preferences, [key]: !preferences[key] };
+  const testPushMutation = useMutation({
+    mutationFn: () => notificationsApi.testPushNotification(),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+      setPrefSuccess('Test push notification generated! See notification list & browser pop-up.');
+
+      // Fire Web Browser Native Notification popup
+      if (typeof window !== 'undefined' && 'Notification' in window) {
+        if (Notification.permission === 'granted') {
+          new Notification(res.notification?.title || '🔔 Push Notification Test', {
+            body: res.notification?.message || 'Push notifications are working perfectly on your device!',
+            icon: '/favicon.ico',
+          });
+        } else if (Notification.permission === 'default') {
+          Notification.requestPermission().then((perm) => {
+            setPermissionStatus(perm);
+            if (perm === 'granted') {
+              new Notification(res.notification?.title || '🔔 Push Notification Test', {
+                body: res.notification?.message || 'Push notifications are working perfectly on your device!',
+                icon: '/favicon.ico',
+              });
+            }
+          });
+        }
+      }
+      setTimeout(() => setPrefSuccess(''), 5000);
+    },
+    onError: (err: any) => {
+      setPrefError(err?.message || 'Failed to send test push notification.');
+      setTimeout(() => setPrefError(''), 5000);
+    },
+  });
+
+  const handleTogglePref = async (key: keyof NotificationPreferences) => {
+    const nextValue = !preferences[key];
+
+    if (key === 'push' && nextValue) {
+      if (typeof window !== 'undefined' && 'Notification' in window) {
+        if (Notification.permission === 'default') {
+          const perm = await Notification.requestPermission();
+          setPermissionStatus(perm);
+          if (perm === 'denied') {
+            setPrefError('Push notifications are blocked in your browser. Please update browser site permissions.');
+            setTimeout(() => setPrefError(''), 5000);
+          }
+        } else if (Notification.permission === 'denied') {
+          setPermissionStatus('denied');
+          setPrefError('Push notifications are blocked in your browser. Please update browser site permissions.');
+          setTimeout(() => setPrefError(''), 5000);
+        }
+      }
+    }
+
+    const updated = { ...preferences, [key]: nextValue };
     setPreferences(updated);
     updatePrefMutation.mutate(updated);
+  };
+
+  const handleRequestBrowserPermission = async () => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      const perm = await Notification.requestPermission();
+      setPermissionStatus(perm);
+      if (perm === 'granted') {
+        setPrefSuccess('Browser notification permission granted!');
+        setTimeout(() => setPrefSuccess(''), 4000);
+      } else if (perm === 'denied') {
+        setPrefError('Permission denied. Please unblock notifications in your browser settings bar.');
+        setTimeout(() => setPrefError(''), 5000);
+      }
+    }
   };
 
   const notifications: AppNotification[] = Array.isArray(notificationsData)
@@ -232,6 +312,11 @@ export function NotificationsPage() {
                         {!n.isRead && (
                           <span className="w-2 h-2 rounded-full bg-brand-crimson animate-pulse" />
                         )}
+                        {n.channel === 'push' && (
+                          <span className="text-[9px] font-extrabold uppercase bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">
+                            PUSH
+                          </span>
+                        )}
                       </h4>
                       <span className="text-[10px] text-slate-400 whitespace-nowrap">
                         {n.createdAt
@@ -262,14 +347,14 @@ export function NotificationsPage() {
                         disabled={deleteMutation.isPending}
                         className="text-[11px] font-medium text-slate-400 hover:text-rose-600 flex items-center space-x-1"
                       >
-                      <Trash2 className="w-3 h-3" />
-                      <span>Delete</span>
-                    </button>
+                        <Trash2 className="w-3 h-3" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
           </div>
         )}
       </div>
@@ -341,25 +426,83 @@ export function NotificationsPage() {
           </div>
 
           {/* Push Channel */}
-          <div className="flex items-center justify-between pt-3">
-            <div className="flex items-start space-x-3">
-              <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl mt-0.5">
-                <Smartphone className="w-5 h-5" />
+          <div className="flex flex-col space-y-3 pt-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-start space-x-3">
+                <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl mt-0.5">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <p className="font-extrabold text-xs text-brand-slate-dark">In-App & Push Notifications</p>
+
+                    {/* Browser Push Permission Status Badge */}
+                    {permissionStatus === 'granted' && (
+                      <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-md flex items-center space-x-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        <span>Permission Granted</span>
+                      </span>
+                    )}
+                    {permissionStatus === 'denied' && (
+                      <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-md flex items-center space-x-1">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>Permission Blocked</span>
+                      </span>
+                    )}
+                    {permissionStatus === 'default' && (
+                      <span className="text-[10px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-md flex items-center space-x-1">
+                        <BellRing className="w-3 h-3" />
+                        <span>Permission Required</span>
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Price drop alerts, new collection drops, and exclusive discount coupons.
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-extrabold text-xs text-brand-slate-dark">In-App & Push Notifications</p>
-                <p className="text-[11px] text-slate-500">Price drop alerts, new collection drops, and exclusive discount coupons.</p>
-              </div>
+
+              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                <input
+                  type="checkbox"
+                  checked={preferences.push}
+                  onChange={() => handleTogglePref('push')}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-crimson"></div>
+              </label>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={preferences.push}
-                onChange={() => handleTogglePref('push')}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-crimson"></div>
-            </label>
+
+            {/* Sub-actions for Push Notifications */}
+            <div className="flex flex-wrap items-center gap-2 pl-11 pt-1">
+              {permissionStatus === 'default' && (
+                <button
+                  onClick={handleRequestBrowserPermission}
+                  className="text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3 py-1.5 rounded-xl transition-all flex items-center space-x-1.5"
+                >
+                  <BellRing className="w-3.5 h-3.5" />
+                  <span>Grant Browser Permission</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => testPushMutation.mutate()}
+                disabled={testPushMutation.isPending || !preferences.push}
+                className={`text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
+                  preferences.push
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-sm hover:shadow'
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                }`}
+                title={!preferences.push ? 'Enable Push Notifications to test' : 'Send a test push notification'}
+              >
+                {testPushMutation.isPending ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Send className="w-3.5 h-3.5" />
+                )}
+                <span>Send Test Push Notification</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
