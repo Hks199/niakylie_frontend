@@ -36,7 +36,7 @@ export function Header() {
         <AnnouncementBar />
 
         {/* Main Navbar */}
-        <div className="glass-nav border-b border-gray-200/80 shadow-sm transition-all overflow-hidden">
+        <div className="glass-nav border-b border-gray-200/80 shadow-sm transition-all">
           <div className="max-w-7xl mx-auto px-1.5 sm:px-6 lg:px-8 h-14 sm:h-20 flex items-center justify-between gap-1 sm:gap-4">
             {/* Left: Mobile Hamburger & Logo */}
             <div className="flex items-center space-x-0.5 sm:space-x-4 flex-shrink-0">

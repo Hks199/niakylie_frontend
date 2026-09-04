@@ -33,8 +33,12 @@ export function ProfileDropdown({ onOpenAuthModal }: ProfileDropdownProps) {
     <div ref={dropdownRef} className="relative">
       {/* Trigger Icon Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex flex-col items-center group text-brand-slate hover:text-brand-crimson transition-colors focus:outline-none"
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen((prev) => !prev);
+        }}
+        className="flex flex-col items-center group text-brand-slate hover:text-brand-crimson transition-colors focus:outline-none cursor-pointer"
         aria-label="Profile Account"
       >
         <div className="p-1 sm:p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
@@ -48,11 +52,11 @@ export function ProfileDropdown({ onOpenAuthModal }: ProfileDropdownProps) {
         <>
           {/* Mobile Backdrop Overlay */}
           <div
-            className="fixed inset-0 bg-slate-950/30 backdrop-blur-[1px] z-40 sm:hidden"
+            className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-[90] sm:hidden"
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-72 w-auto bg-white/95 backdrop-blur-xl border border-gray-100 shadow-2xl rounded-2xl p-3.5 sm:p-4 z-50 animate-in fade-in zoom-in-95 duration-150">
+          <div className="fixed left-2 right-2 top-14 sm:top-full sm:mt-2 sm:left-auto sm:right-0 sm:w-72 w-auto bg-white shadow-2xl rounded-2xl p-3.5 sm:p-4 z-[100] border border-gray-100 animate-in fade-in zoom-in-95 duration-150">
             {isAuthenticated ? (
               /* Authenticated User Menu */
               <div>
@@ -162,11 +166,12 @@ export function ProfileDropdown({ onOpenAuthModal }: ProfileDropdownProps) {
                   <p className="text-[11px] sm:text-xs text-slate-500">To access orders, wishlist & checkout seamlessly</p>
                 </div>
                 <button
+                  type="button"
                   onClick={() => {
                     setIsOpen(false);
                     onOpenAuthModal();
                   }}
-                  className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-bold text-[11px] sm:text-xs py-2 sm:py-2.5 rounded-xl shadow-md transition-all uppercase tracking-wider"
+                  className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-bold text-[11px] sm:text-xs py-2 sm:py-2.5 rounded-xl shadow-md transition-all uppercase tracking-wider cursor-pointer"
                 >
                   LOGIN / REGISTER
                 </button>
