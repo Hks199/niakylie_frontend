@@ -143,9 +143,13 @@ export function AdminOnlinePaymentDiscountCard() {
               </label>
               <select
                 value={config.discountType}
-                onChange={(e) =>
-                  setConfig({ ...config, discountType: e.target.value as 'PERCENTAGE' | 'FLAT' })
-                }
+                onChange={(e) => {
+                  const newType = e.target.value as 'PERCENTAGE' | 'FLAT';
+                  const newBadge = newType === 'PERCENTAGE'
+                    ? `EXTRA ${config.discountValue}% OFF ON ONLINE PAYMENTS`
+                    : `EXTRA ₹${config.discountValue} OFF ON ONLINE PAYMENTS`;
+                  setConfig({ ...config, discountType: newType, badgeText: newBadge });
+                }}
                 className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-emerald-400 outline-none focus:border-emerald-500 cursor-pointer"
               >
                 <option value="PERCENTAGE">PERCENTAGE (% OFF)</option>
@@ -162,7 +166,13 @@ export function AdminOnlinePaymentDiscountCard() {
                 min="0"
                 required
                 value={config.discountValue}
-                onChange={(e) => setConfig({ ...config, discountValue: Number(e.target.value) })}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  const newBadge = config.discountType === 'PERCENTAGE'
+                    ? `EXTRA ${val}% OFF ON ONLINE PAYMENTS`
+                    : `EXTRA ₹${val} OFF ON ONLINE PAYMENTS`;
+                  setConfig({ ...config, discountValue: val, badgeText: newBadge });
+                }}
                 className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-black text-amber-300 outline-none focus:border-emerald-500"
               />
             </div>

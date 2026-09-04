@@ -192,11 +192,17 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
     }
   };
 
+  const displayBadgeHeading = discountConfig
+    ? (discountConfig.discountType === 'PERCENTAGE'
+        ? `EXTRA ${discountConfig.discountValue}% OFF ON ONLINE PAYMENTS`
+        : `EXTRA ₹${discountConfig.discountValue} OFF ON ONLINE PAYMENTS`)
+    : 'EXTRA DISCOUNT AVAILABLE';
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-extrabold text-brand-slate-dark">Choose Payment Method</h2>
-        {discountConfig?.isEnabled && (
+        {isDiscountEnabled && (
           <span className="flex items-center space-x-1 bg-gradient-to-r from-amber-500 to-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
             <Zap className="w-3 h-3 fill-current" />
             <span>Online Payment Extra Discount Active</span>
@@ -205,7 +211,7 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
       </div>
 
       {/* Online Discount Highlight Banner */}
-      {discountConfig?.isEnabled && onlineDiscountAmount > 0 && (
+      {isDiscountEnabled && onlineDiscountAmount > 0 && (
         <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between border border-emerald-500/30">
           <div className="flex items-center space-x-3">
             <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-md">
@@ -213,10 +219,10 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
             </div>
             <div>
               <p className="text-xs font-black uppercase tracking-wider text-amber-200">
-                {discountConfig.badgeText || 'EXTRA DISCOUNT AVAILABLE'}
+                {displayBadgeHeading}
               </p>
               <p className="text-xs font-medium text-emerald-50 mt-0.5">
-                {discountConfig.description || 'Pay via UPI or Cards to get extra instant discount'}
+                {discountConfig?.description || 'Pay via UPI or Cards to get extra instant discount'}
               </p>
             </div>
           </div>
@@ -249,10 +255,14 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                     <p className={`text-sm font-extrabold ${isSelected ? 'text-brand-crimson' : 'text-brand-slate-dark'}`}>
                       {opt.label}
                     </p>
-                    {isOnlineOption && discountConfig?.isEnabled && onlineDiscountAmount > 0 ? (
+                    {isOnlineOption && isDiscountEnabled && onlineDiscountAmount > 0 ? (
                       <span className="text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full uppercase flex items-center space-x-1">
                         <Zap className="w-2.5 h-2.5 text-emerald-600 fill-current" />
-                        <span>SAVE {formattedDiscountAmount} EXTRA</span>
+                        <span>
+                          {discountConfig?.discountType === 'PERCENTAGE'
+                            ? `SAVE ${discountConfig.discountValue}% EXTRA (-${formattedDiscountAmount})`
+                            : `SAVE ${formattedDiscountAmount} EXTRA`}
+                        </span>
                       </span>
                     ) : opt.badge ? (
                       <span className="text-[9px] font-extrabold bg-brand-crimson/10 text-brand-crimson px-1.5 py-0.5 rounded uppercase">
