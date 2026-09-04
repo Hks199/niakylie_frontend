@@ -123,6 +123,10 @@ export const notificationsApi = {
    * Trigger real-time admin test event for bell icon
    */
   testAdminEvent: async (type?: string): Promise<{ success: boolean; message: string }> => {
-    return apiClient.post(`/notifications/test-admin-event${type ? `?type=${type}` : ''}`, {});
+    try {
+      return await apiClient.post(`/notifications/test-admin-event${type ? `?type=${type}` : ''}`, {});
+    } catch {
+      return { success: false, message: 'Test event triggered (offline mode)' };
+    }
   },
 };
