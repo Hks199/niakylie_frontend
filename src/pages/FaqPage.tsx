@@ -235,7 +235,7 @@ export function FaqPage() {
             </a>
 
             <a
-              href="/contact-us"
+              href="/pages/contact-us"
               className="flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-md transition-all uppercase tracking-wider group"
             >
               <Mail className="w-4 h-4" />

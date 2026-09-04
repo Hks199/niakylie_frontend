@@ -146,9 +146,9 @@ export function Footer() {
               <li><a href="/pages/contact-us" className="hover:text-brand-crimson transition-colors">Contact Us</a></li>
               <li><a href="/faqs" className="hover:text-brand-crimson transition-colors">Frequently Asked Questions</a></li>
               <li><a href="/pages/terms-and-conditions" className="hover:text-brand-crimson transition-colors">Terms of Use</a></li>
-              <li><a href="/pages/privacy-policy" className="hover:text-brand-crimson transition-colors">Privacy Policy</a></li>
               <li><a href="/pages/refund-policy" className="hover:text-brand-crimson transition-colors">Returns & Refunds</a></li>
-              <li><a href="/pages/shipping-policy" className="hover:text-brand-crimson transition-colors">Track Order Status</a></li>
+              <li><a href="/pages/shipping-policy" className="hover:text-brand-crimson transition-colors">Shipping Policy</a></li>
+              <li><a href="/account/orders" className="hover:text-brand-crimson transition-colors font-bold text-slate-700">Track Order Status</a></li>
             </ul>
           </div>
 

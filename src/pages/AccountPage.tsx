@@ -21,6 +21,12 @@ export function AccountPage() {
   const [activePage, setActivePage] = useState(getInitialPage(window.location.pathname));
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
 
+  const handleNavigate = (page: string) => {
+    setActiveOrderId(null);
+    setActivePage(page);
+    window.history.pushState({}, '', `/account/${page}`);
+  };
+
   const handleViewOrderDetails = (orderId: string) => {
     setActiveOrderId(orderId);
     setActivePage('order-detail');
@@ -29,6 +35,7 @@ export function AccountPage() {
   const handleBackToOrders = () => {
     setActiveOrderId(null);
     setActivePage('orders');
+    window.history.pushState({}, '', '/account/orders');
   };
 
   const renderContent = () => {
@@ -61,7 +68,7 @@ export function AccountPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Sidebar (3 cols) */}
         <div className="lg:col-span-3 sticky top-24">
-          <AccountSidebar activePage={activePage} onNavigate={setActivePage} />
+          <AccountSidebar activePage={activePage} onNavigate={handleNavigate} />
         </div>
 
         {/* Content Area (9 cols) */}

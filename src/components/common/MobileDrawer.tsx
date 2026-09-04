@@ -242,7 +242,7 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
                 <span>Frequently Asked Questions (FAQs)</span>
               </a>
               <a
-                href="/contact-us"
+                href="/pages/contact-us"
                 onClick={onClose}
                 className="flex items-center space-x-2 text-xs font-bold text-slate-700 hover:text-brand-crimson py-1.5 transition-colors"
               >
