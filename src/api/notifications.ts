@@ -93,4 +93,25 @@ export const notificationsApi = {
   testEmailNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification; emailEnabled: boolean }> => {
     return apiClient.post('/notifications/test-email', {});
   },
+
+  /**
+   * Send test price drop push notification
+   */
+  testPriceDropNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification }> => {
+    return apiClient.post('/notifications/test-price-drop', {});
+  },
+
+  /**
+   * Send test new collection drop push notification
+   */
+  testCollectionDropNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification }> => {
+    return apiClient.post('/notifications/test-collection-drop', {});
+  },
+
+  /**
+   * Send test exclusive coupon push notification
+   */
+  testCouponNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification }> => {
+    return apiClient.post('/notifications/test-coupon', {});
+  },
 };

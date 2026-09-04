@@ -15,6 +15,7 @@ import { BlogListingPage } from './pages/BlogListingPage';
 import { BlogDetailsPage } from './pages/BlogDetailsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { AdminLoginPage } from './pages/AdminLoginPage';
+import { NotificationListener } from './components/common/NotificationListener';
 import { useAuthStore, useCartStore, useWishlistStore } from './store';
 import { checkIsAdmin } from './utils/roleUtils';
 
@@ -114,6 +115,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-brand-bg flex flex-col justify-between">
+      <NotificationListener />
       {!isHideStoreNav && <Header />}
 
       <main className="flex-grow w-full">

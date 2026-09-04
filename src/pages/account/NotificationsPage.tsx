@@ -15,7 +15,6 @@ import {
   AlertCircle,
   Filter,
   BellRing,
-  Send,
 } from 'lucide-react';
 import { notificationsApi, AppNotification, NotificationPreferences } from '../../api/notifications';
 import { profileApi } from '../../api/profile';
@@ -114,53 +113,7 @@ export function NotificationsPage() {
     },
   });
 
-  const testPushMutation = useMutation({
-    mutationFn: () => notificationsApi.testPushNotification(),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-      setPrefSuccess('Test push notification generated! See notification list & browser pop-up.');
 
-      // Fire Web Browser Native Notification popup
-      if (typeof window !== 'undefined' && 'Notification' in window) {
-        if (Notification.permission === 'granted') {
-          new Notification(res.notification?.title || '🔔 Push Notification Test', {
-            body: res.notification?.message || 'Push notifications are working perfectly on your device!',
-            icon: '/favicon.ico',
-          });
-        } else if (Notification.permission === 'default') {
-          Notification.requestPermission().then((perm) => {
-            setPermissionStatus(perm);
-            if (perm === 'granted') {
-              new Notification(res.notification?.title || '🔔 Push Notification Test', {
-                body: res.notification?.message || 'Push notifications are working perfectly on your device!',
-                icon: '/favicon.ico',
-              });
-            }
-          });
-        }
-      }
-      setTimeout(() => setPrefSuccess(''), 5000);
-    },
-    onError: (err: any) => {
-      setPrefError(err?.message || 'Failed to send test push notification.');
-      setTimeout(() => setPrefError(''), 5000);
-    },
-  });
-
-  const testEmailMutation = useMutation({
-    mutationFn: () => notificationsApi.testEmailNotification(),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-      setPrefSuccess(res.message || 'Test email dispatched successfully!');
-      setTimeout(() => setPrefSuccess(''), 5000);
-    },
-    onError: (err: any) => {
-      setPrefError(err?.message || 'Failed to send test email notification.');
-      setTimeout(() => setPrefError(''), 5000);
-    },
-  });
 
   const handleTogglePref = async (key: keyof NotificationPreferences) => {
     const nextValue = !preferences[key];
@@ -396,47 +349,25 @@ export function NotificationsPage() {
 
         <div className="space-y-4 divide-y divide-gray-100">
           {/* Email Channel */}
-          <div className="flex flex-col space-y-3 pt-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-start space-x-3">
-                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl mt-0.5">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="font-extrabold text-xs text-brand-slate-dark">Email Notifications</p>
-                  <p className="text-[11px] text-slate-500">Order invoices, dispatch tracking details, and account security emails.</p>
-                </div>
+          <div className="flex items-center justify-between pt-3">
+            <div className="flex items-start space-x-3">
+              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl mt-0.5">
+                <Mail className="w-5 h-5" />
               </div>
-              <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
-                <input
-                  type="checkbox"
-                  checked={preferences.email}
-                  onChange={() => handleTogglePref('email')}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-crimson"></div>
-              </label>
+              <div>
+                <p className="font-extrabold text-xs text-brand-slate-dark">Email Notifications</p>
+                <p className="text-[11px] text-slate-500">Order invoices, dispatch tracking details, and account security emails.</p>
+              </div>
             </div>
-
-            <div className="flex flex-wrap items-center gap-2 pl-11 pt-1">
-              <button
-                onClick={() => testEmailMutation.mutate()}
-                disabled={testEmailMutation.isPending || !preferences.email}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
-                  preferences.email
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow'
-                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                }`}
-                title={!preferences.email ? 'Enable Email Notifications to test' : 'Send a test email notification'}
-              >
-                {testEmailMutation.isPending ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Send className="w-3.5 h-3.5" />
-                )}
-                <span>Send Test Email Notification</span>
-              </button>
-            </div>
+            <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
+              <input
+                type="checkbox"
+                checked={preferences.email}
+                onChange={() => handleTogglePref('email')}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-crimson"></div>
+            </label>
           </div>
 
           {/* SMS Channel */}
@@ -498,7 +429,7 @@ export function NotificationsPage() {
                     )}
                   </div>
                   <p className="text-[11px] text-slate-500 mt-0.5">
-                    Price drop alerts, new collection drops, and exclusive discount coupons.
+                    Real-time alerts for price drops, new collection releases, order updates, and exclusive discount coupons.
                   </p>
                 </div>
               </div>
@@ -514,36 +445,17 @@ export function NotificationsPage() {
               </label>
             </div>
 
-            {/* Sub-actions for Push Notifications */}
-            <div className="flex flex-wrap items-center gap-2 pl-11 pt-1">
-              {permissionStatus === 'default' && (
+            {permissionStatus === 'default' && (
+              <div className="pl-11 pt-1">
                 <button
                   onClick={handleRequestBrowserPermission}
-                  className="text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3 py-1.5 rounded-xl transition-all flex items-center space-x-1.5"
+                  className="text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3.5 py-1.5 rounded-xl transition-all flex items-center space-x-1.5"
                 >
                   <BellRing className="w-3.5 h-3.5" />
-                  <span>Grant Browser Permission</span>
+                  <span>Grant Browser Notification Permission</span>
                 </button>
-              )}
-
-              <button
-                onClick={() => testPushMutation.mutate()}
-                disabled={testPushMutation.isPending || !preferences.push}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 ${
-                  preferences.push
-                    ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-sm hover:shadow'
-                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                }`}
-                title={!preferences.push ? 'Enable Push Notifications to test' : 'Send a test push notification'}
-              >
-                {testPushMutation.isPending ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Send className="w-3.5 h-3.5" />
-                )}
-                <span>Send Test Push Notification</span>
-              </button>
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
