@@ -15,13 +15,13 @@ export function AdminDataTables({
 }: AdminDataTablesProps) {
   const [restockingSku, setRestockingSku] = useState<string | null>(null);
 
-  const { data: topProducts = [] } = useQuery({
+  const { data: topProducts = [], refetch: refetchTopProducts, isRefetching: isRefetchingTopProducts } = useQuery({
     queryKey: ['admin-top-products'],
     queryFn: () => adminApi.getTopProducts(),
     enabled: showTopProductsAndCustomers,
   });
 
-  const { data: topCustomers = [] } = useQuery({
+  const { data: topCustomers = [], refetch: refetchTopCustomers, isRefetching: isRefetchingTopCustomers } = useQuery({
     queryKey: ['admin-top-customers'],
     queryFn: () => adminApi.getTopCustomers(),
     enabled: showTopProductsAndCustomers,
@@ -146,21 +146,35 @@ export function AdminDataTables({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Top Selling Products Table */}
           <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
-            <div className="flex items-center space-x-2">
-              <Package className="w-4 h-4 sm:w-5 sm:h-5 text-brand-crimson flex-shrink-0" />
-              <div>
-                <h3 className="text-xs sm:text-base font-extrabold text-brand-slate-dark">Top Selling Products</h3>
-                <p className="text-[9px] sm:text-xs text-slate-400">Highest volume revenue generators</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Package className="w-4 h-4 sm:w-5 sm:h-5 text-brand-crimson flex-shrink-0" />
+                <div>
+                  <h3 className="text-xs sm:text-base font-extrabold text-brand-slate-dark">Top Selling Products</h3>
+                  <p className="text-[9px] sm:text-xs text-slate-400">Highest volume revenue generators</p>
+                </div>
               </div>
+
+              <button
+                onClick={() => refetchTopProducts()}
+                disabled={isRefetchingTopProducts}
+                className="p-1.5 sm:p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-200 text-slate-600 transition-colors disabled:opacity-50"
+                title="Refresh Top Products"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefetchingTopProducts ? 'animate-spin text-brand-crimson' : ''}`} />
+              </button>
             </div>
 
             <div className="space-y-2 sm:space-y-3">
               {topProducts.length === 0 ? (
                 <p className="text-[11px] sm:text-xs text-slate-400 py-4 text-center font-semibold">No product sales recorded yet.</p>
               ) : (
-                topProducts.map((prod) => (
-                  <div key={prod.productId || prod.sku} className="flex items-center justify-between p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors">
+                topProducts.map((prod, index) => (
+                  <div key={prod.productId || prod.sku} className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors border border-gray-100/80">
                     <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                      <span className="text-[10px] sm:text-xs font-black text-slate-400 w-4 text-center flex-shrink-0">
+                        #{index + 1}
+                      </span>
                       {prod.image ? (
                         <img src={prod.image} alt={prod.productName} className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0" />
                       ) : (
@@ -170,7 +184,7 @@ export function AdminDataTables({
                       )}
                       <div className="min-w-0">
                         <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate">{prod.productName}</p>
-                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono">{prod.sku}</p>
+                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate">{prod.sku}</p>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 ml-2">
@@ -185,32 +199,48 @@ export function AdminDataTables({
 
           {/* Top Spending Customers Table */}
           <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
-            <div className="flex items-center space-x-2">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0" />
-              <div>
-                <h3 className="text-xs sm:text-base font-extrabold text-brand-slate-dark">Top Spending Customers</h3>
-                <p className="text-[9px] sm:text-xs text-slate-400">Highest lifetime customer value</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 flex-shrink-0" />
+                <div>
+                  <h3 className="text-xs sm:text-base font-extrabold text-brand-slate-dark">Top Spending Customers</h3>
+                  <p className="text-[9px] sm:text-xs text-slate-400">Highest lifetime customer value</p>
+                </div>
               </div>
+
+              <button
+                onClick={() => refetchTopCustomers()}
+                disabled={isRefetchingTopCustomers}
+                className="p-1.5 sm:p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-gray-200 text-slate-600 transition-colors disabled:opacity-50"
+                title="Refresh Top Customers"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isRefetchingTopCustomers ? 'animate-spin text-brand-crimson' : ''}`} />
+              </button>
             </div>
 
             <div className="space-y-2 sm:space-y-3">
               {topCustomers.length === 0 ? (
                 <p className="text-[11px] sm:text-xs text-slate-400 py-4 text-center font-semibold">No customer order history yet.</p>
               ) : (
-                topCustomers.map((cust) => (
-                  <div key={cust.userId || cust.email} className="flex items-center justify-between p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors">
+                topCustomers.map((cust, index) => (
+                  <div key={cust.userId || cust.email} className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors border border-gray-100/80">
                     <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-                      <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-[10px] sm:text-xs flex-shrink-0">
-                        {cust.name ? cust.name[0] : 'C'}
+                      <span className="text-[10px] sm:text-xs font-black text-slate-400 w-4 text-center flex-shrink-0">
+                        #{index + 1}
+                      </span>
+                      <div className="w-7 h-7 sm:w-10 sm:h-10 rounded-full bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-[10px] sm:text-xs flex-shrink-0 border border-indigo-200/60">
+                        {cust.name ? cust.name[0].toUpperCase() : 'C'}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate">{cust.name}</p>
+                        <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate">{cust.name || 'Customer'}</p>
                         <p className="text-[9px] sm:text-[10px] text-slate-400 truncate">{cust.email}</p>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 ml-2">
                       <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark">₹{(cust.totalSpent || 0).toLocaleString('en-IN')}</p>
-                      <p className="text-[9px] sm:text-[10px] text-slate-400 font-semibold">{cust.orderCount} orders</p>
+                      <span className="inline-block text-[8px] sm:text-[9px] font-extrabold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded-full border border-indigo-100">
+                        {cust.orderCount} orders
+                      </span>
                     </div>
                   </div>
                 ))
