@@ -199,12 +199,12 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
     : 'EXTRA DISCOUNT AVAILABLE';
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-extrabold text-brand-slate-dark">Choose Payment Method</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2">
+        <h2 className="text-sm sm:text-lg font-extrabold text-brand-slate-dark">Choose Payment Method</h2>
         {isDiscountEnabled && (
-          <span className="flex items-center space-x-1 bg-gradient-to-r from-amber-500 to-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
-            <Zap className="w-3 h-3 fill-current" />
+          <span className="self-start sm:self-auto flex items-center space-x-1 bg-gradient-to-r from-amber-500 to-emerald-600 text-white text-[9px] sm:text-[10px] font-black px-2 py-0.5 sm:py-1 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+            <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
             <span>Online Payment Extra Discount Active</span>
           </span>
         )}
@@ -212,52 +212,52 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
 
       {/* Online Discount Highlight Banner */}
       {isDiscountEnabled && onlineDiscountAmount > 0 && (
-        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between border border-emerald-500/30">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-md">
-              <Sparkles className="w-5 h-5 text-amber-300" />
+        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-md flex items-center justify-between border border-emerald-500/30 gap-2">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+            <div className="p-2 sm:p-2.5 bg-white/20 rounded-lg sm:rounded-xl backdrop-blur-md flex-shrink-0">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
             </div>
-            <div>
-              <p className="text-xs font-black uppercase tracking-wider text-amber-200">
+            <div className="min-w-0">
+              <p className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-200 truncate">
                 {displayBadgeHeading}
               </p>
-              <p className="text-xs font-medium text-emerald-50 mt-0.5">
+              <p className="text-[9px] sm:text-xs font-medium text-emerald-50 mt-0.5 truncate">
                 {discountConfig?.description || 'Pay via UPI or Cards to get extra instant discount'}
               </p>
             </div>
           </div>
-          <div className="text-right flex-shrink-0 bg-white/10 px-3 py-1.5 rounded-xl backdrop-blur-sm border border-white/20">
-            <p className="text-[10px] uppercase font-bold text-emerald-200">YOU SAVE</p>
-            <p className="text-sm font-black text-amber-300">-{formattedDiscountAmount}</p>
+          <div className="text-right flex-shrink-0 bg-white/10 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl backdrop-blur-sm border border-white/20">
+            <p className="text-[8px] sm:text-[10px] uppercase font-bold text-emerald-200">YOU SAVE</p>
+            <p className="text-xs sm:text-sm font-black text-amber-300">-{formattedDiscountAmount}</p>
           </div>
         </div>
       )}
 
       {/* Payment Option Cards */}
-      <div className="space-y-3">
+      <div className="space-y-2.5 sm:space-y-3">
         {PAYMENT_OPTIONS.map((opt) => {
           const Icon = opt.icon;
           const isSelected = paymentMethod === opt.id;
           const isOnlineOption = opt.id !== 'cod';
           return (
-            <div key={opt.id} className="space-y-3">
+            <div key={opt.id} className="space-y-2 sm:space-y-3">
               <button
                 onClick={() => setPaymentMethod(opt.id)}
-                className={`w-full flex items-center space-x-4 p-4 rounded-2xl border-2 transition-all text-left ${
+                className={`w-full flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all text-left ${
                   isSelected ? 'border-brand-crimson bg-brand-crimson/5 shadow-sm' : 'border-gray-200 bg-white hover:border-gray-300'
                 }`}
               >
-                <div className={`p-2.5 rounded-xl ${isSelected ? 'bg-brand-crimson text-white' : 'bg-slate-100 text-slate-500'}`}>
-                  <Icon className="w-5 h-5" />
+                <div className={`p-2 sm:p-2.5 rounded-lg sm:rounded-xl ${isSelected ? 'bg-brand-crimson text-white' : 'bg-slate-100 text-slate-500'}`}>
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2">
-                    <p className={`text-sm font-extrabold ${isSelected ? 'text-brand-crimson' : 'text-brand-slate-dark'}`}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                    <p className={`text-xs sm:text-sm font-extrabold ${isSelected ? 'text-brand-crimson' : 'text-brand-slate-dark'}`}>
                       {opt.label}
                     </p>
                     {isOnlineOption && isDiscountEnabled && onlineDiscountAmount > 0 ? (
-                      <span className="text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full uppercase flex items-center space-x-1">
-                        <Zap className="w-2.5 h-2.5 text-emerald-600 fill-current" />
+                      <span className="text-[8px] sm:text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 sm:px-2 py-0.5 rounded-full uppercase flex items-center space-x-0.5">
+                        <Zap className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-emerald-600 fill-current" />
                         <span>
                           {discountConfig?.discountType === 'PERCENTAGE'
                             ? `SAVE ${discountConfig.discountValue}% EXTRA (-${formattedDiscountAmount})`
@@ -265,15 +265,15 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                         </span>
                       </span>
                     ) : opt.badge ? (
-                      <span className="text-[9px] font-extrabold bg-brand-crimson/10 text-brand-crimson px-1.5 py-0.5 rounded uppercase">
+                      <span className="text-[8px] sm:text-[9px] font-extrabold bg-brand-crimson/10 text-brand-crimson px-1.5 py-0.5 rounded uppercase">
                         {opt.badge}
                       </span>
                     ) : null}
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-0.5">{opt.desc}</p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-400 mt-0.5">{opt.desc}</p>
                 </div>
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-brand-crimson bg-brand-crimson' : 'border-gray-300'}`}>
-                  {isSelected && <Check className="w-3 h-3 text-white" />}
+                <div className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-brand-crimson bg-brand-crimson' : 'border-gray-300'}`}>
+                  {isSelected && <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />}
                 </div>
               </button>
 
@@ -459,30 +459,30 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
       </div>
 
       {/* Security Badge */}
-      <div className="flex items-center space-x-2 text-xs text-slate-500 bg-slate-50 border border-gray-100 rounded-2xl p-3">
+      <div className="flex items-center space-x-2 text-[10px] sm:text-xs text-slate-500 bg-slate-50 border border-gray-100 rounded-xl sm:rounded-2xl p-2.5 sm:p-3">
         <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
         <span>All payments are 100% secure and encrypted with 256-bit SSL.</span>
       </div>
 
-      {error && <p className="text-xs text-rose-600 font-bold bg-rose-50 p-3 rounded-xl">{error}</p>}
+      {error && <p className="text-[11px] sm:text-xs text-rose-600 font-bold bg-rose-50 p-2.5 sm:p-3 rounded-xl">{error}</p>}
 
       {/* Navigation Buttons */}
-      <div className="flex space-x-3 pt-2">
+      <div className="flex space-x-2.5 sm:space-x-3 pt-1 sm:pt-2">
         <button
           onClick={onBack}
           disabled={loading}
-          className="flex-1 border-2 border-gray-300 hover:border-brand-crimson text-slate-600 hover:text-brand-crimson font-extrabold text-xs py-4 rounded-2xl transition-all uppercase tracking-wider disabled:opacity-50"
+          className="flex-1 border-2 border-gray-300 hover:border-brand-crimson text-slate-600 hover:text-brand-crimson font-extrabold text-[11px] sm:text-xs py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all uppercase tracking-wider disabled:opacity-50"
         >
           ← BACK
         </button>
         <button
           onClick={handlePlaceOrder}
           disabled={loading}
-          className="flex-1 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-4 rounded-2xl shadow-xl uppercase tracking-wider transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
+          className="flex-1 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl uppercase tracking-wider transition-all flex items-center justify-center space-x-1.5 sm:space-x-2 disabled:opacity-70"
         >
           {loading ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
               <span>PROCESSING PAYMENT...</span>
             </>
           ) : (

@@ -68,33 +68,33 @@ export function CouponSection() {
   };
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 space-y-3 shadow-sm">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2 text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
-          <Tag className="w-4 h-4 text-brand-crimson" />
-          <span>APPLY COUPON / PROMO CODE</span>
+    <div className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3 shadow-sm">
+      <div className="flex items-center justify-between gap-1">
+        <div className="flex items-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-xs font-extrabold text-brand-slate-dark uppercase tracking-wider">
+          <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
+          <span className="truncate">PROMO CODE</span>
         </div>
-        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+        <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200 flex-shrink-0">
           SAVINGS INSIDE
         </span>
       </div>
 
       {/* Applied Coupon Display */}
       {appliedCoupon ? (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between animate-in fade-in duration-200">
-          <div className="flex items-center space-x-2">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 sm:p-3 flex items-center justify-between animate-in fade-in duration-200">
+          <div className="flex items-center space-x-2 min-w-0">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-            <div>
-              <span className="text-xs font-extrabold text-emerald-900 uppercase">
+            <div className="min-w-0">
+              <span className="text-[11px] sm:text-xs font-extrabold text-emerald-900 uppercase truncate block">
                 '{appliedCoupon}' APPLIED
               </span>
-              <p className="text-[10px] text-emerald-700">Coupon savings included in total price!</p>
+              <p className="text-[9px] sm:text-[10px] text-emerald-700 truncate">Coupon savings included!</p>
             </div>
           </div>
           <button
             onClick={handleRemove}
             disabled={loading}
-            className="p-1 rounded-full text-emerald-700 hover:text-rose-600 transition-colors"
+            className="p-1 rounded-full text-emerald-700 hover:text-rose-600 transition-colors flex-shrink-0"
             title="Remove Coupon"
           >
             <X className="w-4 h-4" />
@@ -108,31 +108,31 @@ export function CouponSection() {
               e.preventDefault();
               handleApply(code);
             }}
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-1.5 sm:space-x-2"
           >
             <input
               type="text"
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
-              placeholder="ENTER PROMO CODE (e.g. FLAT100)"
-              className="flex-1 bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-mono font-bold uppercase outline-none focus:border-brand-crimson focus:bg-white"
+              placeholder="ENTER PROMO CODE"
+              className="flex-1 bg-slate-50 border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-mono font-bold uppercase outline-none focus:border-brand-crimson focus:bg-white min-w-0"
             />
             <button
               type="submit"
               disabled={loading || !code}
-              className="bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-2 rounded-xl transition-all disabled:opacity-50 flex items-center space-x-1 shadow-sm"
+              className="bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-3 sm:px-5 py-1.5 sm:py-2 rounded-xl transition-all disabled:opacity-50 flex items-center space-x-1 shadow-sm flex-shrink-0"
             >
               {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span>APPLY</span>}
             </button>
           </form>
 
-          {errorMsg && <p className="text-[11px] text-rose-600 font-bold">{errorMsg}</p>}
+          {errorMsg && <p className="text-[10px] sm:text-[11px] text-rose-600 font-bold">{errorMsg}</p>}
 
-          {/* Quick Active Coupon Suggestions (Only if active promo codes exist in backend database) */}
+          {/* Quick Active Coupon Suggestions */}
           {activeCoupons.length > 0 && (
-            <div className="space-y-2 pt-1 border-t border-gray-100">
-              <span className="text-[10px] uppercase font-bold text-slate-400 flex items-center space-x-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <div className="space-y-1.5 pt-1 border-t border-gray-100">
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 flex items-center space-x-1">
+                <Sparkles className="w-3 h-3 text-amber-500" />
                 <span>Available Promo Codes:</span>
               </span>
 
@@ -147,18 +147,18 @@ export function CouponSection() {
                   return (
                     <div
                       key={codeStr}
-                      className="flex items-center justify-between bg-slate-50 border border-gray-100 p-2 rounded-xl hover:border-brand-crimson/30 transition-colors"
+                      className="flex items-center justify-between bg-slate-50 border border-gray-100 p-1.5 sm:p-2 rounded-xl hover:border-brand-crimson/30 transition-colors"
                     >
-                      <div className="flex items-center space-x-2 overflow-hidden">
-                        <span className="text-[11px] font-mono font-black bg-rose-50 text-brand-crimson px-2 py-0.5 rounded-lg border border-rose-200 flex-shrink-0">
+                      <div className="flex items-center space-x-1.5 min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-mono font-black bg-rose-50 text-brand-crimson px-1.5 py-0.5 rounded-lg border border-rose-200 flex-shrink-0">
                           {codeStr}
                         </span>
-                        <span className="text-[11px] text-slate-600 font-medium truncate">
+                        <span className="text-[10px] sm:text-[11px] text-slate-600 font-medium truncate">
                           {descStr}
                         </span>
                       </div>
 
-                      <div className="flex items-center space-x-1.5 flex-shrink-0">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         <button
                           type="button"
                           onClick={() => handleCopy(codeStr)}
@@ -174,7 +174,7 @@ export function CouponSection() {
                         <button
                           type="button"
                           onClick={() => handleApply(codeStr)}
-                          className="text-[10px] font-extrabold bg-brand-crimson hover:bg-brand-crimson-dark text-white px-2.5 py-1 rounded-lg transition-colors shadow-xs uppercase tracking-wider"
+                          className="text-[9px] sm:text-[10px] font-extrabold bg-brand-crimson hover:bg-brand-crimson-dark text-white px-2 py-0.5 sm:py-1 rounded-lg transition-colors shadow-xs uppercase tracking-wider"
                         >
                           Apply
                         </button>

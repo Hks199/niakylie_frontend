@@ -65,8 +65,8 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-extrabold text-brand-slate-dark mb-4">Select Delivery Address</h2>
+    <div className="space-y-3 sm:space-y-4">
+      <h2 className="text-sm sm:text-lg font-extrabold text-brand-slate-dark mb-2 sm:mb-4">Select Delivery Address</h2>
 
       {/* Address Cards */}
       {addresses.map((addr) => {
@@ -75,25 +75,25 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
           <button
             key={addr._id}
             onClick={() => onSelectAddress(addr._id)}
-            className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${
-              isSelected ? 'border-brand-crimson bg-brand-crimson/5 shadow-md' : 'border-gray-200 bg-white hover:border-gray-300'
+            className={`w-full text-left p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all ${
+              isSelected ? 'border-brand-crimson bg-brand-crimson/5 shadow-sm' : 'border-gray-200 bg-white hover:border-gray-300'
             }`}
           >
             <div className="flex items-start justify-between">
-              <div className="space-y-1">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0 flex-1 pr-2">
                 <div className="flex items-center space-x-2">
                   {addr.isDefault && (
-                    <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md uppercase">Default</span>
+                    <span className="text-[9px] sm:text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md uppercase">Default</span>
                   )}
                 </div>
-                <p className="font-bold text-xs text-brand-slate-dark">{addr.street}</p>
-                <p className="text-xs text-slate-500">{addr.city}, {addr.state} — {addr.postalCode}</p>
-                <p className="text-xs text-slate-500">{addr.country}</p>
-                <p className="text-xs text-slate-500">📱 {addr.phone}</p>
+                <p className="font-bold text-[11px] sm:text-xs text-brand-slate-dark truncate">{addr.street}</p>
+                <p className="text-[10px] sm:text-xs text-slate-500 truncate">{addr.city}, {addr.state} — {addr.postalCode}</p>
+                <p className="text-[10px] sm:text-xs text-slate-500">{addr.country}</p>
+                <p className="text-[10px] sm:text-xs text-slate-500">📱 {addr.phone}</p>
               </div>
               {isSelected && (
-                <div className="w-6 h-6 rounded-full bg-brand-crimson flex items-center justify-center flex-shrink-0">
-                  <Check className="w-4 h-4 text-white" />
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-brand-crimson flex items-center justify-center flex-shrink-0">
+                  <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
                 </div>
               )}
             </div>
@@ -105,60 +105,60 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
       {!showAddForm ? (
         <button
           onClick={() => setShowAddForm(true)}
-          className="w-full flex items-center justify-center space-x-2 border-2 border-dashed border-gray-300 hover:border-brand-crimson text-slate-500 hover:text-brand-crimson font-bold text-xs rounded-2xl py-4 transition-all"
+          className="w-full flex items-center justify-center space-x-2 border-2 border-dashed border-gray-300 hover:border-brand-crimson text-slate-500 hover:text-brand-crimson font-bold text-xs rounded-xl sm:rounded-2xl py-3 sm:py-4 transition-all"
         >
           <Plus className="w-4 h-4" />
           <span>+ ADD NEW ADDRESS</span>
         </button>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-extrabold text-sm text-brand-slate-dark">Add New Delivery Address</h3>
+            <h3 className="font-extrabold text-xs sm:text-sm text-brand-slate-dark">Add New Delivery Address</h3>
             <button onClick={() => setShowAddForm(false)} className="text-slate-400 hover:text-slate-700">
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
-          <form onSubmit={handleSaveAddress} className="space-y-3">
+          <form onSubmit={handleSaveAddress} className="space-y-2.5 sm:space-y-3">
             <div>
-              <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Street Address *</label>
+              <label className="block text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1">Street Address *</label>
               <input
                 required
                 placeholder="Flat / Building / Street"
                 value={form.street}
                 onChange={(e) => setForm({ ...form, street: e.target.value })}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson"
+                className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson"
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">City *</label>
+                <label className="block text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1">City *</label>
                 <input
                   required
                   placeholder="City"
                   value={form.city}
                   onChange={(e) => setForm({ ...form, city: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson"
+                  className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Postal Code *</label>
+                <label className="block text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1">Postal Code *</label>
                 <input
                   required
                   placeholder="Pincode"
                   value={form.postalCode}
                   onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson"
+                  className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson"
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">State *</label>
+                <label className="block text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1">State *</label>
                 <select
                   value={form.state}
                   onChange={(e) => setForm({ ...form, state: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson bg-white"
+                  className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson bg-white"
                 >
                   {INDIAN_STATES_AND_UTS.map((s) => (
                     <option key={s} value={s}>
@@ -168,13 +168,13 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
                 </select>
               </div>
               <div>
-                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Phone *</label>
+                <label className="block text-[9px] sm:text-[10px] font-bold uppercase text-slate-400 mb-1">Phone *</label>
                 <input
                   required
                   placeholder="+91 98765 43210"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-brand-crimson"
+                  className="w-full border border-gray-200 rounded-xl px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson"
                 />
               </div>
             </div>
@@ -182,7 +182,7 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-3 rounded-xl uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-md"
+              className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-2.5 sm:py-3 rounded-xl uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-md"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <span>SAVE ADDRESS</span>}
             </button>
@@ -194,7 +194,7 @@ export function AddressStep({ selectedAddressId, onSelectAddress, onNext }: Addr
       <button
         onClick={onNext}
         disabled={!selectedAddressId}
-        className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-3.5 rounded-xl uppercase tracking-wider transition-all shadow-md disabled:opacity-50 mt-4"
+        className="w-full bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-3 sm:py-3.5 rounded-xl uppercase tracking-wider transition-all shadow-md disabled:opacity-50 mt-3 sm:mt-4"
       >
         CONTINUE TO PAYMENT →
       </button>

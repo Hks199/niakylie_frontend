@@ -17,8 +17,8 @@ export function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-slate-dark font-display mb-6">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-4 sm:py-8 animate-in fade-in duration-300">
+      <h1 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-brand-slate-dark font-display mb-3 sm:mb-6">
         Secure Checkout
       </h1>
 
@@ -26,9 +26,9 @@ export function CheckoutPage() {
       <CheckoutStepper currentStep={currentStep} />
 
       {/* 2-Column Checkout Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
         {/* Left: Step Content (8 cols) */}
-        <div className="lg:col-span-8 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
+        <div className="lg:col-span-8 bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm min-w-0">
           {currentStep === 1 && (
             <AddressStep
               selectedAddressId={selectedAddressId}
