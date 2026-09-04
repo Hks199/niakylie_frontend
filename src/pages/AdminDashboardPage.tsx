@@ -83,8 +83,31 @@ export function AdminDashboardPage() {
   const lowStockCount = activeKpis.inventoryAlerts?.lowStockCount || 0;
   const urgentAlertsCount = outOfStockCount + lowStockCount;
 
-  const liveNotifications: AppNotification[] = notifResponse?.data || [];
+  const rawNotifList = Array.isArray(notifResponse)
+    ? notifResponse
+    : Array.isArray((notifResponse as any)?.data)
+    ? (notifResponse as any).data
+    : [];
+
+  const liveNotifications: AppNotification[] = rawNotifList;
   const realUnreadCount = unreadResponse?.unreadCount ?? liveNotifications.filter((n) => !n.isRead).length;
+
+  const ordersNotifs = liveNotifications.filter(
+    (n) =>
+      (n.type || '').toString().toUpperCase() === 'ORDER_UPDATE' ||
+      (n.title || '').toLowerCase().includes('order') ||
+      !!n.metadata?.orderNumber,
+  );
+  const reviewsNotifs = liveNotifications.filter(
+    (n) => (n.title || '').toLowerCase().includes('review') || !!n.metadata?.reviewId,
+  );
+  const alertsNotifs = liveNotifications.filter(
+    (n) =>
+      (n.type || '').toString().toUpperCase() === 'SYSTEM' ||
+      (n.title || '').toLowerCase().includes('stock') ||
+      (n.title || '').toLowerCase().includes('alert') ||
+      !!n.metadata?.stockAlert,
+  );
 
   const totalBadgeCount = realUnreadCount + (urgentAlertsCount > 0 ? 1 : 0);
 
@@ -322,7 +345,7 @@ export function AdminDashboardPage() {
                           : 'text-slate-500 hover:text-slate-800'
                       }`}
                     >
-                      Orders
+                      Orders ({ordersNotifs.length})
                     </button>
                     <button
                       onClick={() => setNotifFilterTab('reviews')}
@@ -332,7 +355,7 @@ export function AdminDashboardPage() {
                           : 'text-slate-500 hover:text-slate-800'
                       }`}
                     >
-                      Reviews
+                      Reviews ({reviewsNotifs.length})
                     </button>
                     <button
                       onClick={() => setNotifFilterTab('alerts')}
@@ -342,7 +365,7 @@ export function AdminDashboardPage() {
                           : 'text-slate-500 hover:text-slate-800'
                       }`}
                     >
-                      Stock Alerts
+                      Stock Alerts ({alertsNotifs.length})
                     </button>
                   </div>
 
@@ -411,25 +434,35 @@ export function AdminDashboardPage() {
                       if (notifFilterTab === 'unread') {
                         filtered = liveNotifications.filter((n) => !n.isRead);
                       } else if (notifFilterTab === 'orders') {
-                        filtered = liveNotifications.filter((n) => (n.type || '').toString().toUpperCase() === 'ORDER_UPDATE');
+                        filtered = ordersNotifs;
                       } else if (notifFilterTab === 'reviews') {
-                        filtered = liveNotifications.filter(
-                          (n) => n.title.toLowerCase().includes('review') || !!n.metadata?.reviewId,
-                        );
+                        filtered = reviewsNotifs;
                       } else if (notifFilterTab === 'alerts') {
-                        filtered = liveNotifications.filter(
-                          (n) =>
-                            (n.type || '').toString().toUpperCase() === 'SYSTEM' ||
-                            n.title.toLowerCase().includes('stock'),
-                        );
+                        filtered = alertsNotifs;
                       }
 
-                      if (filtered.length === 0 && outOfStockCount === 0 && lowStockCount === 0) {
+                      const isStockBannerVisible =
+                        (notifFilterTab === 'all' || notifFilterTab === 'alerts' || notifFilterTab === 'unread') &&
+                        (outOfStockCount > 0 || (notifFilterTab !== 'unread' && lowStockCount > 0));
+
+                      if (filtered.length === 0 && !isStockBannerVisible) {
                         return (
                           <div className="p-6 text-center space-y-1">
                             <CheckCircle2 className="w-6 h-6 text-emerald-500 mx-auto" />
-                            <p className="text-xs font-bold text-slate-700">All caught up!</p>
-                            <p className="text-[10px] text-slate-400">No unread notifications right now.</p>
+                            <p className="text-xs font-bold text-slate-700">
+                              No {notifFilterTab === 'all' ? 'notifications' : notifFilterTab} found
+                            </p>
+                            <p className="text-[10px] text-slate-400">
+                              {notifFilterTab === 'unread'
+                                ? 'All caught up! No unread notifications right now.'
+                                : notifFilterTab === 'orders'
+                                ? 'No order update notifications.'
+                                : notifFilterTab === 'reviews'
+                                ? 'No product review notifications.'
+                                : notifFilterTab === 'alerts'
+                                ? 'No stock alert notifications.'
+                                : 'No notifications to display right now.'}
+                            </p>
                           </div>
                         );
                       }
@@ -437,12 +470,19 @@ export function AdminDashboardPage() {
                       return filtered.map((notif) => {
                         const notifTypeStr = (notif.type || '').toString().toUpperCase();
                         const titleLower = (notif.title || '').toLowerCase();
-                        const isOrder = notifTypeStr === 'ORDER_UPDATE' || titleLower.includes('order');
+                        const isOrder =
+                          notifTypeStr === 'ORDER_UPDATE' ||
+                          titleLower.includes('order') ||
+                          !!notif.metadata?.orderNumber;
                         const isReview = titleLower.includes('review') || !!notif.metadata?.reviewId;
+
+                        const displayMessage = (notif.message || '')
+                          .replace(/^Your order #/, 'Order #')
+                          .replace(/^Your order /, 'Order ');
 
                         return (
                           <div
-                            key={notif._id}
+                            key={notif._id || (notif as any).id}
                             onClick={() => handleNotificationClick(notif)}
                             className={`p-3 transition-colors cursor-pointer flex items-start space-x-2.5 group relative ${
                               !notif.isRead ? 'bg-rose-50/30 hover:bg-rose-50/70 font-semibold' : 'hover:bg-slate-50'
@@ -477,15 +517,17 @@ export function AdminDashboardPage() {
                                 </p>
                               </div>
                               <p className="text-[10px] text-slate-600 leading-tight font-medium mt-0.5 line-clamp-2">
-                                {notif.message}
+                                {displayMessage}
                               </p>
                               <div className="flex items-center space-x-2 mt-1">
                                 <span className="text-[8px] font-bold text-slate-400 flex items-center">
                                   <Clock className="w-2.5 h-2.5 mr-0.5" />
-                                  {new Date(notif.createdAt).toLocaleTimeString([], {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                  })}
+                                  {notif.createdAt
+                                    ? new Date(notif.createdAt).toLocaleTimeString([], {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                      })
+                                    : 'Just now'}
                                 </span>
                                 <span className="text-[9px] font-black text-brand-crimson group-hover:underline">
                                   Open →
@@ -499,39 +541,44 @@ export function AdminDashboardPage() {
                   </div>
 
                   {/* Bottom Actions Footer - Realtime Testing Controls */}
-                  <div className="p-2 bg-slate-50 border-t border-gray-100 grid grid-cols-2 sm:grid-cols-4 gap-1 flex-shrink-0">
-                    <button
-                      onClick={() => handleTriggerTestEvent('order')}
-                      disabled={isTriggeringTest}
-                      className="py-1 px-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                    >
-                      <ShoppingBag className="w-2.5 h-2.5" />
-                      <span>+ Order</span>
-                    </button>
-                    <button
-                      onClick={() => handleTriggerTestEvent('cancel')}
-                      disabled={isTriggeringTest}
-                      className="py-1 px-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                    >
-                      <Ban className="w-2.5 h-2.5" />
-                      <span>+ Cancel</span>
-                    </button>
-                    <button
-                      onClick={() => handleTriggerTestEvent('review')}
-                      disabled={isTriggeringTest}
-                      className="py-1 px-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                    >
-                      <Star className="w-2.5 h-2.5" />
-                      <span>+ Review</span>
-                    </button>
-                    <button
-                      onClick={() => handleTriggerTestEvent('stock')}
-                      disabled={isTriggeringTest}
-                      className="py-1 px-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                    >
-                      <AlertTriangle className="w-2.5 h-2.5" />
-                      <span>+ Stock</span>
-                    </button>
+                  <div className="px-3 py-2 bg-slate-50 border-t border-gray-100 flex flex-col gap-1.5 flex-shrink-0">
+                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">
+                      Simulate Realtime Events:
+                    </span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
+                      <button
+                        onClick={() => handleTriggerTestEvent('order')}
+                        disabled={isTriggeringTest}
+                        className="py-1 px-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
+                      >
+                        <ShoppingBag className="w-2.5 h-2.5" />
+                        <span>+ Order</span>
+                      </button>
+                      <button
+                        onClick={() => handleTriggerTestEvent('cancel')}
+                        disabled={isTriggeringTest}
+                        className="py-1 px-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
+                      >
+                        <Ban className="w-2.5 h-2.5" />
+                        <span>+ Cancel</span>
+                      </button>
+                      <button
+                        onClick={() => handleTriggerTestEvent('review')}
+                        disabled={isTriggeringTest}
+                        className="py-1 px-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
+                      >
+                        <Star className="w-2.5 h-2.5" />
+                        <span>+ Review</span>
+                      </button>
+                      <button
+                        onClick={() => handleTriggerTestEvent('stock')}
+                        disabled={isTriggeringTest}
+                        className="py-1 px-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
+                      >
+                        <AlertTriangle className="w-2.5 h-2.5" />
+                        <span>+ Stock</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </>
