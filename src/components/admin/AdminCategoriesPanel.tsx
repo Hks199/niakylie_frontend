@@ -718,7 +718,14 @@ export function AdminCategoriesPanel() {
 
       {/* Delete Confirmation Modal (Cascading Soft Delete) */}
       {categoryToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && deletingId === null) {
+              setCategoryToDelete(null);
+            }
+          }}
+        >
           <div className="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-3.5 sm:space-y-4 border border-slate-100">
             <div className="flex items-center space-x-2.5 sm:space-x-3 text-rose-600">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-rose-100 flex items-center justify-center flex-shrink-0">
@@ -770,7 +777,15 @@ export function AdminCategoriesPanel() {
 
       {/* Edit Category Modal */}
       {isEditModalOpen && editingCategory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setIsEditModalOpen(false);
+              setEditingCategory(null);
+            }
+          }}
+        >
           <div className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl p-4 sm:p-8 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-shrink-0">
               <div>
