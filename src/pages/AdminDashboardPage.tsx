@@ -96,21 +96,23 @@ export function AdminDashboardPage() {
   const liveNotifications: AppNotification[] = rawNotifList;
   const realUnreadCount = unreadResponse?.unreadCount ?? liveNotifications.filter((n) => !n.isRead).length;
 
+  const reviewsNotifs = liveNotifications.filter(
+    (n) =>
+      (n.title || '').toLowerCase().includes('review') ||
+      (n.message || '').toLowerCase().includes('review') ||
+      !!n.metadata?.reviewId ||
+      n.metadata?.targetTab === 'reviews',
+  );
   const ordersNotifs = liveNotifications.filter(
     (n) =>
-      (n.type || '').toString().toUpperCase() === 'ORDER_UPDATE' ||
-      (n.title || '').toLowerCase().includes('order') ||
-      !!n.metadata?.orderNumber,
-  );
-  const reviewsNotifs = liveNotifications.filter(
-    (n) => (n.title || '').toLowerCase().includes('review') || !!n.metadata?.reviewId,
+      !reviewsNotifs.includes(n) &&
+      ((n.type || '').toString().toUpperCase() === 'ORDER_UPDATE' ||
+        (n.title || '').toLowerCase().includes('order') ||
+        !!n.metadata?.orderNumber ||
+        n.metadata?.targetTab === 'orders'),
   );
   const alertsNotifs = liveNotifications.filter(
-    (n) =>
-      (n.type || '').toString().toUpperCase() === 'SYSTEM' ||
-      (n.title || '').toLowerCase().includes('stock') ||
-      (n.title || '').toLowerCase().includes('alert') ||
-      !!n.metadata?.stockAlert,
+    (n) => !reviewsNotifs.includes(n) && !ordersNotifs.includes(n),
   );
 
   const totalBadgeCount = realUnreadCount + (urgentAlertsCount > 0 ? 1 : 0);
