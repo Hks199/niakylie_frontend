@@ -17,6 +17,7 @@ export interface FilterState {
 interface FilterSidebarProps {
   filters: FilterState;
   onFilterChange: (newFilters: FilterState) => void;
+  isMobile?: boolean;
 }
 
 const FALLBACK_BRANDS_LIST = [
@@ -43,7 +44,7 @@ const PRICE_PRESETS = [
   { label: '₹10,000+', min: 10000, max: 50000 },
 ];
 
-export function FilterSidebar({ filters, onFilterChange }: FilterSidebarProps) {
+export function FilterSidebar({ filters, onFilterChange, isMobile = false }: FilterSidebarProps) {
   const [brandSearch, setBrandSearch] = useState('');
   const [expandedSections, setExpandedSections] = useState({
     categories: true,
@@ -98,10 +99,12 @@ export function FilterSidebar({ filters, onFilterChange }: FilterSidebarProps) {
   );
 
   return (
-    <aside className="w-64 flex-shrink-0 space-y-6 pr-6 border-r border-gray-100 hidden lg:block">
-      <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-        <h3 className="font-extrabold text-sm uppercase tracking-wider text-brand-slate-dark">Filters</h3>
-      </div>
+    <aside className={isMobile ? 'w-full space-y-6' : 'w-64 flex-shrink-0 space-y-6 pr-6 border-r border-gray-100 hidden lg:block'}>
+      {!isMobile && (
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <h3 className="font-extrabold text-sm uppercase tracking-wider text-brand-slate-dark">Filters</h3>
+        </div>
+      )}
 
       {/* 1. Categories Filter Accordion */}
       <div className="border-b border-gray-100 pb-4">

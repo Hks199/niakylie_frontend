@@ -222,6 +222,8 @@ export function ProductListingPage() {
         filters={filters}
         onFilterChange={handleFilterChange}
         onClearAll={handleClearAll}
+        currentSort={sort}
+        onSortChange={handleSortChange}
       />
     </div>
   );
