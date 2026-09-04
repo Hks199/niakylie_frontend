@@ -22,6 +22,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { adminApi } from '../../api/admin';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 const STATUS_STYLES: Record<string, string> = {
   PENDING: 'bg-amber-100 text-amber-800 border border-amber-200',
@@ -476,21 +477,36 @@ export function AdminOrdersPanel() {
 
                       {/* Items */}
                       <td className="py-4 px-4">
-                        <div className="flex items-center space-x-2">
-                          {order.items?.[0]?.image ? (
-                            <img
-                              src={order.items[0].image}
-                              alt={order.items[0].name || 'Product'}
-                              className="w-9 h-9 object-cover rounded-xl border border-gray-200 flex-shrink-0"
-                            />
+                        <div className="flex items-center space-x-2.5">
+                          {order.items && order.items.length > 0 ? (
+                            <div className="flex items-center -space-x-2 overflow-hidden flex-shrink-0">
+                              {order.items.slice(0, 3).map((item: any, idx: number) => {
+                                const product = typeof item.productId === 'object' ? item.productId : item.product || {};
+                                const rawImg = item.image || item.thumbnail || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
+                                const imgUrl = formatImageUrl(rawImg);
+                                return (
+                                  <img
+                                    key={idx}
+                                    src={imgUrl}
+                                    alt={item.name || 'Order Item'}
+                                    className="w-9 h-9 object-cover rounded-xl border-2 border-white shadow-xs bg-slate-100 flex-shrink-0"
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
                           ) : (
                             <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 flex-shrink-0">
                               <Package className="w-4 h-4" />
                             </div>
                           )}
                           <div>
-                            <p className="font-bold text-slate-700 line-clamp-1">
-                              {order.items?.[0]?.name || order.items?.[0]?.product?.title || `${itemsCount} Products`}
+                            <p className="font-bold text-slate-700 line-clamp-1 max-w-[140px] sm:max-w-[200px]">
+                              {order.items && order.items.length > 0
+                                ? order.items.map((i: any) => i.name || i.product?.title || i.title).filter(Boolean).join(', ')
+                                : `${itemsCount} Products`}
                             </p>
                             <p className="text-[10px] text-slate-400">
                               {itemsCount} {itemsCount === 1 ? 'item' : 'items'}
@@ -956,37 +972,39 @@ export function AdminOrdersPanel() {
             <div>
               <p className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider mb-2">Itemized Breakdown</p>
               <div className="border border-gray-100 rounded-2xl overflow-hidden divide-y divide-gray-100">
-                {selectedOrder.items?.map((item: any, idx: number) => (
-                  <div key={idx} className="p-3 flex items-center justify-between text-xs">
-                    <div className="flex items-center space-x-3">
-                      {item.image ? (
+                {selectedOrder.items?.map((item: any, idx: number) => {
+                  const product = typeof item.productId === 'object' ? item.productId : item.product || {};
+                  const rawImg = item.image || item.thumbnail || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
+                  const imgUrl = formatImageUrl(rawImg);
+                  return (
+                    <div key={idx} className="p-3 flex items-center justify-between text-xs">
+                      <div className="flex items-center space-x-3">
                         <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-10 h-10 object-cover rounded-xl border border-gray-200"
+                          src={imgUrl}
+                          alt={item.name || 'Product'}
+                          className="w-10 h-10 object-cover rounded-xl border border-gray-200 bg-slate-100 flex-shrink-0"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
+                          }}
                         />
-                      ) : (
-                        <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
-                          <Package className="w-4 h-4" />
+                        <div>
+                          <p className="font-bold text-brand-slate-dark">{item.name || item.product?.title || 'Product'}</p>
+                          <p className="text-[10px] text-slate-400">
+                            SKU: {item.sku || 'NK-STD'} · Variant: {item.color || 'Standard'} / {item.size || 'Free'}
+                          </p>
                         </div>
-                      )}
-                      <div>
-                        <p className="font-bold text-brand-slate-dark">{item.name || item.product?.title || 'Product'}</p>
-                        <p className="text-[10px] text-slate-400">
-                          SKU: {item.sku || 'NK-STD'} · Variant: {item.color || 'Standard'} / {item.size || 'Free'}
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-brand-slate-dark">
+                          ₹{(item.unitPrice || item.price || 0).toLocaleString('en-IN')} × {item.quantity}
+                        </p>
+                        <p className="font-extrabold text-brand-crimson">
+                          ₹{(item.totalPrice || (item.unitPrice || item.price || 0) * item.quantity).toLocaleString('en-IN')}
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-brand-slate-dark">
-                        ₹{(item.unitPrice || item.price || 0).toLocaleString('en-IN')} × {item.quantity}
-                      </p>
-                      <p className="font-extrabold text-brand-crimson">
-                        ₹{(item.totalPrice || (item.unitPrice || item.price || 0) * item.quantity).toLocaleString('en-IN')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
