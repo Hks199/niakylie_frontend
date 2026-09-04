@@ -42,7 +42,7 @@ export function NotificationsPage() {
     queryKey: ['myNotifications', filterType],
     queryFn: () => {
       const isRead = filterType === 'unread' ? false : undefined;
-      const type = filterType !== 'all' && filterType !== 'unread' ? filterType : undefined;
+      const type = filterType !== 'all' && filterType !== 'unread' ? filterType.toUpperCase() : undefined;
       return notificationsApi.getMyNotifications({ isRead, type });
     },
   });
@@ -113,7 +113,18 @@ export function NotificationsPage() {
     },
   });
 
-
+  const handleNotificationClick = (n: AppNotification) => {
+    const notifId = n._id || (n as any).id;
+    if (!n.isRead && notifId) {
+      markReadMutation.mutate(notifId);
+    }
+    const notifType = (n.type || '').toUpperCase();
+    if (notifType.includes('ORDER') || n.metadata?.orderNumber) {
+      window.location.href = '/account/orders';
+    } else if (notifType.includes('OFFER') || notifType.includes('COUPON') || notifType.includes('PRICE') || notifType.includes('PROMOTIONAL')) {
+      window.location.href = '/products';
+    }
+  };
 
   const handleTogglePref = async (key: keyof NotificationPreferences) => {
     const nextValue = !preferences[key];
@@ -154,11 +165,18 @@ export function NotificationsPage() {
     }
   };
 
-  const notifications: AppNotification[] = Array.isArray(notificationsData)
+  const rawNotifications: AppNotification[] = Array.isArray(notificationsData)
     ? notificationsData
     : Array.isArray((notificationsData as any)?.data)
     ? (notificationsData as any).data
     : [];
+
+  const notifications = rawNotifications.filter((n) => {
+    if (filterType === 'unread') {
+      return !n.isRead || (n as any).isRead === 'false';
+    }
+    return true;
+  });
 
   const unreadCount =
     typeof (notificationsData as any)?.unreadCount === 'number'
@@ -166,12 +184,14 @@ export function NotificationsPage() {
       : notifications.filter((n) => !n.isRead).length;
 
   const getIcon = (type: string) => {
-    switch (type) {
+    const t = (type || '').toLowerCase();
+    switch (t) {
       case 'order_update':
         return <Package className="w-5 h-5 text-indigo-600" />;
       case 'offer':
       case 'coupon':
       case 'price_drop':
+      case 'promotional':
         return <Tag className="w-5 h-5 text-emerald-600" />;
       case 'system':
       case 'back_in_stock':
@@ -259,16 +279,21 @@ export function NotificationsPage() {
           <div className="space-y-3 pt-2">
             {notifications.map((n: AppNotification, idx: number) => {
               const notifId = n._id || (n as any).id || String(idx);
+              const notifType = (n.type || '').toUpperCase();
+              const isOrderNotif = notifType.includes('ORDER') || !!n.metadata?.orderNumber;
+              const isOfferNotif = notifType.includes('OFFER') || notifType.includes('COUPON') || notifType.includes('PRICE') || notifType.includes('PROMOTIONAL');
+
               return (
                 <div
                   key={notifId}
-                  className={`p-4 rounded-2xl border transition-all flex items-start space-x-4 ${
+                  onClick={() => handleNotificationClick(n)}
+                  className={`p-4 rounded-2xl border transition-all flex items-start space-x-4 cursor-pointer group ${
                     !n.isRead
-                      ? 'bg-brand-crimson/5 border-brand-crimson/30 shadow-sm'
-                      : 'bg-white border-gray-100 hover:border-gray-200'
+                      ? 'bg-brand-crimson/5 border-brand-crimson/30 shadow-sm hover:border-brand-crimson/50'
+                      : 'bg-white border-gray-100 hover:border-gray-300'
                   }`}
                 >
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0">
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0 group-hover:scale-105 transition-transform">
                     {getIcon(n.type)}
                   </div>
 
@@ -299,7 +324,29 @@ export function NotificationsPage() {
 
                     <p className="text-xs text-slate-600 leading-relaxed">{n.message}</p>
 
-                    <div className="flex items-center space-x-3 pt-1">
+                    <div className="flex items-center space-x-3 pt-1" onClick={(e) => e.stopPropagation()}>
+                      {isOrderNotif && (
+                        <button
+                          onClick={() => {
+                            if (!n.isRead && notifId) markReadMutation.mutate(notifId);
+                            window.location.href = '/account/orders';
+                          }}
+                          className="text-[11px] font-bold text-indigo-600 hover:underline"
+                        >
+                          View Order Details →
+                        </button>
+                      )}
+                      {isOfferNotif && (
+                        <button
+                          onClick={() => {
+                            if (!n.isRead && notifId) markReadMutation.mutate(notifId);
+                            window.location.href = '/products';
+                          }}
+                          className="text-[11px] font-bold text-emerald-600 hover:underline"
+                        >
+                          Shop Offer →
+                        </button>
+                      )}
                       {!n.isRead && (
                         <button
                           onClick={() => markReadMutation.mutate(notifId)}
