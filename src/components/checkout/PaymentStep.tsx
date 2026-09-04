@@ -52,13 +52,15 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
     paymentsApi.getOnlineDiscountConfig().then(setDiscountConfig).catch(() => {});
   }, []);
 
-  // Compute online payment extra discount
+  // Compute online payment extra discount dynamically based on cart items subtotal
   const isOnlinePayment = paymentMethod !== 'cod';
+  const isDiscountEnabled = discountConfig && (discountConfig.isEnabled === true || (discountConfig.isEnabled as any) === 'true');
+  const payableSubtotal = Math.max(0, cartTotals.subtotal - (cartTotals.couponDiscount || 0));
+
   let onlineDiscountAmount = 0;
-  if (discountConfig && discountConfig.isEnabled && (cartTotals.subtotal - cartTotals.discount) >= (discountConfig.minOrderAmount || 0)) {
-    const baseSubtotal = Math.max(0, cartTotals.subtotal - cartTotals.discount);
+  if (isDiscountEnabled && payableSubtotal >= (discountConfig.minOrderAmount || 0)) {
     if (discountConfig.discountType === 'PERCENTAGE') {
-      onlineDiscountAmount = Math.round((baseSubtotal * discountConfig.discountValue) / 100);
+      onlineDiscountAmount = Math.round((payableSubtotal * discountConfig.discountValue) / 100);
       if (discountConfig.maxDiscountCap && discountConfig.maxDiscountCap > 0) {
         onlineDiscountAmount = Math.min(onlineDiscountAmount, discountConfig.maxDiscountCap);
       }
