@@ -65,17 +65,21 @@ export function AdminDashboardPage() {
     retry: 1,
   });
 
-  // Real-time Admin Notifications Queries (5s auto sync)
+  // Real-time Admin Notifications Queries (30s background sync; SSE handles instant updates)
   const { data: notifResponse, refetch: refetchNotifs } = useQuery({
     queryKey: ['adminNotifications'],
     queryFn: () => notificationsApi.getMyNotifications({ limit: 20 }),
-    refetchInterval: 5000,
+    staleTime: 10000,
+    refetchInterval: 30000,
+    retry: 1,
   });
 
   const { data: unreadResponse, refetch: refetchUnreadCount } = useQuery({
     queryKey: ['unreadNotificationsCount'],
     queryFn: () => notificationsApi.getUnreadCount(),
-    refetchInterval: 5000,
+    staleTime: 10000,
+    refetchInterval: 30000,
+    retry: 1,
   });
 
   const activeKpis = kpis || DEFAULT_KPIS;

@@ -130,13 +130,13 @@ export function NotificationListener() {
     };
   }, [isAuthenticated, token, queryClient, user]);
 
-  // 2. Active Fallback Polling (Every 6 seconds) to ensure zero delay
+  // 2. Active Fallback Polling (Every 60 seconds) as SSE delivers real-time updates
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const interval = setInterval(() => {
       queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-    }, 6000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [isAuthenticated, queryClient]);
