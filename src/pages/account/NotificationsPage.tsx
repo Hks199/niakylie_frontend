@@ -43,16 +43,6 @@ export function NotificationsPage() {
     queryFn: () => notificationsApi.getMyNotifications({ limit: 100 }),
   });
 
-  const testNotifMutation = useMutation({
-    mutationFn: () => notificationsApi.testPushNotification(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
-      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-      setPrefSuccess('Test notification dispatched!');
-      setTimeout(() => setPrefSuccess(''), 4000);
-    },
-  });
-
   // 2. Fetch user profile for initial notification preferences
   const { data: profile } = useQuery<User>({
     queryKey: ['profile'],
@@ -253,36 +243,20 @@ export function NotificationsPage() {
             <p className="text-xs text-slate-500 mt-0.5">Stay updated on your order dispatches, special deals, and account alerts.</p>
           </div>
 
-          <div className="flex items-center space-x-2">
-            {unreadCount > 0 && (
-              <button
-                onClick={() => markAllReadMutation.mutate()}
-                disabled={markAllReadMutation.isPending}
-                className="flex items-center justify-center space-x-1.5 text-xs font-bold text-brand-crimson hover:text-brand-crimson-dark bg-brand-crimson/5 hover:bg-brand-crimson/10 px-4 py-2 rounded-xl transition-all"
-              >
-                {markAllReadMutation.isPending ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <CheckCheck className="w-3.5 h-3.5" />
-                )}
-                <span>Mark All as Read</span>
-              </button>
-            )}
-
+          {unreadCount > 0 && (
             <button
-              onClick={() => testNotifMutation.mutate()}
-              disabled={testNotifMutation.isPending}
-              className="flex items-center justify-center space-x-1.5 text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-3.5 py-2 rounded-xl transition-all border border-purple-200"
-              title="Generate a real-time unread test alert"
+              onClick={() => markAllReadMutation.mutate()}
+              disabled={markAllReadMutation.isPending}
+              className="flex items-center justify-center space-x-1.5 text-xs font-bold text-brand-crimson hover:text-brand-crimson-dark bg-brand-crimson/5 hover:bg-brand-crimson/10 px-4 py-2 rounded-xl transition-all"
             >
-              {testNotifMutation.isPending ? (
+              {markAllReadMutation.isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <BellRing className="w-3.5 h-3.5" />
+                <CheckCheck className="w-3.5 h-3.5" />
               )}
-              <span>Test Notification</span>
+              <span>Mark All as Read</span>
             </button>
-          </div>
+          )}
         </div>
 
         {/* Filters */}
@@ -330,24 +304,16 @@ export function NotificationsPage() {
                 : 'Order status updates and promotional updates will appear here.'}
             </p>
 
-            <div className="flex items-center justify-center space-x-2 pt-2">
-              {filterType !== 'all' && (
+            {filterType !== 'all' && (
+              <div className="pt-2">
                 <button
                   onClick={() => setFilterType('all')}
                   className="text-xs font-bold text-brand-crimson bg-brand-crimson/10 hover:bg-brand-crimson/20 px-4 py-2 rounded-xl transition-all"
                 >
                   View All Notifications
                 </button>
-              )}
-              <button
-                onClick={() => testNotifMutation.mutate()}
-                disabled={testNotifMutation.isPending}
-                className="text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-4 py-2 rounded-xl transition-all flex items-center space-x-1.5"
-              >
-                <BellRing className="w-3.5 h-3.5" />
-                <span>Send Test Unread Alert</span>
-              </button>
-            </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-3 pt-2">
