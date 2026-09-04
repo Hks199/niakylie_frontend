@@ -207,6 +207,24 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
               text-transform: uppercase;
               letter-spacing: 1px;
             }
+            @media screen and (max-width: 600px) {
+              body { margin: 10px auto !important; padding: 14px !important; border-radius: 12px !important; width: 100% !important; box-sizing: border-box !important; }
+              .header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; padding-bottom: 14px !important; margin-bottom: 14px !important; }
+              .invoice-title { text-align: left !important; }
+              .invoice-title h2 { font-size: 16px !important; }
+              .brand-tag { font-size: 9px !important; letter-spacing: 1px !important; }
+              .meta { font-size: 11px !important; margin-top: 2px !important; }
+              .section-grid { grid-template-columns: 1fr !important; gap: 10px !important; font-size: 11px !important; }
+              .card { padding: 10px 12px !important; border-radius: 12px !important; }
+              .card h4 { font-size: 9px !important; margin-bottom: 4px !important; }
+              table { margin-top: 14px !important; font-size: 10px !important; }
+              th, td { padding: 6px 4px !important; }
+              th { font-size: 9px !important; }
+              .summary { width: 100% !important; margin-top: 14px !important; font-size: 11px !important; }
+              .summary-total { font-size: 14px !important; padding: 10px 0 !important; }
+              .footer { margin-top: 24px !important; padding-top: 14px !important; font-size: 10px !important; }
+              .print-btn { max-width: 100% !important; font-size: 10px !important; padding: 10px 12px !important; margin-bottom: 16px !important; }
+            }
           </style>
         </head>
         <body>
@@ -338,73 +356,100 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
       `;
     }
 
-    const printWindow = window.open('', '_blank');
-    if (printWindow) {
-      printWindow.document.write(htmlContent);
-      printWindow.document.close();
+    try {
+      const printWindow = window.open('', '_blank');
+      if (printWindow && !printWindow.closed) {
+        printWindow.document.write(htmlContent);
+        printWindow.document.close();
+      } else {
+        // Mobile browser fallback when popup is blocked
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        document.body.appendChild(iframe);
+        const doc = iframe.contentWindow?.document || iframe.contentDocument;
+        if (doc) {
+          doc.open();
+          doc.write(htmlContent);
+          doc.close();
+          setTimeout(() => {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+            setTimeout(() => {
+              document.body.removeChild(iframe);
+            }, 2000);
+          }, 500);
+        }
+      }
+    } catch (err) {
+      console.error('Receipt print error:', err);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 text-center animate-in fade-in duration-500">
+    <div className="max-w-2xl mx-auto px-2.5 sm:px-6 py-6 sm:py-12 text-center animate-in fade-in duration-500">
       {/* Success Icon with pulse ring */}
-      <div className="relative w-24 h-24 mx-auto mb-6">
+      <div className="relative w-16 h-16 sm:w-24 sm:h-24 mx-auto mb-4 sm:mb-6">
         <div className="absolute inset-0 bg-emerald-100 rounded-full animate-ping opacity-40" />
-        <div className="relative w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center shadow-xl shadow-emerald-200">
-          <CheckCircle2 className="w-12 h-12 text-white" />
+        <div className="relative w-16 h-16 sm:w-24 sm:h-24 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg sm:shadow-xl shadow-emerald-200">
+          <CheckCircle2 className="w-8 h-8 sm:w-12 sm:h-12 text-white" />
         </div>
       </div>
 
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-brand-slate-dark font-display mb-2">
+      <h1 className="text-xl sm:text-3xl md:text-4xl font-extrabold text-brand-slate-dark font-display mb-1.5 sm:mb-2">
         Order Confirmed! 🎉
       </h1>
-      <p className="text-slate-500 text-sm mb-8">
+      <p className="text-slate-500 text-xs sm:text-sm mb-5 sm:mb-8">
         Thank you for shopping with NiaKylie. Your order has been placed successfully.
       </p>
 
       {/* Order Details Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 text-left space-y-4 shadow-sm mb-6">
-        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Order ID</p>
-            <p className="text-lg font-extrabold text-brand-slate-dark">{displayOrderId}</p>
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 text-left space-y-3 sm:space-y-4 shadow-sm mb-5 sm:mb-6">
+        <div className="flex items-center justify-between border-b border-gray-100 pb-3 sm:pb-4 gap-2">
+          <div className="min-w-0">
+            <p className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 tracking-wider">Order ID</p>
+            <p className="text-sm sm:text-lg font-extrabold text-brand-slate-dark truncate">{displayOrderId}</p>
           </div>
-          <div className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-            <span className="text-xs font-extrabold text-emerald-700 uppercase">Confirmed</span>
+          <div className="bg-emerald-50 border border-emerald-200 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl flex-shrink-0">
+            <span className="text-[10px] sm:text-xs font-extrabold text-emerald-700 uppercase">Confirmed</span>
           </div>
         </div>
 
         {/* Delivery Estimate */}
-        <div className="flex items-center space-x-3 bg-slate-50 p-4 rounded-2xl">
-          <div className="p-2 bg-brand-crimson/10 text-brand-crimson rounded-xl">
-            <Truck className="w-5 h-5" />
+        <div className="flex items-center space-x-2.5 sm:space-x-3 bg-slate-50 p-3 sm:p-4 rounded-xl sm:rounded-2xl">
+          <div className="p-1.5 sm:p-2 bg-brand-crimson/10 text-brand-crimson rounded-lg sm:rounded-xl flex-shrink-0">
+            <Truck className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Estimated Delivery</p>
-            <p className="text-sm font-extrabold text-brand-slate-dark">{estimatedDelivery}</p>
+          <div className="min-w-0">
+            <p className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 tracking-wider">Estimated Delivery</p>
+            <p className="text-xs sm:text-sm font-extrabold text-brand-slate-dark truncate">{estimatedDelivery}</p>
           </div>
         </div>
 
         {/* What Happens Next Steps */}
-        <div className="space-y-3 pt-2">
-          <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">What happens next</p>
+        <div className="space-y-2 sm:space-y-3 pt-1 sm:pt-2">
+          <p className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 tracking-wider">What happens next</p>
           {[
             { step: '1', text: 'Order processing & quality check (24 hrs)' },
-            { step: '2', text: 'Packaging & dispatch from our warehouse' },
+            { step: '2', text: 'Packaging & dispatch from warehouse' },
             { step: '3', text: 'Out for delivery at your doorstep' },
           ].map(({ step, text }) => (
-            <div key={step} className="flex items-center space-x-3 text-xs">
-              <div className="w-6 h-6 rounded-full bg-brand-crimson text-white font-extrabold flex items-center justify-center flex-shrink-0 text-[10px]">
+            <div key={step} className="flex items-center space-x-2.5 sm:space-x-3 text-[11px] sm:text-xs">
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-brand-crimson text-white font-extrabold flex items-center justify-center flex-shrink-0 text-[9px] sm:text-[10px]">
                 {step}
               </div>
-              <span className="text-slate-600">{text}</span>
+              <span className="text-slate-600 truncate">{text}</span>
             </div>
           ))}
         </div>
 
         {/* Order Amount Summary Breakdown */}
         {orderTotal > 0 && (
-          <div className="pt-3 border-t border-gray-100 space-y-2 text-xs font-semibold text-slate-600">
+          <div className="pt-2.5 sm:pt-3 border-t border-gray-100 space-y-1.5 sm:space-y-2 text-[11px] sm:text-xs font-semibold text-slate-600">
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span>₹{(order?.pricing?.subtotal || order?.totals?.subtotal || orderTotal).toLocaleString('en-IN')}</span>
@@ -422,7 +467,7 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
                     </div>
                   )}
                   {oDisc > 0 && (
-                    <div className="flex justify-between text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-lg">
+                    <div className="flex justify-between text-emerald-600 font-bold bg-emerald-50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg">
                       <span>Online Payment Extra Discount</span>
                       <span>-₹{oDisc.toLocaleString('en-IN')}</span>
                     </div>
@@ -431,7 +476,7 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
               );
             })()}
 
-            <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-sm font-extrabold text-brand-slate-dark">
+            <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs sm:text-sm font-extrabold text-brand-slate-dark">
               <span>Amount Paid</span>
               <span className="text-brand-crimson">₹{orderTotal.toLocaleString('en-IN')}</span>
             </div>
@@ -440,10 +485,10 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
       </div>
 
       {/* CTA Buttons */}
-      <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
+      <div className="flex flex-col sm:flex-row items-center space-y-2.5 sm:space-y-0 sm:space-x-4">
         <button
           onClick={handleDownloadReceipt}
-          className="flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 hover:border-brand-crimson text-slate-600 hover:text-brand-crimson font-extrabold text-xs py-4 rounded-2xl transition-all"
+          className="w-full sm:flex-1 flex items-center justify-center space-x-2 border-2 border-gray-300 hover:border-brand-crimson text-slate-600 hover:text-brand-crimson font-extrabold text-[11px] sm:text-xs py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all"
         >
           <Download className="w-4 h-4" />
           <span>DOWNLOAD RECEIPT</span>
@@ -451,7 +496,7 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
 
         <a
           href="/products"
-          className="flex-1 flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs py-4 rounded-2xl shadow-xl uppercase tracking-wider group transition-all"
+          className="w-full sm:flex-1 flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl uppercase tracking-wider group transition-all"
         >
           <Package className="w-4 h-4" />
           <span>CONTINUE SHOPPING</span>
