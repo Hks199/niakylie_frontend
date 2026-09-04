@@ -114,4 +114,11 @@ export const notificationsApi = {
   testCouponNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification }> => {
     return apiClient.post('/notifications/test-coupon', {});
   },
+
+  /**
+   * Trigger real-time admin test event for bell icon
+   */
+  testAdminEvent: async (type?: string): Promise<{ success: boolean; message: string }> => {
+    return apiClient.post(`/notifications/test-admin-event${type ? `?type=${type}` : ''}`, {});
+  },
 };

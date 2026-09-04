@@ -9,13 +9,15 @@ import {
   X,
   AlertTriangle,
   Package,
-  Tag,
   ShoppingBag,
   CheckCheck,
   ChevronRight,
-  Sparkles,
+  Clock,
+  CheckCircle2,
+  Star,
 } from 'lucide-react';
 import { adminApi } from '../api/admin';
+import { notificationsApi, AppNotification } from '../api/notifications';
 import { AdminSidebar, NAV_ITEMS } from '../components/admin/AdminSidebar';
 import { KpiSummaryGrid } from '../components/admin/KpiSummaryGrid';
 import { AnalyticsChartsSection } from '../components/admin/AnalyticsChartsSection';
@@ -50,7 +52,8 @@ export function AdminDashboardPage() {
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [unreadReadStatus, setUnreadReadStatus] = useState(true);
+  const [notifFilterTab, setNotifFilterTab] = useState<'all' | 'unread' | 'orders' | 'reviews' | 'alerts'>('all');
+  const [isTriggeringTest, setIsTriggeringTest] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const notifRef = useRef<HTMLDivElement>(null);
@@ -61,11 +64,77 @@ export function AdminDashboardPage() {
     retry: 1,
   });
 
-  const activeKpis = kpis || DEFAULT_KPIS;
+  // Real-time Admin Notifications Queries (5s auto sync)
+  const { data: notifResponse, refetch: refetchNotifs } = useQuery({
+    queryKey: ['adminNotifications'],
+    queryFn: () => notificationsApi.getMyNotifications({ limit: 20 }),
+    refetchInterval: 5000,
+  });
 
+  const { data: unreadResponse, refetch: refetchUnreadCount } = useQuery({
+    queryKey: ['unreadNotificationsCount'],
+    queryFn: () => notificationsApi.getUnreadCount(),
+    refetchInterval: 5000,
+  });
+
+  const activeKpis = kpis || DEFAULT_KPIS;
   const outOfStockCount = activeKpis.inventoryAlerts?.outOfStockCount || 0;
   const lowStockCount = activeKpis.inventoryAlerts?.lowStockCount || 0;
-  const totalAlerts = outOfStockCount + lowStockCount;
+  const urgentAlertsCount = outOfStockCount + lowStockCount;
+
+  const liveNotifications: AppNotification[] = notifResponse?.data || [];
+  const realUnreadCount = unreadResponse?.unreadCount ?? liveNotifications.filter((n) => !n.isRead).length;
+
+  const totalBadgeCount = realUnreadCount + (urgentAlertsCount > 0 ? 1 : 0);
+
+  const handleMarkAllRead = async () => {
+    try {
+      await notificationsApi.markAllAsRead();
+      queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+      refetchNotifs();
+      refetchUnreadCount();
+    } catch (err) {
+      console.error('Failed to mark all as read', err);
+    }
+  };
+
+  const handleNotificationClick = async (notif: AppNotification) => {
+    if (!notif.isRead) {
+      try {
+        await notificationsApi.markAsRead(notif._id);
+        queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
+        queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+        refetchNotifs();
+        refetchUnreadCount();
+      } catch (err) {
+        console.error('Failed to mark notification read', err);
+      }
+    }
+    const typeUpper = (notif.type || '').toString().toUpperCase();
+    const titleStr = (notif.title || '').toString();
+    const isReview = titleStr.includes('Review') || !!notif.metadata?.reviewId;
+    const targetTab =
+      notif.metadata?.targetTab ||
+      (isReview ? 'reviews' : typeUpper === 'ORDER_UPDATE' ? 'orders' : 'inventory');
+    setActiveTab(targetTab);
+    setIsNotificationsOpen(false);
+  };
+
+  const handleTriggerTestEvent = async (type?: string) => {
+    setIsTriggeringTest(true);
+    try {
+      await notificationsApi.testAdminEvent(type);
+      await queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
+      await queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+      refetchNotifs();
+      refetchUnreadCount();
+    } catch (err) {
+      console.error('Failed to trigger test event', err);
+    } finally {
+      setIsTriggeringTest(false);
+    }
+  };
 
   // Close notifications dropdown when clicking outside
   useEffect(() => {
@@ -157,24 +226,21 @@ export function AdminDashboardPage() {
             />
           </form>
 
-          {/* Notification Bell Button & Interactive Dropdown Menu */}
+          {/* Real-time Notification Bell Button & Interactive Dropdown Menu */}
           <div className="relative" ref={notifRef}>
             <button
-              onClick={() => {
-                setIsNotificationsOpen((prev) => !prev);
-                setUnreadReadStatus(false);
-              }}
+              onClick={() => setIsNotificationsOpen((prev) => !prev)}
               aria-label="View Admin Notifications"
-              className={`relative p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl border transition-colors cursor-pointer ${
+              className={`relative p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl border transition-all cursor-pointer ${
                 isNotificationsOpen
-                  ? 'bg-rose-50 border-brand-crimson text-brand-crimson'
+                  ? 'bg-rose-50 border-brand-crimson text-brand-crimson shadow-md'
                   : 'border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson bg-white'
               }`}
             >
-              <Bell className="w-4 h-4" />
-              {unreadReadStatus && totalAlerts > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] px-1 rounded-full bg-rose-500 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center border-2 border-white animate-pulse">
-                  {totalAlerts}
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 hover:text-brand-crimson" />
+              {totalBadgeCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] sm:min-w-[20px] sm:h-[20px] px-1 rounded-full bg-red-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center border-2 border-white shadow-md animate-pulse">
+                  {totalBadgeCount > 99 ? '99+' : totalBadgeCount}
                 </span>
               )}
             </button>
@@ -188,22 +254,34 @@ export function AdminDashboardPage() {
                   onClick={() => setIsNotificationsOpen(false)}
                 />
 
-                <div className="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 w-auto bg-white border border-gray-100 rounded-2xl sm:rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                  <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+                <div className="fixed left-2 right-2 top-14 sm:top-full sm:mt-2 max-h-[75vh] sm:max-h-[85vh] sm:absolute sm:left-auto sm:right-0 sm:w-96 w-auto bg-white border border-gray-100 rounded-2xl sm:rounded-3xl shadow-2xl z-50 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                  {/* Header Bar */}
+                  <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/80 flex-shrink-0">
                     <div className="flex items-center space-x-1.5 sm:space-x-2">
-                      <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
-                      <h3 className="font-extrabold text-[11px] sm:text-xs text-brand-slate-dark uppercase tracking-wider">
-                        Admin Notifications
-                      </h3>
+                      <div className="relative">
+                        <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
+                        {realUnreadCount > 0 && (
+                          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-extrabold text-[11px] sm:text-xs text-brand-slate-dark uppercase tracking-wider">
+                          Admin Notifications
+                        </h3>
+                        <p className="text-[9px] text-slate-400 font-medium">Realtime Events: Orders, Reviews & Stock</p>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-1.5 sm:space-x-2">
-                      <button
-                        onClick={() => setUnreadReadStatus(false)}
-                        className="text-[9px] sm:text-[10px] font-bold text-slate-400 hover:text-brand-crimson flex items-center space-x-1"
-                      >
-                        <CheckCheck className="w-3 h-3" />
-                        <span>Mark Read</span>
-                      </button>
+
+                    <div className="flex items-center space-x-1 sm:space-x-1.5">
+                      {realUnreadCount > 0 && (
+                        <button
+                          onClick={handleMarkAllRead}
+                          className="text-[9px] sm:text-[10px] font-extrabold text-brand-crimson hover:underline flex items-center space-x-0.5 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-lg"
+                        >
+                          <CheckCheck className="w-3 h-3" />
+                          <span>Mark Read</span>
+                        </button>
+                      )}
                       <button
                         onClick={() => setIsNotificationsOpen(false)}
                         className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
@@ -213,123 +291,240 @@ export function AdminDashboardPage() {
                     </div>
                   </div>
 
-                <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
-                  {/* Out of stock inventory notification */}
-                  {outOfStockCount > 0 && (
-                    <div
-                      onClick={() => handleNavigateTab('inventory')}
-                      className="p-3.5 hover:bg-rose-50/50 transition-colors cursor-pointer flex items-start space-x-3 group"
+                  {/* Filter Tabs Bar */}
+                  <div className="flex items-center space-x-1 px-3 py-1.5 border-b border-gray-100 bg-slate-100/50 text-[10px] font-bold overflow-x-auto scrollbar-none flex-shrink-0">
+                    <button
+                      onClick={() => setNotifFilterTab('all')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+                        notifFilterTab === 'all'
+                          ? 'bg-white text-slate-900 shadow-xs font-black'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
                     >
-                      <div className="p-2 rounded-xl bg-rose-100 text-rose-600 flex-shrink-0">
-                        <AlertTriangle className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs font-extrabold text-rose-900">
-                            {outOfStockCount} Items Out of Stock!
-                          </p>
-                          <span className="text-[9px] font-bold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200 uppercase">
-                            Urgent
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
-                          Products have reached zero stock level and require inventory restocking.
-                        </p>
-                        <span className="inline-flex items-center text-[10px] font-extrabold text-brand-crimson group-hover:underline mt-1">
-                          View Out of Stock Inventory <ChevronRight className="w-3 h-3 ml-0.5" />
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Low stock inventory notification */}
-                  {lowStockCount > 0 && (
-                    <div
-                      onClick={() => handleNavigateTab('inventory')}
-                      className="p-3.5 hover:bg-amber-50/50 transition-colors cursor-pointer flex items-start space-x-3 group"
+                      All ({liveNotifications.length})
+                    </button>
+                    <button
+                      onClick={() => setNotifFilterTab('unread')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+                        notifFilterTab === 'unread'
+                          ? 'bg-white text-rose-600 shadow-xs font-black'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
                     >
-                      <div className="p-2 rounded-xl bg-amber-100 text-amber-600 flex-shrink-0">
-                        <Package className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs font-extrabold text-amber-900">
-                            {lowStockCount} Products Low on Stock
-                          </p>
-                          <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 uppercase">
-                            Warning
-                          </span>
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
-                          Inventory quantity is below minimum threshold limit.
-                        </p>
-                        <span className="inline-flex items-center text-[10px] font-extrabold text-amber-700 group-hover:underline mt-1">
-                          Manage Low Stock Alert List <ChevronRight className="w-3 h-3 ml-0.5" />
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Orders notification */}
-                  <div
-                    onClick={() => handleNavigateTab('orders')}
-                    className="p-3.5 hover:bg-slate-50 transition-colors cursor-pointer flex items-start space-x-3 group"
-                  >
-                    <div className="p-2 rounded-xl bg-blue-100 text-blue-600 flex-shrink-0">
-                      <ShoppingBag className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-extrabold text-slate-800">
-                          {activeKpis.totalOrders} Total Orders Processed
-                        </p>
-                        <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200 uppercase">
-                          Orders
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Track customer dispatches, courier tracking IDs & order statuses.
-                      </p>
-                      <span className="inline-flex items-center text-[10px] font-extrabold text-blue-600 group-hover:underline mt-1">
-                        Go to Orders Control Panel <ChevronRight className="w-3 h-3 ml-0.5" />
-                      </span>
-                    </div>
+                      Unread ({realUnreadCount})
+                    </button>
+                    <button
+                      onClick={() => setNotifFilterTab('orders')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+                        notifFilterTab === 'orders'
+                          ? 'bg-white text-blue-600 shadow-xs font-black'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      Orders
+                    </button>
+                    <button
+                      onClick={() => setNotifFilterTab('reviews')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+                        notifFilterTab === 'reviews'
+                          ? 'bg-white text-amber-600 shadow-xs font-black'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      Reviews
+                    </button>
+                    <button
+                      onClick={() => setNotifFilterTab('alerts')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+                        notifFilterTab === 'alerts'
+                          ? 'bg-white text-red-600 shadow-xs font-black'
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      Stock Alerts
+                    </button>
                   </div>
 
-                  {/* Promo Coupons Notification */}
-                  <div
-                    onClick={() => handleNavigateTab('coupons')}
-                    className="p-3.5 hover:bg-slate-50 transition-colors cursor-pointer flex items-start space-x-3 group"
-                  >
-                    <div className="p-2 rounded-xl bg-emerald-100 text-emerald-600 flex-shrink-0">
-                      <Tag className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <p className="text-xs font-extrabold text-slate-800">
-                          Promo Codes & Coupons
-                        </p>
-                        <Sparkles className="w-3 h-3 text-amber-500" />
+                  {/* Notification Items List */}
+                  <div className="divide-y divide-gray-100 overflow-y-auto flex-1 min-h-0 max-h-[50vh] sm:max-h-80">
+                    {/* Out of stock inventory alert */}
+                    {(notifFilterTab === 'all' || notifFilterTab === 'alerts' || notifFilterTab === 'unread') &&
+                      outOfStockCount > 0 && (
+                        <div
+                          onClick={() => handleNavigateTab('inventory')}
+                          className="p-3 bg-rose-50/60 hover:bg-rose-100/50 transition-colors cursor-pointer flex items-start space-x-2.5 group border-l-4 border-rose-500"
+                        >
+                          <div className="p-1.5 rounded-lg bg-rose-100 text-rose-600 flex-shrink-0 mt-0.5">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <p className="text-[11px] font-black text-rose-900 leading-snug">
+                                {outOfStockCount} Items Out of Stock!
+                              </p>
+                              <span className="text-[8px] font-black text-rose-600 bg-rose-100 px-1.5 py-0.2 rounded uppercase tracking-wider">
+                                Stock Alert
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-slate-600 mt-0.5 font-medium leading-tight">
+                              Products reached 0 stock limit. Restock immediately to resume orders.
+                            </p>
+                            <span className="inline-flex items-center text-[9px] font-extrabold text-rose-700 group-hover:underline mt-1">
+                              Restock Inventory Now <ChevronRight className="w-2.5 h-2.5 ml-0.5" />
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Low stock warning alert */}
+                    {(notifFilterTab === 'all' || notifFilterTab === 'alerts') && lowStockCount > 0 && (
+                      <div
+                        onClick={() => handleNavigateTab('inventory')}
+                        className="p-3 bg-amber-50/50 hover:bg-amber-100/50 transition-colors cursor-pointer flex items-start space-x-2.5 group border-l-4 border-amber-500"
+                      >
+                        <div className="p-1.5 rounded-lg bg-amber-100 text-amber-600 flex-shrink-0 mt-0.5">
+                          <Package className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <p className="text-[11px] font-extrabold text-amber-900 leading-snug">
+                              {lowStockCount} Products Low on Stock
+                            </p>
+                            <span className="text-[8px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded uppercase">
+                              Stock Alert
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-600 mt-0.5 font-medium leading-tight">
+                            Inventory is below safety threshold limit.
+                          </p>
+                          <span className="inline-flex items-center text-[9px] font-extrabold text-amber-800 group-hover:underline mt-1">
+                            Review Stock Levels <ChevronRight className="w-2.5 h-2.5 ml-0.5" />
+                          </span>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
-                        Create, activate or edit flat ₹ and percentage % discount codes.
-                      </p>
-                      <span className="inline-flex items-center text-[10px] font-extrabold text-emerald-600 group-hover:underline mt-1">
-                        Manage Promo Codes <ChevronRight className="w-3 h-3 ml-0.5" />
-                      </span>
-                    </div>
+                    )}
+
+                    {/* Dynamic Realtime Notifications List */}
+                    {(() => {
+                      let filtered = liveNotifications;
+                      if (notifFilterTab === 'unread') {
+                        filtered = liveNotifications.filter((n) => !n.isRead);
+                      } else if (notifFilterTab === 'orders') {
+                        filtered = liveNotifications.filter((n) => (n.type || '').toString().toUpperCase() === 'ORDER_UPDATE');
+                      } else if (notifFilterTab === 'reviews') {
+                        filtered = liveNotifications.filter(
+                          (n) => n.title.toLowerCase().includes('review') || !!n.metadata?.reviewId,
+                        );
+                      } else if (notifFilterTab === 'alerts') {
+                        filtered = liveNotifications.filter(
+                          (n) =>
+                            (n.type || '').toString().toUpperCase() === 'SYSTEM' ||
+                            n.title.toLowerCase().includes('stock'),
+                        );
+                      }
+
+                      if (filtered.length === 0 && outOfStockCount === 0 && lowStockCount === 0) {
+                        return (
+                          <div className="p-6 text-center space-y-1">
+                            <CheckCircle2 className="w-6 h-6 text-emerald-500 mx-auto" />
+                            <p className="text-xs font-bold text-slate-700">All caught up!</p>
+                            <p className="text-[10px] text-slate-400">No unread notifications right now.</p>
+                          </div>
+                        );
+                      }
+
+                      return filtered.map((notif) => {
+                        const notifTypeStr = (notif.type || '').toString().toUpperCase();
+                        const titleLower = (notif.title || '').toLowerCase();
+                        const isOrder = notifTypeStr === 'ORDER_UPDATE' || titleLower.includes('order');
+                        const isReview = titleLower.includes('review') || !!notif.metadata?.reviewId;
+
+                        return (
+                          <div
+                            key={notif._id}
+                            onClick={() => handleNotificationClick(notif)}
+                            className={`p-3 transition-colors cursor-pointer flex items-start space-x-2.5 group relative ${
+                              !notif.isRead ? 'bg-rose-50/30 hover:bg-rose-50/70 font-semibold' : 'hover:bg-slate-50'
+                            }`}
+                          >
+                            {!notif.isRead && (
+                              <span className="absolute top-3 right-3 w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                            )}
+
+                            <div
+                              className={`p-1.5 rounded-lg flex-shrink-0 mt-0.5 ${
+                                isOrder
+                                  ? 'bg-blue-100 text-blue-600'
+                                  : isReview
+                                  ? 'bg-amber-100 text-amber-600'
+                                  : 'bg-rose-100 text-rose-600'
+                              }`}
+                            >
+                              {isOrder ? (
+                                <ShoppingBag className="w-3.5 h-3.5" />
+                              ) : isReview ? (
+                                <Star className="w-3.5 h-3.5" />
+                              ) : (
+                                <AlertTriangle className="w-3.5 h-3.5" />
+                              )}
+                            </div>
+
+                            <div className="flex-1 min-w-0 pr-4">
+                              <div className="flex items-center justify-between gap-1">
+                                <p className="text-[11px] font-extrabold text-brand-slate-dark leading-snug truncate">
+                                  {notif.title}
+                                </p>
+                              </div>
+                              <p className="text-[10px] text-slate-600 leading-tight font-medium mt-0.5 line-clamp-2">
+                                {notif.message}
+                              </p>
+                              <div className="flex items-center space-x-2 mt-1">
+                                <span className="text-[8px] font-bold text-slate-400 flex items-center">
+                                  <Clock className="w-2.5 h-2.5 mr-0.5" />
+                                  {new Date(notif.createdAt).toLocaleTimeString([], {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                  })}
+                                </span>
+                                <span className="text-[9px] font-black text-brand-crimson group-hover:underline">
+                                  Open →
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+
+                  {/* Bottom Actions Footer - Realtime Testing Controls */}
+                  <div className="p-2 bg-slate-50 border-t border-gray-100 flex items-center justify-between gap-1 flex-shrink-0">
+                    <button
+                      onClick={() => handleTriggerTestEvent('order')}
+                      disabled={isTriggeringTest}
+                      className="py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[9px] font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                    >
+                      <ShoppingBag className="w-2.5 h-2.5" />
+                      <span>+ Order Event</span>
+                    </button>
+                    <button
+                      onClick={() => handleTriggerTestEvent('review')}
+                      disabled={isTriggeringTest}
+                      className="py-1 px-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[9px] font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                    >
+                      <Star className="w-2.5 h-2.5" />
+                      <span>+ Review Event</span>
+                    </button>
+                    <button
+                      onClick={() => handleTriggerTestEvent('stock')}
+                      disabled={isTriggeringTest}
+                      className="py-1 px-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                    >
+                      <AlertTriangle className="w-2.5 h-2.5" />
+                      <span>+ Stock Alert</span>
+                    </button>
                   </div>
                 </div>
-
-                <div className="p-3 bg-slate-50 border-t border-gray-100 text-center">
-                  <button
-                    onClick={() => handleNavigateTab('dashboard')}
-                    className="text-xs font-extrabold text-brand-crimson hover:underline"
-                  >
-                    View Complete Dashboard Analytics
-                  </button>
-                </div>
-              </div>
               </>
             )}
           </div>

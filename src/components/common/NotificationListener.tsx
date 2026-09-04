@@ -93,6 +93,8 @@ export function NotificationListener() {
           if (parsed) {
             queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
             queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+            queryClient.invalidateQueries({ queryKey: ['admin-summary'] });
+            queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
 
             const notifPayload = parsed.data || parsed;
             addToast({
@@ -105,6 +107,8 @@ export function NotificationListener() {
         } catch {
           queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
           queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+          queryClient.invalidateQueries({ queryKey: ['admin-summary'] });
+          queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
         }
       };
 
