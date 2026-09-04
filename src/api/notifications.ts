@@ -86,4 +86,11 @@ export const notificationsApi = {
   testPushNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification; pushEnabled: boolean }> => {
     return apiClient.post('/notifications/test-push', {});
   },
+
+  /**
+   * Send test email notification
+   */
+  testEmailNotification: async (): Promise<{ success: boolean; message: string; notification: AppNotification; emailEnabled: boolean }> => {
+    return apiClient.post('/notifications/test-email', {});
+  },
 };
