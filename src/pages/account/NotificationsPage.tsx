@@ -114,6 +114,10 @@ export function NotificationsPage() {
     if (!n.isRead && notifId) {
       markReadMutation.mutate(notifId);
     }
+    if (n.metadata?.link) {
+      window.location.href = n.metadata.link;
+      return;
+    }
     const notifType = (n.type || '').toUpperCase();
     if (notifType.includes('ORDER') || n.metadata?.orderNumber) {
       window.location.href = '/account/orders';
