@@ -164,6 +164,7 @@ export const ordersApi = {
           subtotal: res.pricing?.subtotal ?? 0,
           discount: res.pricing?.totalDiscount ?? 0,
           couponDiscount: res.pricing?.couponDiscount ?? 0,
+          onlinePaymentDiscount: res.pricing?.onlinePaymentDiscount ?? 0,
           shippingFee: res.pricing?.shippingFee ?? 0,
           tax: res.pricing?.tax ?? 0,
           total: totalAmount,
@@ -228,6 +229,7 @@ export const ordersApi = {
             subtotal: item.pricing?.subtotal ?? item.totals?.subtotal ?? 0,
             discount: item.pricing?.totalDiscount ?? item.totals?.discount ?? 0,
             couponDiscount: item.pricing?.couponDiscount ?? item.totals?.couponDiscount ?? 0,
+            onlinePaymentDiscount: item.pricing?.onlinePaymentDiscount ?? item.totals?.onlinePaymentDiscount ?? 0,
             shippingFee: item.pricing?.shippingFee ?? item.totals?.shippingFee ?? 0,
             tax: item.pricing?.tax ?? item.totals?.tax ?? 0,
             total: totalAmount,
@@ -279,6 +281,7 @@ export const ordersApi = {
           subtotal: res.pricing?.subtotal ?? res.totals?.subtotal ?? 0,
           discount: res.pricing?.totalDiscount ?? res.totals?.discount ?? 0,
           couponDiscount: res.pricing?.couponDiscount ?? res.totals?.couponDiscount ?? 0,
+          onlinePaymentDiscount: res.pricing?.onlinePaymentDiscount ?? res.totals?.onlinePaymentDiscount ?? 0,
           shippingFee: res.pricing?.shippingFee ?? res.totals?.shippingFee ?? 0,
           tax: res.pricing?.tax ?? res.totals?.tax ?? 0,
           total: totalAmount,
@@ -322,7 +325,11 @@ export const ordersApi = {
 
   getInvoice: async (id: string): Promise<any> => {
     try {
-      return await apiClient.get(`/checkout/orders/${id}/invoice`);
+      try {
+        return await apiClient.get(`/checkout/orders/${id}/invoice`);
+      } catch (e) {
+        return await apiClient.get(`/orders/my/${id}/invoice`);
+      }
     } catch (error) {
       return null;
     }
