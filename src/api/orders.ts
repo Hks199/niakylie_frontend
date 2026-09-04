@@ -1,6 +1,7 @@
 import { apiClient } from './client';
 import { addressesApi } from './addresses';
 import { CartItem } from '../types';
+import { formatImageUrl } from '../utils/imageUtils';
 
 export interface OrderItem {
   productId: string;
@@ -220,7 +221,7 @@ export const ordersApi = {
             quantity: it.quantity || 1,
             color: it.color,
             size: it.size,
-            image: it.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80',
+            image: formatImageUrl(it.image || (typeof it.productId === 'object' ? (it.productId?.thumbnail || it.productId?.images?.[0]) : undefined)),
           })),
           createdAt: item.createdAt || new Date().toISOString(),
           totals: {
@@ -271,7 +272,7 @@ export const ordersApi = {
           quantity: it.quantity || 1,
           color: it.color,
           size: it.size,
-          image: it.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80',
+          image: formatImageUrl(it.image || (typeof it.productId === 'object' ? (it.productId?.thumbnail || it.productId?.images?.[0]) : undefined)),
         })),
         createdAt: res.createdAt || new Date().toISOString(),
         totals: {

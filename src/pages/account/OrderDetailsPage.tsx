@@ -4,6 +4,7 @@ import { ArrowLeft, Download, Package, Loader2, Star } from 'lucide-react';
 import { ordersApi } from '../../api/orders';
 import { OrderTrackingTimeline } from '../../components/account/OrderTrackingTimeline';
 import { WriteReviewModal } from '../../components/account/WriteReviewModal';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface OrderDetailsPageProps {
   orderId: string;
@@ -81,16 +82,31 @@ export function OrderDetailsPage({ orderId, onBack }: OrderDetailsPageProps) {
           order.items.map((item, idx) => {
             const itemAny = item as any;
             const product: any = typeof item.productId === 'object' ? item.productId : itemAny.product || {};
-            const image = itemAny.image || product.thumbnail || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
+            const rawImg = itemAny.image || itemAny.thumbnail || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
+            const image = formatImageUrl(rawImg);
             const title = itemAny.name || product.title || 'NiaKylie Ethnic Couture Garment';
             const targetProdId = typeof item.productId === 'string' ? item.productId : (item.productId?._id || itemAny.id || product.id || 'p1');
+            const color = itemAny.color;
+            const size = itemAny.size;
 
             return (
               <div key={idx} className="flex items-center justify-between p-4 border-b border-gray-50 last:border-0">
                 <div className="flex items-center space-x-3">
-                  <img src={image} alt={title} className="w-14 h-16 rounded-xl object-cover border border-gray-100" />
+                  <img
+                    src={image}
+                    alt={title}
+                    className="w-14 h-16 rounded-xl object-cover border border-gray-100 bg-slate-100 flex-shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
+                    }}
+                  />
                   <div>
                     <p className="text-xs font-extrabold text-brand-slate-dark">{title}</p>
+                    {(color || size) && (
+                      <p className="text-[10px] font-semibold text-slate-400">
+                        {[color, size].filter(Boolean).join(' · ')}
+                      </p>
+                    )}
                     <p className="text-[11px] text-slate-400">Qty: {item.quantity}</p>
                     <p className="text-xs font-bold text-brand-slate-dark mt-0.5">₹{item.price.toLocaleString('en-IN')}</p>
                   </div>

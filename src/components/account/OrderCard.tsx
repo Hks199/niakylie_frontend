@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Eye, Download, X, Package, Star } from 'lucide-react';
 import { Order, OrderStatus, ordersApi } from '../../api/orders';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface OrderCardProps {
   order: Order;
@@ -53,10 +54,31 @@ export function OrderCard({ order, onViewDetails, onCancelled }: OrderCardProps)
       </div>
 
       {/* Items Thumbnail Strip */}
-      <div className="flex items-center space-x-2">
-        <Package className="w-8 h-8 text-brand-crimson/70 flex-shrink-0" />
+      <div className="flex items-center space-x-3">
+        {order.items && order.items.length > 0 ? (
+          <div className="flex items-center -space-x-2 overflow-hidden flex-shrink-0">
+            {order.items.slice(0, 4).map((item: any, idx: number) => {
+              const product = typeof item.productId === 'object' ? item.productId : item.product || {};
+              const rawImg = item.image || item.thumbnail || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
+              const imgUrl = formatImageUrl(rawImg);
+              return (
+                <img
+                  key={idx}
+                  src={imgUrl}
+                  alt={item.name || 'Order Item'}
+                  className="w-10 h-12 rounded-lg object-cover border-2 border-white shadow-xs bg-slate-100"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
+                  }}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <Package className="w-8 h-8 text-brand-crimson/70 flex-shrink-0" />
+        )}
         <div className="text-xs text-slate-500">
-          <p className="font-bold text-brand-slate-dark">
+          <p className="font-bold text-brand-slate-dark line-clamp-1">
             {order.items && order.items.length > 0
               ? order.items.map((i: any) => i.name || i.title).filter(Boolean).join(', ')
               : 'NiaKylie Ethnic Couture Item'}
