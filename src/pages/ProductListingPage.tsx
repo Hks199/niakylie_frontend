@@ -160,7 +160,7 @@ export function ProductListingPage() {
           className="lg:hidden flex items-center space-x-2 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md"
         >
           <SlidersHorizontal className="w-4 h-4" />
-          <span>FILTER & SORT</span>
+          <span>FILTER</span>
         </button>
 
         <div className="hidden lg:block text-xs font-semibold text-slate-500">

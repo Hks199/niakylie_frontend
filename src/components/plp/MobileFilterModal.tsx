@@ -44,7 +44,7 @@ export function MobileFilterModal({
       {/* Bottom Sheet Drawer */}
       <div className="fixed inset-y-0 right-0 max-w-[300px] sm:max-w-xs w-full bg-white shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-300 z-50">
         <div className="p-3.5 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-brand-slate-dark text-white">
-          <h3 className="font-extrabold text-xs sm:text-sm uppercase tracking-wider">Refine Filters & Sort</h3>
+          <h3 className="font-extrabold text-xs sm:text-sm uppercase tracking-wider">Refine Filters</h3>
           <button onClick={onClose} className="p-1 rounded-full text-slate-300 hover:text-white">
             <X className="w-5 h-5" />
           </button>
