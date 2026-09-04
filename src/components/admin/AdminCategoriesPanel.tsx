@@ -312,12 +312,12 @@ export function AdminCategoriesPanel() {
     <div className="space-y-4 sm:space-y-5">
       {/* Top Header Card */}
       <div className="bg-white border border-slate-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm flex items-start sm:items-center justify-between flex-wrap gap-3 sm:gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-brand-crimson/10 text-brand-crimson flex items-center justify-center flex-shrink-0 font-bold shadow-inner">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-brand-crimson/10 text-brand-crimson flex items-center justify-center flex-shrink-0 font-bold shadow-inner">
             <FolderTree className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h2 className="text-base sm:text-lg font-extrabold text-brand-slate-dark font-display">Category & Taxonomy Management</h2>
+            <h2 className="text-sm sm:text-lg font-extrabold text-brand-slate-dark font-display">Category & Taxonomy Management</h2>
             <p className="text-[10px] sm:text-xs text-slate-400">
               Manage Level 1 Main Categories, Level 2 Sub-Categories, header banners & taxonomy trees
             </p>
@@ -325,11 +325,11 @@ export function AdminCategoriesPanel() {
         </div>
 
         {/* Action Header Buttons */}
-        <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-end flex-wrap gap-y-2">
+        <div className="flex items-center space-x-1.5 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-end flex-wrap gap-y-2">
           <button
             onClick={() => invalidateAllCaches()}
             disabled={isRefetching}
-            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-slate-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+            className="p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl border border-slate-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             title="Refresh Categories List"
           >
             <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
@@ -337,15 +337,15 @@ export function AdminCategoriesPanel() {
 
           <button
             onClick={handleOpenCreateParentModal}
-            className="inline-flex items-center space-x-1.5 bg-slate-900 hover:bg-black text-white font-extrabold text-[10px] sm:text-xs px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition-all"
+            className="inline-flex items-center space-x-1 sm:space-x-1.5 bg-slate-900 hover:bg-black text-white font-extrabold text-[10px] sm:text-xs px-2.5 sm:px-4 py-1.5 sm:py-3 rounded-lg sm:rounded-2xl shadow-md hover:shadow-lg transition-all"
           >
             <FolderPlus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
-            <span>MAIN CATEGORY</span>
+            <span>MAIN CAT</span>
           </button>
 
           <button
             onClick={() => handleOpenCreateSubModal()}
-            className="inline-flex items-center space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[10px] sm:text-xs px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl shadow-md hover:shadow-lg transition-all"
+            className="inline-flex items-center space-x-1 sm:space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[10px] sm:text-xs px-2.5 sm:px-5 py-1.5 sm:py-3 rounded-lg sm:rounded-2xl shadow-md hover:shadow-lg transition-all"
           >
             <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>ADD SUB-CAT</span>
@@ -355,7 +355,7 @@ export function AdminCategoriesPanel() {
 
       {/* Global Notifications Banners */}
       {errorMessage && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-xs font-semibold flex items-center justify-between animate-in fade-in duration-200">
+        <div className="bg-rose-50 border border-rose-200 text-rose-800 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 text-[11px] sm:text-xs font-semibold flex items-center justify-between animate-in fade-in duration-200">
           <div className="flex items-center space-x-2">
             <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
             <span>{errorMessage}</span>
@@ -367,7 +367,7 @@ export function AdminCategoriesPanel() {
       )}
 
       {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-xs font-semibold flex items-center justify-between animate-in fade-in duration-200">
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 text-[11px] sm:text-xs font-semibold flex items-center justify-between animate-in fade-in duration-200">
           <div className="flex items-center space-x-2">
             <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{successMessage}</span>
@@ -380,7 +380,7 @@ export function AdminCategoriesPanel() {
 
       {/* 3. Interactive Filter Bar: Search Input & Hierarchy Tabs */}
       <div className="bg-white border border-slate-100 rounded-xl sm:rounded-3xl p-3 sm:p-4 shadow-sm flex items-center justify-between flex-wrap gap-2.5 sm:gap-3">
-        <div className="relative flex-1 max-w-md w-full min-w-[200px]">
+        <div className="relative flex-1 max-w-md w-full min-w-[180px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
@@ -403,7 +403,7 @@ export function AdminCategoriesPanel() {
         <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl sm:rounded-2xl overflow-x-auto scrollbar-none w-full sm:w-auto">
           <button
             onClick={() => setFilterType('all')}
-            className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold transition-all whitespace-nowrap ${
+            className={`px-2 sm:px-3.5 py-1 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold transition-all whitespace-nowrap ${
               filterType === 'all'
                 ? 'bg-white text-slate-900 shadow-sm'
                 : 'text-slate-500 hover:text-slate-900'
@@ -414,7 +414,7 @@ export function AdminCategoriesPanel() {
 
           <button
             onClick={() => setFilterType('parent')}
-            className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold flex items-center space-x-1 transition-all whitespace-nowrap ${
+            className={`px-2 sm:px-3.5 py-1 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold flex items-center space-x-1 transition-all whitespace-nowrap ${
               filterType === 'parent'
                 ? 'bg-amber-500 text-white shadow-sm'
                 : 'text-slate-500 hover:text-slate-900'
@@ -426,7 +426,7 @@ export function AdminCategoriesPanel() {
 
           <button
             onClick={() => setFilterType('sub')}
-            className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold flex items-center space-x-1 transition-all whitespace-nowrap ${
+            className={`px-2 sm:px-3.5 py-1 sm:py-2 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold flex items-center space-x-1 transition-all whitespace-nowrap ${
               filterType === 'sub'
                 ? 'bg-brand-crimson text-white shadow-sm'
                 : 'text-slate-500 hover:text-slate-900'
@@ -439,18 +439,18 @@ export function AdminCategoriesPanel() {
       </div>
 
       {/* Main Category Data Table */}
-      <div className="bg-white border border-slate-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-100 rounded-xl sm:rounded-3xl p-3 sm:p-6 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="py-20 flex flex-col items-center justify-center space-y-3">
-            <RefreshCw className="w-8 h-8 animate-spin text-brand-crimson" />
+          <div className="py-16 sm:py-20 flex flex-col items-center justify-center space-y-3">
+            <RefreshCw className="w-7 h-7 sm:w-8 sm:h-8 animate-spin text-brand-crimson" />
             <span className="text-xs text-slate-400 font-semibold">Loading category hierarchy...</span>
           </div>
         ) : filteredCategories.length === 0 ? (
-          <div className="py-16 text-center space-y-3">
-            <FolderTree className="w-12 h-12 text-slate-200 mx-auto" />
+          <div className="py-12 sm:py-16 text-center space-y-3 px-4">
+            <FolderTree className="w-10 h-10 sm:w-12 sm:h-12 text-slate-200 mx-auto" />
             <div>
-              <p className="text-sm font-extrabold text-slate-700">No Categories Found</p>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs sm:text-sm font-extrabold text-slate-700">No Categories Found</p>
+              <p className="text-[11px] sm:text-xs text-slate-400 mt-1">
                 {searchTerm
                   ? `No categories match search query "${searchTerm}"`
                   : 'Start by creating your first Level 1 Main Category.'}
@@ -476,7 +476,7 @@ export function AdminCategoriesPanel() {
                   <th className="pb-3 pr-2 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 text-xs font-semibold">
+              <tbody className="divide-y divide-slate-50 text-[11px] sm:text-xs font-semibold">
                 {paginatedCategories.map((cat, idx) => {
                   const parentIdVal = typeof cat.parentId === 'object' && cat.parentId
                     ? ((cat.parentId as any)._id || (cat.parentId as any).id)
@@ -490,7 +490,7 @@ export function AdminCategoriesPanel() {
                   return (
                     <tr key={catId} className="hover:bg-slate-50/60 transition-colors group">
                       {/* Thumbnail & Name */}
-                      <td className="py-3.5 pl-2 flex items-center space-x-3.5">
+                      <td className="py-3 pl-2 flex items-center space-x-3">
                         {cat.image ? (
                           <img
                             src={cat.image.startsWith('http') ? cat.image : `http://localhost:3000${cat.image}`}
@@ -499,11 +499,11 @@ export function AdminCategoriesPanel() {
                               (e.currentTarget as HTMLImageElement).src =
                                 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=250&q=80';
                             }}
-                            className="w-10 h-10 rounded-2xl object-cover border border-slate-200 shadow-sm"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl object-cover border border-slate-200 shadow-sm flex-shrink-0"
                           />
                         ) : (
                           <div
-                            className={`w-10 h-10 rounded-2xl flex items-center justify-center font-extrabold text-xs border shadow-sm ${
+                            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center font-extrabold text-xs border shadow-sm flex-shrink-0 ${
                               isParent
                                 ? 'bg-amber-50 text-amber-700 border-amber-200'
                                 : 'bg-rose-50 text-brand-crimson border-rose-100'
@@ -514,10 +514,10 @@ export function AdminCategoriesPanel() {
                         )}
                         <div>
                           <div className="flex items-center space-x-2">
-                            <p className="font-extrabold text-slate-900 text-sm">{cat.name}</p>
+                            <p className="font-extrabold text-slate-900 text-xs sm:text-sm">{cat.name}</p>
                           </div>
                           {cat.description ? (
-                            <p className="text-[11px] text-slate-400 line-clamp-1 max-w-xs">{cat.description}</p>
+                            <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1 max-w-xs">{cat.description}</p>
                           ) : (
                             <p className="text-[10px] text-slate-300 italic">No description provided</p>
                           )}
@@ -525,28 +525,28 @@ export function AdminCategoriesPanel() {
                       </td>
 
                       {/* Slug */}
-                      <td className="py-3.5 font-mono text-[11px] text-slate-500">{cat.slug || '—'}</td>
+                      <td className="py-3 font-mono text-[10px] sm:text-[11px] text-slate-500">{cat.slug || '—'}</td>
 
                       {/* 2. Hierarchy Badging (Level 1 vs Level 2) */}
-                      <td className="py-3.5 text-slate-600">
+                      <td className="py-3 text-slate-600">
                         {isParent ? (
-                          <span className="bg-amber-500/10 text-amber-700 border border-amber-500/20 px-2.5 py-1 rounded-xl text-[10px] font-extrabold uppercase flex items-center space-x-1.5 w-max">
+                          <span className="bg-amber-500/10 text-amber-700 border border-amber-500/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl text-[9px] sm:text-[10px] font-extrabold uppercase flex items-center space-x-1.5 w-max">
                             <FolderTree className="w-3 h-3 text-amber-600" />
                             <span>Level 1 · Main Category</span>
                           </span>
                         ) : (
                           <div className="flex items-center space-x-1.5 flex-wrap gap-1">
-                            <span className="bg-brand-crimson/10 text-brand-crimson border border-brand-crimson/20 px-2.5 py-1 rounded-xl text-[10px] font-extrabold uppercase flex items-center space-x-1 w-max">
+                            <span className="bg-brand-crimson/10 text-brand-crimson border border-brand-crimson/20 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl text-[9px] sm:text-[10px] font-extrabold uppercase flex items-center space-x-1 w-max">
                               <Layers className="w-3 h-3 text-brand-crimson" />
                               <span>Level 2 Sub-Cat</span>
                             </span>
                             {parentCat ? (
-                              <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-lg text-[10px] font-bold flex items-center space-x-1 border border-slate-200">
+                              <span className="bg-slate-100 text-slate-700 px-1.5 sm:px-2 py-0.5 rounded-lg text-[9px] sm:text-[10px] font-bold flex items-center space-x-1 border border-slate-200">
                                 <ArrowUpRight className="w-3 h-3 text-slate-400" />
                                 <span>Sub of {parentCat.name}</span>
                               </span>
                             ) : (
-                              <span className="bg-slate-100 text-slate-400 px-2 py-0.5 rounded-lg text-[10px] italic">
+                              <span className="bg-slate-100 text-slate-400 px-1.5 sm:px-2 py-0.5 rounded-lg text-[9px] sm:text-[10px] italic">
                                 Parent ID: {String(parentIdVal).substring(0, 8)}...
                               </span>
                             )}
@@ -555,11 +555,11 @@ export function AdminCategoriesPanel() {
                       </td>
 
                       {/* 4. Active Status Toggle */}
-                      <td className="py-3.5 px-2">
+                      <td className="py-3 px-2">
                         <button
                           onClick={() => handleToggleActive(catId)}
                           disabled={togglingId === catId}
-                          className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-[10px] font-extrabold transition-all hover:scale-105 cursor-pointer disabled:opacity-50 ${
+                          className={`inline-flex items-center space-x-1 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-extrabold transition-all hover:scale-105 cursor-pointer disabled:opacity-50 ${
                             cat.status !== false
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
                               : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
@@ -575,13 +575,13 @@ export function AdminCategoriesPanel() {
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3.5 pr-2 text-right">
-                        <div className="flex items-center justify-end space-x-1.5">
+                      <td className="py-3 pr-2 text-right">
+                        <div className="flex items-center justify-end space-x-1 sm:space-x-1.5">
                           {/* 4. Add Sub-Category Shortcut on Main Category row */}
                           {isParent && (
                             <button
                               onClick={() => handleOpenCreateSubModal(catId)}
-                              className="px-2.5 py-1 text-[10px] font-extrabold text-brand-crimson bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl transition-colors flex items-center space-x-1 mr-1"
+                              className="px-2 sm:px-2.5 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-extrabold text-brand-crimson bg-rose-50 hover:bg-rose-100 border border-rose-100 rounded-xl transition-colors flex items-center space-x-1 mr-1"
                               title="Add Sub-Category under this Main Category"
                             >
                               <Plus className="w-3 h-3" />
@@ -591,7 +591,7 @@ export function AdminCategoriesPanel() {
 
                           <button
                             onClick={() => handleOpenEditModal(cat)}
-                            className="p-2 text-slate-400 hover:text-brand-crimson hover:bg-rose-50 rounded-xl transition-colors"
+                            className="p-1.5 sm:p-2 text-slate-400 hover:text-brand-crimson hover:bg-rose-50 rounded-xl transition-colors"
                             title="Edit Category"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -600,7 +600,7 @@ export function AdminCategoriesPanel() {
                           <button
                             onClick={() => setCategoryToDelete(cat)}
                             disabled={deletingId === catId}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50"
+                            className="p-1.5 sm:p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50"
                             title="Delete Category"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -617,24 +617,24 @@ export function AdminCategoriesPanel() {
 
         {/* Pagination Controls */}
         {filteredCategories.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 mt-2 border-t border-slate-100 text-xs text-slate-500 font-semibold">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3.5 mt-2 border-t border-slate-100 text-[11px] sm:text-xs text-slate-500 font-semibold">
             {/* Info & Page Size Selector */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
               <span>
                 Showing <strong className="text-slate-900 font-extrabold">{totalItems > 0 ? startIndex + 1 : 0}</strong> to{' '}
                 <strong className="text-slate-900 font-extrabold">{endIndex}</strong> of{' '}
-                <strong className="text-slate-900 font-extrabold">{totalItems}</strong> categories
+                <strong className="text-slate-900 font-extrabold">{totalItems}</strong>
               </span>
 
-              <div className="flex items-center space-x-1.5 pl-2 border-l border-slate-200">
-                <span className="text-[11px] text-slate-400 font-medium">Per page:</span>
+              <div className="flex items-center space-x-1 pl-2 border-l border-slate-200">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium">Per page:</span>
                 <select
                   value={pageSize}
                   onChange={(e) => {
                     setPageSize(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-1 text-xs font-bold text-slate-800 outline-none focus:border-brand-crimson"
+                  className="bg-slate-50 border border-slate-200 rounded-lg sm:rounded-xl px-1.5 py-0.5 text-[11px] sm:text-xs font-bold text-slate-800 outline-none focus:border-brand-crimson"
                 >
                   <option value={5}>5</option>
                   <option value={10}>10</option>
@@ -651,20 +651,20 @@ export function AdminCategoriesPanel() {
                 <button
                   onClick={() => setCurrentPage(1)}
                   disabled={validPage === 1}
-                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                   title="First Page"
                 >
-                  <ChevronsLeft className="w-4 h-4" />
+                  <ChevronsLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
 
                 {/* Previous Page */}
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={validPage === 1}
-                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                   title="Previous Page"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
 
                 {/* Page Number Buttons */}
@@ -676,10 +676,10 @@ export function AdminCategoriesPanel() {
 
                     return (
                       <div key={page} className="flex items-center">
-                        {showEllipsis && <span className="px-1 text-slate-400">...</span>}
+                        {showEllipsis && <span className="px-0.5 text-slate-400">...</span>}
                         <button
                           onClick={() => setCurrentPage(page)}
-                          className={`min-w-[32px] h-8 px-2 rounded-xl text-xs font-extrabold transition-all ${
+                          className={`min-w-[28px] sm:min-w-[32px] h-7 sm:h-8 px-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-extrabold transition-all ${
                             validPage === page
                               ? 'bg-brand-crimson text-white shadow-sm'
                               : 'bg-slate-50 text-slate-700 hover:bg-slate-200'
@@ -695,20 +695,20 @@ export function AdminCategoriesPanel() {
                 <button
                   onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                   disabled={validPage === totalPages}
-                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                   title="Next Page"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
 
                 {/* Last Page */}
                 <button
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={validPage === totalPages}
-                  className="p-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                   title="Last Page"
                 >
-                  <ChevronsRight className="w-4 h-4" />
+                  <ChevronsRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             )}
@@ -718,33 +718,33 @@ export function AdminCategoriesPanel() {
 
       {/* Delete Confirmation Modal (Cascading Soft Delete) */}
       {categoryToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100">
-            <div className="flex items-center space-x-3 text-rose-600">
-              <div className="w-10 h-10 rounded-2xl bg-rose-100 flex items-center justify-center flex-shrink-0">
-                <ShieldAlert className="w-5 h-5 text-rose-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-md w-full p-4 sm:p-6 shadow-2xl space-y-3.5 sm:space-y-4 border border-slate-100">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 text-rose-600">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-rose-100 flex items-center justify-center flex-shrink-0">
+                <ShieldAlert className="w-4 h-4 sm:w-5 sm:h-5 text-rose-600" />
               </div>
               <div>
-                <h3 className="text-base font-extrabold text-slate-900">Confirm Soft Delete</h3>
-                <p className="text-[11px] text-slate-400">DELETE /api/v1/categories/:id</p>
+                <h3 className="text-xs sm:text-base font-extrabold text-slate-900">Confirm Soft Delete</h3>
+                <p className="text-[10px] text-slate-400 font-mono">DELETE /api/v1/categories/:id</p>
               </div>
             </div>
 
-            <div className="bg-rose-50/80 border border-rose-200/80 rounded-2xl p-4 text-xs text-rose-900 font-semibold space-y-1">
+            <div className="bg-rose-50/80 border border-rose-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 text-[11px] sm:text-xs text-rose-900 font-semibold space-y-1">
               <p className="font-extrabold text-rose-950">
                 Are you sure you want to delete category "{categoryToDelete.name}"?
               </p>
-              <p className="text-[11px] text-rose-800">
+              <p className="text-[10px] sm:text-[11px] text-rose-800">
                 ⚠️ Cascading Delete Warning: Any nested Level 2 sub-categories will also be soft-deleted and removed from store megamenus.
               </p>
             </div>
 
-            <div className="flex items-center justify-end space-x-3 pt-2">
+            <div className="flex items-center justify-end space-x-2 sm:space-x-3 pt-2">
               <button
                 type="button"
                 onClick={() => setCategoryToDelete(null)}
                 disabled={deletingId !== null}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
+                className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -752,11 +752,11 @@ export function AdminCategoriesPanel() {
                 type="button"
                 onClick={handleConfirmDelete}
                 disabled={deletingId !== null}
-                className="inline-flex items-center space-x-2 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
+                className="inline-flex items-center space-x-1.5 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
               >
                 {deletingId ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                     <span>DELETING...</span>
                   </>
                 ) : (
@@ -770,29 +770,29 @@ export function AdminCategoriesPanel() {
 
       {/* Edit Category Modal */}
       {isEditModalOpen && editingCategory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl p-4 sm:p-8 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-shrink-0">
               <div>
-                <h3 className="text-lg font-extrabold text-slate-900">
+                <h3 className="text-xs sm:text-lg font-extrabold text-slate-900">
                   Edit {editCategoryType === 'parent' ? 'Main Category (Level 1)' : 'Sub-Category (Level 2)'}
                 </h3>
-                <p className="text-[10px] text-slate-400 font-mono mt-0.5">PUT /api/v1/categories/:id</p>
+                <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono mt-0.5">PUT /api/v1/categories/:id</p>
               </div>
               <button
                 onClick={() => {
                   setIsEditModalOpen(false);
                   setEditingCategory(null);
                 }}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleEditSubmit} className="space-y-4">
+            <form onSubmit={handleEditSubmit} className="space-y-3.5 sm:space-y-4 text-[11px] sm:text-xs font-medium overflow-y-auto max-h-[72vh] pr-1 flex-1">
               {errorMessage && (
-                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-start space-x-2">
+                <div className="p-2.5 sm:p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-[11px] sm:text-xs flex items-start space-x-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{errorMessage}</span>
                 </div>
@@ -800,27 +800,27 @@ export function AdminCategoriesPanel() {
 
               {/* Name */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">Category Name *</label>
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">Category Name *</label>
                 <input
                   type="text"
                   name="name"
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Sub-Category Parent Selection */}
               {editCategoryType === 'sub' && (
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Parent Category *</label>
+                  <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">Parent Category *</label>
                   <select
                     name="parentId"
                     required
                     value={formData.parentId}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                   >
                     <option value="" disabled>-- Select Parent Category --</option>
                     {parentCategories
@@ -839,20 +839,20 @@ export function AdminCategoriesPanel() {
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">Description</label>
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">Description</label>
                 <textarea
                   name="description"
                   rows={2}
                   value={formData.description}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Thumbnail and Banner File Overrides */}
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
+                  <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1 uppercase">
                     <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
                     <span>Replace Category Thumbnail</span>
                   </label>
@@ -860,7 +860,7 @@ export function AdminCategoriesPanel() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileChange(e, 'imageFile')}
-                    className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-crimson file:text-white hover:file:bg-brand-crimson-dark cursor-pointer"
+                    className="w-full text-[11px] sm:text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] sm:file:text-xs file:font-bold file:bg-brand-crimson file:text-white hover:file:bg-brand-crimson-dark cursor-pointer"
                   />
                   {formData.imageFile && (
                     <p className="text-[10px] text-emerald-600 font-semibold mt-1">✓ New file selected: {formData.imageFile.name}</p>
@@ -868,7 +868,7 @@ export function AdminCategoriesPanel() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
+                  <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1 uppercase">
                     <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
                     <span>Replace Header Banner</span>
                   </label>
@@ -876,7 +876,7 @@ export function AdminCategoriesPanel() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleFileChange(e, 'bannerFile')}
-                    className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 cursor-pointer"
+                    className="w-full text-[11px] sm:text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] sm:file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 cursor-pointer"
                   />
                   {formData.bannerFile && (
                     <p className="text-[10px] text-emerald-600 font-semibold mt-1">✓ New banner selected: {formData.bannerFile.name}</p>
@@ -894,30 +894,30 @@ export function AdminCategoriesPanel() {
                     onChange={handleInputChange}
                     className="rounded border-slate-300 text-brand-crimson focus:ring-brand-crimson"
                   />
-                  <span className="text-xs font-bold text-slate-700">Active Category</span>
+                  <span className="text-[11px] sm:text-xs font-bold text-slate-700">Active Category</span>
                 </label>
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end space-x-2 sm:space-x-3 pt-3 border-t border-slate-100 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => {
                     setIsEditModalOpen(false);
                     setEditingCategory(null);
                   }}
-                  className="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                  className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-slate-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-6 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
+                  className="inline-flex items-center space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                       <span>SAVING...</span>
                     </>
                   ) : (

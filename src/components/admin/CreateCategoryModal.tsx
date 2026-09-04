@@ -256,10 +256,10 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-3.5 sm:p-7 overflow-y-auto space-y-4 sm:space-y-5 flex-1">
+        <div className="p-3 sm:p-7 overflow-y-auto space-y-3.5 sm:space-y-5 flex-1 max-h-[72vh]">
           {/* Notification Feedback Banners */}
           {errorMessage && (
-            <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-semibold flex items-start space-x-2.5 animate-in fade-in duration-200">
+            <div className="p-3 sm:p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-semibold flex items-start space-x-2 animate-in fade-in duration-200">
               <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="font-extrabold">Error Creating Category</p>
@@ -269,7 +269,7 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
           )}
 
           {successMessage && (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-semibold flex items-start space-x-2.5 animate-in fade-in duration-200">
+            <div className="p-3 sm:p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-semibold flex items-start space-x-2 animate-in fade-in duration-200">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <p className="font-extrabold">Success!</p>
@@ -278,36 +278,36 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
             </div>
           )}
 
-          <form id="createCategoryForm" onSubmit={handleSubmit} className="space-y-5">
+          <form id="createCategoryForm" onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-5 text-[11px] sm:text-xs">
             {/* 2-Level Hierarchy Toggle */}
             <div>
-              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
+              <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
                 Category Level & Hierarchy
               </label>
-              <div className="grid grid-cols-2 gap-2.5 p-1.5 bg-slate-100 rounded-2xl">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 bg-slate-100 rounded-xl sm:rounded-2xl">
                 <button
                   type="button"
                   onClick={() => handleCategoryTypeSwitch('main')}
-                  className={`py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-2 transition-all ${
+                  className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold flex items-center justify-center space-x-1.5 sm:space-x-2 transition-all ${
                     categoryType === 'main'
                       ? 'bg-slate-900 text-white shadow-md'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
-                  <FolderPlus className={`w-4 h-4 ${categoryType === 'main' ? 'text-amber-400' : 'text-slate-500'}`} />
+                  <FolderPlus className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${categoryType === 'main' ? 'text-amber-400' : 'text-slate-500'}`} />
                   <span>Main Category (Level 1)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleCategoryTypeSwitch('sub')}
-                  className={`py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-2 transition-all ${
+                  className={`py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold flex items-center justify-center space-x-1.5 sm:space-x-2 transition-all ${
                     categoryType === 'sub'
                       ? 'bg-brand-crimson text-white shadow-md'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
-                  <Layers className={`w-4 h-4 ${categoryType === 'sub' ? 'text-white' : 'text-slate-500'}`} />
+                  <Layers className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${categoryType === 'sub' ? 'text-white' : 'text-slate-500'}`} />
                   <span>Sub-Category (Level 2)</span>
                 </button>
               </div>
@@ -316,7 +316,7 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
             {/* Parent Category Selection Dropdown (Only for Sub-Category) */}
             {categoryType === 'sub' && (
               <div className="animate-in fade-in duration-200">
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
                   Select Parent Category (Level 1) <span className="text-rose-500">*</span>
                 </label>
                 <select
@@ -324,7 +324,7 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                   onChange={(e) => setParentId(e.target.value)}
                   required
                   disabled={isLoadingParents}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold text-slate-800 outline-none focus:border-brand-crimson focus:ring-2 focus:ring-brand-crimson/10 disabled:opacity-60"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold text-slate-800 outline-none focus:border-brand-crimson focus:ring-2 focus:ring-brand-crimson/10 disabled:opacity-60"
                 >
                   <option value="" disabled>
                     {isLoadingParents ? 'Loading Parent Categories...' : '-- Select Parent Category --'}
@@ -339,7 +339,7 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                   })}
                 </select>
                 {rootCategories.length === 0 && !isLoadingParents && (
-                  <p className="text-[11px] text-amber-600 font-semibold mt-1">
+                  <p className="text-[10px] sm:text-[11px] text-amber-600 font-semibold mt-1">
                     ⚠️ No main parent categories found. Create a Main Category first!
                   </p>
                 )}
@@ -348,16 +348,16 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
 
             {/* Main Category Informational Hint */}
             {categoryType === 'main' && (
-              <div className="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-3 text-[11px] text-amber-900 font-semibold flex items-center space-x-2">
-                <FolderPlus className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 text-[10px] sm:text-[11px] text-amber-900 font-semibold flex items-center space-x-1.5">
+                <FolderPlus className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
                 <span>Main Categories (`parentId = null`) serve as top-level navigation roots in the megamenu.</span>
               </div>
             )}
 
             {/* Name & Slug */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
                   Category Name <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -366,14 +366,14 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                   onChange={(e) => setName(e.target.value)}
                   required
                   placeholder={categoryType === 'main' ? "e.g. Women Ethnic Wear" : "e.g. Silk Sarees"}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs font-semibold text-slate-800 outline-none focus:border-brand-crimson focus:bg-white"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold text-slate-800 outline-none focus:border-brand-crimson focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center justify-between">
                   <span>URL Slug</span>
-                  <span className="text-[10px] text-slate-400 normal-case font-normal">(Auto-generated)</span>
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 normal-case font-normal">(Auto-generated)</span>
                 </label>
                 <div className="relative">
                   <input
@@ -384,16 +384,16 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                       setIsSlugTouched(true);
                     }}
                     placeholder="e.g. ethnic-wear"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs font-mono font-semibold text-slate-700 outline-none focus:border-brand-crimson focus:bg-white"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-mono font-semibold text-slate-700 outline-none focus:border-brand-crimson focus:bg-white"
                   />
-                  <Sparkles className="absolute right-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+                  <Sparkles className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
                 </div>
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
                 Description
               </label>
               <textarea
@@ -401,14 +401,14 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
                 placeholder="Write a brief overview of this category for shoppers and megamenu tooltips..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs font-semibold text-slate-800 outline-none focus:border-brand-crimson focus:bg-white"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold text-slate-800 outline-none focus:border-brand-crimson focus:bg-white"
               />
             </div>
 
             {/* Status & Display Order */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-slate-50 border border-slate-200/80 rounded-xl sm:rounded-2xl p-3 sm:p-4">
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
                   Display Order Priority
                 </label>
                 <input
@@ -417,13 +417,13 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                   value={displayOrder}
                   onChange={(e) => setDisplayOrder(Number(e.target.value))}
                   placeholder="0"
-                  className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-800 outline-none focus:border-brand-crimson"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-slate-800 outline-none focus:border-brand-crimson"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">Lower numbers appear first in lists.</p>
+                <p className="text-[9px] sm:text-[10px] text-slate-400 mt-1">Lower numbers appear first in lists.</p>
               </div>
 
-              <div className="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start pt-2 sm:pt-0">
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+              <div className="flex items-center justify-between sm:justify-center sm:flex-col sm:items-start pt-1 sm:pt-0">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
                   Active Status
                 </label>
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -433,8 +433,8 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                     onChange={(e) => setStatus(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                  <span className="ml-3 text-xs font-bold text-slate-700">
+                  <div className="w-10 h-5.5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-emerald-500"></div>
+                  <span className="ml-2.5 text-[11px] sm:text-xs font-bold text-slate-700">
                     {status ? 'Active' : 'Inactive'}
                   </span>
                 </label>
@@ -442,16 +442,16 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
             </div>
 
             {/* File Uploads: Thumbnail Image & Header Banner */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {/* Category Thumbnail Image */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center space-x-1">
                   <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
                   <span>Category Thumbnail</span>
                 </label>
 
                 {imagePreview ? (
-                  <div className="relative group border border-slate-200 rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center h-28">
+                  <div className="relative group border border-slate-200 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center h-24 sm:h-28">
                     <img src={imagePreview} alt="Thumbnail Preview" className="h-full w-full object-cover" />
                     <button
                       type="button"
@@ -463,10 +463,10 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                     </button>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-slate-200 hover:border-brand-crimson/50 rounded-2xl p-4 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-slate-100/50 transition-colors cursor-pointer text-center h-28">
-                    <Upload className="w-5 h-5 text-slate-400 mb-1" />
-                    <span className="text-[11px] font-extrabold text-slate-600">Upload Thumbnail</span>
-                    <span className="text-[10px] text-slate-400">JPG, PNG, WEBP (Max 5MB)</span>
+                  <label className="border-2 border-dashed border-slate-200 hover:border-brand-crimson/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-slate-100/50 transition-colors cursor-pointer text-center h-24 sm:h-28">
+                    <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 mb-1" />
+                    <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-600">Upload Thumbnail</span>
+                    <span className="text-[9px] sm:text-[10px] text-slate-400">JPG, PNG, WEBP (Max 5MB)</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
@@ -479,13 +479,13 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
 
               {/* Category Header Banner */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1 flex items-center space-x-1">
                   <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
                   <span>Header Banner Image</span>
                 </label>
 
                 {bannerPreview ? (
-                  <div className="relative group border border-slate-200 rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center h-28">
+                  <div className="relative group border border-slate-200 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center h-24 sm:h-28">
                     <img src={bannerPreview} alt="Banner Preview" className="h-full w-full object-cover" />
                     <button
                       type="button"
@@ -497,10 +497,10 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                     </button>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-slate-200 hover:border-brand-crimson/50 rounded-2xl p-4 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-slate-100/50 transition-colors cursor-pointer text-center h-28">
-                    <Upload className="w-5 h-5 text-slate-400 mb-1" />
-                    <span className="text-[11px] font-extrabold text-slate-600">Upload Header Banner</span>
-                    <span className="text-[10px] text-slate-400">Wide banner for category page</span>
+                  <label className="border-2 border-dashed border-slate-200 hover:border-brand-crimson/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col items-center justify-center bg-slate-50/50 hover:bg-slate-100/50 transition-colors cursor-pointer text-center h-24 sm:h-28">
+                    <Upload className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 mb-1" />
+                    <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-600">Upload Header Banner</span>
+                    <span className="text-[9px] sm:text-[10px] text-slate-400">Wide banner for category page</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
@@ -513,45 +513,45 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
             </div>
 
             {/* Collapsible SEO Meta Section */}
-            <div className="border border-slate-200 rounded-2xl overflow-hidden bg-slate-50/60">
+            <div className="border border-slate-200 rounded-xl sm:rounded-2xl overflow-hidden bg-slate-50/60">
               <button
                 type="button"
                 onClick={() => setIsSeoOpen(!isSeoOpen)}
-                className="w-full px-4 py-3 flex items-center justify-between text-left text-xs font-extrabold text-slate-700 hover:bg-slate-100/70 transition-colors"
+                className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between text-left text-[11px] sm:text-xs font-extrabold text-slate-700 hover:bg-slate-100/70 transition-colors"
               >
                 <div className="flex items-center space-x-2">
-                  <Globe className="w-4 h-4 text-brand-crimson" />
+                  <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
                   <span>SEO Meta Information (Optional)</span>
                 </div>
                 {isSeoOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
               </button>
 
               {isSeoOpen && (
-                <div className="p-4 border-t border-slate-200 space-y-3 bg-white">
+                <div className="p-3 sm:p-4 border-t border-slate-200 space-y-2.5 sm:space-y-3 bg-white">
                   <div>
-                    <label className="block text-[11px] font-extrabold text-slate-700 mb-1">SEO Title</label>
+                    <label className="block text-[10px] sm:text-[11px] font-extrabold text-slate-700 mb-1">SEO Title</label>
                     <input
                       type="text"
                       value={seoTitle}
                       onChange={(e) => setSeoTitle(e.target.value)}
                       placeholder="e.g. Buy Designer Silk Sarees Online - NiaKylie"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-crimson"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-extrabold text-slate-700 mb-1">SEO Description</label>
+                    <label className="block text-[10px] sm:text-[11px] font-extrabold text-slate-700 mb-1">SEO Description</label>
                     <textarea
                       value={seoDescription}
                       onChange={(e) => setSeoDescription(e.target.value)}
                       rows={2}
                       placeholder="e.g. Explore our exclusive handcrafted silk sarees collection..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-crimson"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                    <label className="block text-[10px] sm:text-[11px] font-extrabold text-slate-700 mb-1">
                       SEO Keywords (Comma-Separated)
                     </label>
                     <input
@@ -559,7 +559,7 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
                       value={seoKeywords}
                       onChange={(e) => setSeoKeywords(e.target.value)}
                       placeholder="e.g. sarees, silk saree, ethnic wear, bridal saree"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-crimson"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                     />
                   </div>
                 </div>
@@ -569,12 +569,12 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end space-x-3 flex-shrink-0">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end space-x-2 sm:space-x-3 flex-shrink-0">
           <button
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
+            className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-slate-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
@@ -582,11 +582,11 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
             type="submit"
             form="createCategoryForm"
             disabled={isSubmitting}
-            className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-6 py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+            className="inline-flex items-center space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
+                <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                 <span>CREATING CATEGORY...</span>
               </>
             ) : (
