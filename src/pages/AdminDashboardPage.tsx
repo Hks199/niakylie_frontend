@@ -54,7 +54,6 @@ export function AdminDashboardPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notifFilterTab, setNotifFilterTab] = useState<'all' | 'unread' | 'orders' | 'reviews' | 'alerts'>('all');
-  const [isTriggeringTest, setIsTriggeringTest] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const notifRef = useRef<HTMLDivElement>(null);
@@ -149,21 +148,6 @@ export function AdminDashboardPage() {
       (isReview ? 'reviews' : typeUpper === 'ORDER_UPDATE' ? 'orders' : 'inventory');
     setActiveTab(targetTab);
     setIsNotificationsOpen(false);
-  };
-
-  const handleTriggerTestEvent = async (type?: string) => {
-    setIsTriggeringTest(true);
-    try {
-      await notificationsApi.testAdminEvent(type);
-      await queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
-      await queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-      refetchNotifs();
-      refetchUnreadCount();
-    } catch (err) {
-      console.error('Failed to trigger test event', err);
-    } finally {
-      setIsTriggeringTest(false);
-    }
   };
 
   // Close notifications dropdown when clicking outside
@@ -544,47 +528,6 @@ export function AdminDashboardPage() {
                         );
                       });
                     })()}
-                  </div>
-
-                  {/* Bottom Actions Footer - Realtime Testing Controls */}
-                  <div className="px-3 py-2 bg-slate-50 border-t border-gray-100 flex flex-col gap-1.5 flex-shrink-0">
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">
-                      Simulate Realtime Events:
-                    </span>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
-                      <button
-                        onClick={() => handleTriggerTestEvent('order')}
-                        disabled={isTriggeringTest}
-                        className="py-1 px-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                      >
-                        <ShoppingBag className="w-2.5 h-2.5" />
-                        <span>+ Order</span>
-                      </button>
-                      <button
-                        onClick={() => handleTriggerTestEvent('cancel')}
-                        disabled={isTriggeringTest}
-                        className="py-1 px-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                      >
-                        <Ban className="w-2.5 h-2.5" />
-                        <span>+ Cancel</span>
-                      </button>
-                      <button
-                        onClick={() => handleTriggerTestEvent('review')}
-                        disabled={isTriggeringTest}
-                        className="py-1 px-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                      >
-                        <Star className="w-2.5 h-2.5" />
-                        <span>+ Review</span>
-                      </button>
-                      <button
-                        onClick={() => handleTriggerTestEvent('stock')}
-                        disabled={isTriggeringTest}
-                        className="py-1 px-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
-                      >
-                        <AlertTriangle className="w-2.5 h-2.5" />
-                        <span>+ Stock</span>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </>
