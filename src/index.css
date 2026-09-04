@@ -41,6 +41,26 @@
   }
 }
 
+@keyframes marquee-infinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-continuous {
+  display: flex;
+  width: max-content;
+  animation: marquee-infinite 16s linear infinite;
+}
+
+.animate-marquee-continuous:hover,
+.animate-marquee-continuous:active {
+  animation-play-state: paused;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

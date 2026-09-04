@@ -84,20 +84,47 @@ export function AnnouncementBar() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-brand-slate-dark via-slate-900 to-brand-slate text-white text-xs py-2 px-4 relative overflow-hidden transition-all duration-300">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex-1 flex items-center justify-center space-x-2 text-center overflow-hidden">
+    <div className="bg-gradient-to-r from-brand-slate-dark via-slate-900 to-brand-slate text-white text-[10px] sm:text-xs py-1.5 sm:py-2 px-2 sm:px-4 relative overflow-hidden transition-all duration-300">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-1">
+        {/* Mobile Continuous Scrolling Marquee Ticker (sm:hidden) */}
+        <div className="flex-1 sm:hidden overflow-hidden relative">
+          <div className="animate-marquee-continuous flex items-center space-x-6 whitespace-nowrap py-0.5">
+            {[...announcements, ...announcements].map((item, idx) => (
+              <div key={idx} className="flex items-center space-x-1.5 flex-shrink-0">
+                <span className="bg-brand-crimson text-white text-[8px] uppercase font-extrabold px-1.5 py-0.5 rounded-full flex items-center space-x-0.5">
+                  {renderIcon(item.icon)}
+                  <span className="whitespace-nowrap">{item.badge || 'Announcement'}</span>
+                </span>
+                <span className="font-semibold text-[10px] tracking-tight">
+                  {item.text}
+                </span>
+                {item.link && (
+                  <a
+                    href={item.link}
+                    className="text-brand-gold hover:underline font-bold text-[9px] ml-1"
+                  >
+                    Shop Now →
+                  </a>
+                )}
+                <span className="text-slate-500/80 mx-2 text-[10px]">•</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Centered Rotator View (hidden sm:flex) */}
+        <div className="hidden sm:flex flex-1 items-center justify-center space-x-2 text-center overflow-hidden">
           <span className="bg-brand-crimson text-white text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full flex items-center space-x-1 flex-shrink-0 animate-pulse">
             {renderIcon(current.icon)}
-            <span>{current.badge || 'Announcement'}</span>
+            <span className="whitespace-nowrap">{current.badge || 'Announcement'}</span>
           </span>
-          <span className="font-medium tracking-wide truncate max-w-xs sm:max-w-md md:max-w-none">
+          <span className="font-semibold tracking-tight text-xs truncate max-w-md md:max-w-none">
             {current.text}
           </span>
           {current.link && (
             <a
               href={current.link}
-              className="hidden sm:inline-flex items-center text-brand-gold hover:underline font-semibold ml-2 group"
+              className="inline-flex items-center text-brand-gold hover:underline font-semibold ml-2 group"
             >
               Shop Now <ChevronRight className="w-3 h-3 ml-0.5 group-hover:translate-x-0.5 transition-transform" />
             </a>
@@ -106,10 +133,10 @@ export function AnnouncementBar() {
 
         <button
           onClick={() => setIsVisible(false)}
-          className="text-slate-400 hover:text-white transition-colors ml-4 focus:outline-none"
+          className="text-slate-400 hover:text-white transition-colors ml-2 sm:ml-4 focus:outline-none flex-shrink-0 z-10 bg-slate-900/60 p-0.5 rounded"
           aria-label="Close Announcement"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
       </div>
     </div>
