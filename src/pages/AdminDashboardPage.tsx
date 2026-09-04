@@ -15,6 +15,7 @@ import {
   Clock,
   CheckCircle2,
   Star,
+  Ban,
 } from 'lucide-react';
 import { adminApi } from '../api/admin';
 import { notificationsApi, AppNotification } from '../api/notifications';
@@ -498,30 +499,38 @@ export function AdminDashboardPage() {
                   </div>
 
                   {/* Bottom Actions Footer - Realtime Testing Controls */}
-                  <div className="p-2 bg-slate-50 border-t border-gray-100 flex items-center justify-between gap-1 flex-shrink-0">
+                  <div className="p-2 bg-slate-50 border-t border-gray-100 grid grid-cols-2 sm:grid-cols-4 gap-1 flex-shrink-0">
                     <button
                       onClick={() => handleTriggerTestEvent('order')}
                       disabled={isTriggeringTest}
-                      className="py-1 px-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[9px] font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                      className="py-1 px-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
                     >
                       <ShoppingBag className="w-2.5 h-2.5" />
-                      <span>+ Order Event</span>
+                      <span>+ Order</span>
+                    </button>
+                    <button
+                      onClick={() => handleTriggerTestEvent('cancel')}
+                      disabled={isTriggeringTest}
+                      className="py-1 px-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
+                    >
+                      <Ban className="w-2.5 h-2.5" />
+                      <span>+ Cancel</span>
                     </button>
                     <button
                       onClick={() => handleTriggerTestEvent('review')}
                       disabled={isTriggeringTest}
-                      className="py-1 px-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[9px] font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                      className="py-1 px-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
                     >
                       <Star className="w-2.5 h-2.5" />
-                      <span>+ Review Event</span>
+                      <span>+ Review</span>
                     </button>
                     <button
                       onClick={() => handleTriggerTestEvent('stock')}
                       disabled={isTriggeringTest}
-                      className="py-1 px-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-bold flex items-center space-x-1 transition-all disabled:opacity-50"
+                      className="py-1 px-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[9px] font-bold flex items-center justify-center space-x-1 transition-all disabled:opacity-50"
                     >
                       <AlertTriangle className="w-2.5 h-2.5" />
-                      <span>+ Stock Alert</span>
+                      <span>+ Stock</span>
                     </button>
                   </div>
                 </div>
