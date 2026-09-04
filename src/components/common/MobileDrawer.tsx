@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronDown, Heart, ShoppingBag, HelpCircle, PhoneCall, FolderTree } from 'lucide-react';
+import { X, ChevronDown, Heart, ShoppingBag, HelpCircle, PhoneCall, FolderTree, Bell } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useCartStore } from '../../store/useCartStore';
 import { useWishlistStore } from '../../store/useWishlistStore';
@@ -255,21 +255,29 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
 
         {/* Bottom Drawer Actions */}
         <div className="p-4 border-t border-gray-100 bg-slate-50 space-y-3">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             <a
               href="/account/wishlist"
               onClick={onClose}
-              className="flex items-center justify-center space-x-1.5 bg-white border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+              className="flex items-center justify-center space-x-1 bg-white border border-gray-200 p-2 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
             >
-              <Heart className="w-4 h-4 text-brand-crimson" />
+              <Heart className="w-3.5 h-3.5 text-brand-crimson" />
               <span>Wishlist ({wishlistItems.length})</span>
+            </a>
+            <a
+              href="/account/notifications"
+              onClick={onClose}
+              className="flex items-center justify-center space-x-1 bg-white border border-gray-200 p-2 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+            >
+              <Bell className="w-3.5 h-3.5 text-brand-crimson" />
+              <span>Alerts</span>
             </a>
             <a
               href="/cart"
               onClick={onClose}
-              className="flex items-center justify-center space-x-1.5 bg-white border border-gray-200 p-2.5 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+              className="flex items-center justify-center space-x-1 bg-white border border-gray-200 p-2 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
             >
-              <ShoppingBag className="w-4 h-4 text-brand-crimson" />
+              <ShoppingBag className="w-3.5 h-3.5 text-brand-crimson" />
               <span>Bag ({itemCount})</span>
             </a>
           </div>

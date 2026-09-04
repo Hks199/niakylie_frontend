@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Menu, Heart, ShoppingBag } from 'lucide-react';
+import { Menu, Heart, ShoppingBag, Bell } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { AnnouncementBar } from '../common/AnnouncementBar';
 import { Megamenu } from '../common/Megamenu';
 import { SearchBar } from '../common/SearchBar';
@@ -9,12 +10,24 @@ import { CartDrawer } from '../common/CartDrawer';
 import { AuthModal } from '../common/AuthModal';
 import { useCartStore } from '../../store/useCartStore';
 import { useWishlistStore } from '../../store/useWishlistStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import { notificationsApi } from '../../api/notifications';
 
 export function Header() {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { user } = useAuthStore();
   const { itemCount, setIsCartOpen } = useCartStore();
   const { wishlistItems } = useWishlistStore();
+
+  const { data: unreadData } = useQuery({
+    queryKey: ['unreadNotificationsCount'],
+    queryFn: () => notificationsApi.getUnreadCount(),
+    enabled: !!user,
+    refetchInterval: 30000,
+  });
+
+  const unreadCount = typeof unreadData === 'number' ? unreadData : unreadData?.unreadCount ?? 0;
 
   return (
     <>
@@ -58,6 +71,29 @@ export function Header() {
             <div className="flex items-center space-x-3 sm:space-x-5">
               {/* Profile Dropdown */}
               <ProfileDropdown onOpenAuthModal={() => setIsAuthModalOpen(true)} />
+
+              {/* Notification Bell Link & Badge */}
+              <a
+                href={user ? '/account/notifications' : '#'}
+                onClick={(e) => {
+                  if (!user) {
+                    e.preventDefault();
+                    setIsAuthModalOpen(true);
+                  }
+                }}
+                className="flex flex-col items-center group text-brand-slate hover:text-brand-crimson transition-colors relative"
+                aria-label="View Notifications"
+              >
+                <div className="p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
+                  <Bell className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-bold tracking-tight hidden sm:block">Alerts</span>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </a>
 
               {/* Wishlist Link & Badge */}
               <a
