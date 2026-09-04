@@ -47,6 +47,9 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
         if (!htmlContent.includes('<base')) {
           htmlContent = htmlContent.replace('<head>', `<head><base href="${window.location.origin}/" />`);
         }
+        if (!htmlContent.includes('window.print()')) {
+          htmlContent = htmlContent.replace('</body>', '<script>window.onload = function() { window.print(); };</script></body>');
+        }
       }
     } catch (e) {
       // Fallback
@@ -399,11 +402,39 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
           ))}
         </div>
 
-        {/* Order Amount Summary */}
+        {/* Order Amount Summary Breakdown */}
         {orderTotal > 0 && (
-          <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-sm font-extrabold text-brand-slate-dark">
-            <span>Amount Paid</span>
-            <span className="text-brand-crimson">₹{orderTotal.toLocaleString('en-IN')}</span>
+          <div className="pt-3 border-t border-gray-100 space-y-2 text-xs font-semibold text-slate-600">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span>₹{(order?.pricing?.subtotal || order?.totals?.subtotal || orderTotal).toLocaleString('en-IN')}</span>
+            </div>
+
+            {(() => {
+              const cDisc = order?.pricing?.couponDiscount ?? order?.totals?.couponDiscount ?? 0;
+              const oDisc = order?.pricing?.onlinePaymentDiscount ?? order?.totals?.onlinePaymentDiscount ?? 0;
+              return (
+                <>
+                  {cDisc > 0 && (
+                    <div className="flex justify-between text-emerald-600 font-bold">
+                      <span>Coupon Discount</span>
+                      <span>-₹{cDisc.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
+                  {oDisc > 0 && (
+                    <div className="flex justify-between text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded-lg">
+                      <span>Online Payment Extra Discount</span>
+                      <span>-₹{oDisc.toLocaleString('en-IN')}</span>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+
+            <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-sm font-extrabold text-brand-slate-dark">
+              <span>Amount Paid</span>
+              <span className="text-brand-crimson">₹{orderTotal.toLocaleString('en-IN')}</span>
+            </div>
           </div>
         )}
       </div>

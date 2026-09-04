@@ -9,10 +9,11 @@ interface CheckoutSidebarProps {
 }
 
 export function CheckoutSidebar({ totals, appliedCoupon, shippingType }: CheckoutSidebarProps) {
-  const { subtotal, discount, couponDiscount, tax } = totals;
+  const { subtotal, discount, couponDiscount, onlinePaymentDiscount, tax } = totals as any;
   const shippingFee = shippingType === 'express' ? 149 : 0;
   const totalMRP = subtotal + discount;
-  const grandTotal = Math.max(0, subtotal - couponDiscount + shippingFee);
+  const activeOnlineDiscount = onlinePaymentDiscount || 0;
+  const grandTotal = Math.max(0, subtotal - couponDiscount - activeOnlineDiscount + shippingFee);
 
   return (
     <div className="space-y-4 sticky top-24">
@@ -42,6 +43,13 @@ export function CheckoutSidebar({ totals, appliedCoupon, shippingType }: Checkou
             <div className="flex justify-between text-emerald-600 font-bold">
               <span>Coupon ({appliedCoupon})</span>
               <span>-₹{couponDiscount.toLocaleString('en-IN')}</span>
+            </div>
+          )}
+
+          {activeOnlineDiscount > 0 && (
+            <div className="flex justify-between text-emerald-600 font-bold">
+              <span>Online Payment Extra Discount</span>
+              <span>-₹{activeOnlineDiscount.toLocaleString('en-IN')}</span>
             </div>
           )}
 
