@@ -14,13 +14,12 @@ export interface CreateOrderPayload {
   addressId?: string;
   shippingAddress?: any;
   items?: OrderItem[];
-  paymentMethod: 'razorpay' | 'stripe' | 'cod';
+  paymentMethod: 'razorpay' | 'cod';
   shippingType: 'standard' | 'express';
   couponCode?: string;
   razorpayOrderId?: string;
   razorpayPaymentId?: string;
   razorpaySignature?: string;
-  stripePaymentIntentId?: string;
 }
 
 export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'PACKED' | 'SHIPPED' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'CANCELLED';
@@ -80,7 +79,7 @@ const MOCK_ORDERS: Order[] = [
     orderId: 'ORD-NK-00012346',
     status: 'SHIPPED',
     paymentStatus: 'PAID',
-    paymentMethod: 'stripe',
+    paymentMethod: 'razorpay',
     items: [],
     deliveryAddress: { name: 'Ananya Roy', city: 'Mumbai', state: 'Maharashtra' },
     estimatedDelivery: 'Sat, 16 Aug',
@@ -144,7 +143,6 @@ export const ordersApi = {
       razorpayOrderId: payload.razorpayOrderId,
       razorpayPaymentId: payload.razorpayPaymentId,
       razorpaySignature: payload.razorpaySignature,
-      stripePaymentIntentId: payload.stripePaymentIntentId,
     };
     Object.keys(backendPayload).forEach((key) => {
       if (backendPayload[key] === undefined) {

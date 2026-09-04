@@ -13,11 +13,6 @@ export interface RazorpayVerifyPayload {
   razorpaySignature: string;
 }
 
-export interface StripeIntentResponse {
-  clientSecret: string;
-  intentId: string;
-}
-
 export const paymentsApi = {
   createRazorpayOrder: async (amount: number): Promise<RazorpayOrderResponse> => {
     try {
@@ -38,17 +33,6 @@ export const paymentsApi = {
       return await apiClient.post('/payments/razorpay/verify', payload);
     } catch (error) {
       return { success: true }; // Fallback assume verified for offline dev
-    }
-  },
-
-  createStripeIntent: async (amount: number): Promise<StripeIntentResponse> => {
-    try {
-      return await apiClient.post<StripeIntentResponse>('/payments/stripe/create-intent', { amount });
-    } catch (error) {
-      return {
-        clientSecret: `pi_mock_${Date.now()}_secret`,
-        intentId: `pi_mock_${Date.now()}`,
-      };
     }
   },
 };

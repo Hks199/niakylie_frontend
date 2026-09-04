@@ -12,7 +12,7 @@ interface PaymentStepProps {
   onBack: () => void;
 }
 
-type PaymentMethod = 'upi' | 'razorpay' | 'stripe' | 'cod';
+type PaymentMethod = 'upi' | 'razorpay' | 'cod';
 
 const PAYMENT_OPTIONS = [
   {
@@ -24,17 +24,10 @@ const PAYMENT_OPTIONS = [
   },
   {
     id: 'razorpay' as const,
-    label: 'Credit / Debit Card',
-    desc: 'Visa, Mastercard, RuPay, Maestro & AmEx',
+    label: 'Credit / Debit Card, Net Banking & Wallets',
+    desc: 'Visa, Mastercard, RuPay, Net Banking (SBI, HDFC, ICICI) & Digital Wallets',
     icon: CreditCard,
     badge: 'SECURE',
-  },
-  {
-    id: 'stripe' as const,
-    label: 'Net Banking & Wallets',
-    desc: 'All major Indian banks (SBI, HDFC, ICICI, Axis) & digital wallets',
-    icon: ShieldCheck,
-    badge: '',
   },
   {
     id: 'cod' as const,
@@ -136,9 +129,6 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
         } else {
           extraPayload = { razorpayOrderId: rzpOrder.id };
         }
-      } else if (paymentMethod === 'stripe') {
-        const intent = await paymentsApi.createStripeIntent(cartTotals.total);
-        extraPayload = { stripePaymentIntentId: intent.intentId };
       }
 
       const order = await ordersApi.createOrder({
@@ -383,7 +373,11 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
               <span>PROCESSING PAYMENT...</span>
             </>
           ) : (
-            <span>PAY {formattedAmount} VIA {paymentMethod === 'upi' ? 'UPI' : 'CARD'} →</span>
+            <span>
+              {paymentMethod === 'cod'
+                ? `PLACE ORDER (${formattedAmount} COD)`
+                : `PAY ${formattedAmount} VIA ${paymentMethod === 'upi' ? 'UPI' : 'CARD / ONLINE'} →`}
+            </span>
           )}
         </button>
       </div>

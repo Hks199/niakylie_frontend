@@ -534,8 +534,8 @@ const MOCK_FAQS: FaqItem[] = [
   { id: 'f6', category: 'Shipping', question: 'Do you ship internationally?', answer: 'We currently ship within India only. International shipping to USA, UK, UAE, Canada, and Australia is planned for Q4 2026. Join our international waitlist at international@niakylie.com.' },
   { id: 'f7', category: 'Returns', question: 'What is your return policy?', answer: 'We offer 7-day hassle-free returns for all unworn, unaltered products with original tags. Initiate a return from My Account → My Orders. Refunds are processed within 5-7 business days.' },
   { id: 'f8', category: 'Returns', question: 'Are customized or sale items returnable?', answer: 'Customized items (altered measurements or embroidery) and sale/clearance items are marked as final sale and are not eligible for returns or exchanges.' },
-  { id: 'f9', category: 'Payments', question: 'What payment methods do you accept?', answer: 'We accept UPI, Google Pay, PhonePe (via Razorpay), Credit/Debit Cards (Visa, Mastercard, AmEx via Stripe), NetBanking, and Cash on Delivery (COD) for orders up to ₹10,000.' },
-  { id: 'f10', category: 'Payments', question: 'Is my payment information secure?', answer: 'Absolutely. NiaKylie does not store any card or UPI credentials. All payments are processed via Razorpay and Stripe, which are PCI-DSS Level 1 certified payment gateways with 256-bit SSL encryption.' },
+  { id: 'f9', category: 'Payments', question: 'What payment methods do you accept?', answer: 'We accept UPI, Google Pay, PhonePe (via Razorpay), Credit/Debit Cards (Visa, Mastercard, RuPay, AmEx via Razorpay), NetBanking, and Cash on Delivery (COD) for orders up to ₹10,000.' },
+  { id: 'f10', category: 'Payments', question: 'Is my payment information secure?', answer: 'Absolutely. NiaKylie does not store any card or UPI credentials. All payments are processed via Razorpay, which is a PCI-DSS Level 1 certified payment gateway with 256-bit SSL encryption.' },
 ];
 
 const MOCK_BLOGS: BlogPost[] = [
