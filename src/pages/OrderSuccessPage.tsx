@@ -69,6 +69,7 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
 
       const subtotal = orderAny?.totals?.subtotal || orderAny?.pricing?.subtotal || orderTotal;
       const couponDiscount = orderAny?.totals?.couponDiscount || orderAny?.pricing?.couponDiscount || 0;
+      const onlinePaymentDiscount = orderAny?.totals?.onlinePaymentDiscount || orderAny?.pricing?.onlinePaymentDiscount || 0;
       const shippingFee = orderAny?.totals?.shippingFee || orderAny?.pricing?.shippingFee || 0;
 
       htmlContent = `
@@ -273,6 +274,12 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
               <div class="summary-row" style="color: #059669;">
                 <span>Coupon Discount</span>
                 <span>-₹${couponDiscount.toLocaleString('en-IN')}</span>
+              </div>
+            ` : ''}
+            ${onlinePaymentDiscount > 0 ? `
+              <div class="summary-row" style="color: #059669; font-weight: 700;">
+                <span>Online Payment Extra Discount</span>
+                <span>-₹${onlinePaymentDiscount.toLocaleString('en-IN')}</span>
               </div>
             ` : ''}
             <div class="summary-row">

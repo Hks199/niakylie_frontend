@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Loader2, Smartphone, CreditCard, Banknote, ShieldCheck, Check, QrCode, Sparkles } from 'lucide-react';
-import { paymentsApi } from '../../api/payments';
+import { useEffect, useState } from 'react';
+import { Loader2, Smartphone, CreditCard, Banknote, ShieldCheck, Check, QrCode, Sparkles, Zap } from 'lucide-react';
+import { paymentsApi, OnlinePaymentDiscountConfig } from '../../api/payments';
 import { ordersApi, CreateOrderPayload } from '../../api/orders';
 import { useCartStore } from '../../store/useCartStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -44,17 +44,52 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
   const [upiId, setUpiId] = useState('success@razorpay');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [discountConfig, setDiscountConfig] = useState<OnlinePaymentDiscountConfig | null>(null);
   const { cartTotals, appliedCoupon, clearCart } = useCartStore();
   const { user } = useAuthStore();
+
+  useEffect(() => {
+    paymentsApi.getOnlineDiscountConfig().then(setDiscountConfig).catch(() => {});
+  }, []);
+
+  // Compute online payment extra discount
+  const isOnlinePayment = paymentMethod !== 'cod';
+  let onlineDiscountAmount = 0;
+  if (discountConfig && discountConfig.isEnabled && (cartTotals.subtotal - cartTotals.discount) >= (discountConfig.minOrderAmount || 0)) {
+    const baseSubtotal = Math.max(0, cartTotals.subtotal - cartTotals.discount);
+    if (discountConfig.discountType === 'PERCENTAGE') {
+      onlineDiscountAmount = Math.round((baseSubtotal * discountConfig.discountValue) / 100);
+      if (discountConfig.maxDiscountCap && discountConfig.maxDiscountCap > 0) {
+        onlineDiscountAmount = Math.min(onlineDiscountAmount, discountConfig.maxDiscountCap);
+      }
+    } else {
+      onlineDiscountAmount = Math.round(discountConfig.discountValue);
+    }
+  }
+
+  const activeDiscountApplied = isOnlinePayment ? onlineDiscountAmount : 0;
+  const finalTotalAmount = Math.max(0, cartTotals.total - activeDiscountApplied);
 
   const formattedAmount = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
+  }).format(finalTotalAmount);
+
+  const formattedOriginalTotal = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
   }).format(cartTotals.total);
 
+  const formattedDiscountAmount = new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(onlineDiscountAmount);
+
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-    `upi://pay?pa=success@razorpay&pn=NiaKylie%20Fashion&mc=5311&am=${cartTotals.total}&cu=INR`
+    `upi://pay?pa=success@razorpay&pn=NiaKylie%20Fashion&mc=5311&am=${finalTotalAmount}&cu=INR`
   )}`;
 
   const handlePlaceOrder = async () => {
@@ -71,7 +106,7 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
 
       if (paymentMethod === 'upi') {
         // Direct UPI payment processing
-        const rzpOrder = await paymentsApi.createRazorpayOrder(cartTotals.total);
+        const rzpOrder = await paymentsApi.createRazorpayOrder(finalTotalAmount);
         
         // Use real or generated Razorpay credentials for order verification
         extraPayload = {
@@ -81,7 +116,7 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
         };
       } else if (paymentMethod === 'razorpay') {
         // Standard Razorpay widget for Cards & NetBanking
-        const rzpOrder = await paymentsApi.createRazorpayOrder(cartTotals.total);
+        const rzpOrder = await paymentsApi.createRazorpayOrder(finalTotalAmount);
 
         if (typeof (window as any).Razorpay !== 'undefined') {
           await new Promise<void>((resolve, reject) => {
@@ -157,13 +192,45 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
 
   return (
     <div className="space-y-6">
-      <h2 className="text-lg font-extrabold text-brand-slate-dark">Choose Payment Method</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-extrabold text-brand-slate-dark">Choose Payment Method</h2>
+        {discountConfig?.isEnabled && (
+          <span className="flex items-center space-x-1 bg-gradient-to-r from-amber-500 to-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+            <Zap className="w-3 h-3 fill-current" />
+            <span>Online Payment Extra Discount Active</span>
+          </span>
+        )}
+      </div>
+
+      {/* Online Discount Highlight Banner */}
+      {discountConfig?.isEnabled && onlineDiscountAmount > 0 && (
+        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between border border-emerald-500/30">
+          <div className="flex items-center space-x-3">
+            <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-md">
+              <Sparkles className="w-5 h-5 text-amber-300" />
+            </div>
+            <div>
+              <p className="text-xs font-black uppercase tracking-wider text-amber-200">
+                {discountConfig.badgeText || 'EXTRA DISCOUNT AVAILABLE'}
+              </p>
+              <p className="text-xs font-medium text-emerald-50 mt-0.5">
+                {discountConfig.description || 'Pay via UPI or Cards to get extra instant discount'}
+              </p>
+            </div>
+          </div>
+          <div className="text-right flex-shrink-0 bg-white/10 px-3 py-1.5 rounded-xl backdrop-blur-sm border border-white/20">
+            <p className="text-[10px] uppercase font-bold text-emerald-200">YOU SAVE</p>
+            <p className="text-sm font-black text-amber-300">-{formattedDiscountAmount}</p>
+          </div>
+        </div>
+      )}
 
       {/* Payment Option Cards */}
       <div className="space-y-3">
         {PAYMENT_OPTIONS.map((opt) => {
           const Icon = opt.icon;
           const isSelected = paymentMethod === opt.id;
+          const isOnlineOption = opt.id !== 'cod';
           return (
             <div key={opt.id} className="space-y-3">
               <button
@@ -180,11 +247,16 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                     <p className={`text-sm font-extrabold ${isSelected ? 'text-brand-crimson' : 'text-brand-slate-dark'}`}>
                       {opt.label}
                     </p>
-                    {opt.badge && (
+                    {isOnlineOption && discountConfig?.isEnabled && onlineDiscountAmount > 0 ? (
+                      <span className="text-[9px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full uppercase flex items-center space-x-1">
+                        <Zap className="w-2.5 h-2.5 text-emerald-600 fill-current" />
+                        <span>SAVE {formattedDiscountAmount} EXTRA</span>
+                      </span>
+                    ) : opt.badge ? (
                       <span className="text-[9px] font-extrabold bg-brand-crimson/10 text-brand-crimson px-1.5 py-0.5 rounded uppercase">
                         {opt.badge}
                       </span>
-                    )}
+                    ) : null}
                   </div>
                   <p className="text-[11px] text-slate-400 mt-0.5">{opt.desc}</p>
                 </div>
@@ -343,6 +415,35 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
             </div>
           );
         })}
+      </div>
+
+      {/* Payment Summary Breakdown Box */}
+      <div className="bg-slate-50 border border-gray-200 rounded-2xl p-4 space-y-2">
+        <div className="flex justify-between text-xs text-slate-600">
+          <span>Standard Order Subtotal</span>
+          <span className="font-bold">{formattedOriginalTotal}</span>
+        </div>
+
+        {isOnlinePayment && onlineDiscountAmount > 0 && (
+          <div className="flex justify-between text-xs text-emerald-700 font-extrabold bg-emerald-50 p-2 rounded-xl border border-emerald-200">
+            <span className="flex items-center space-x-1">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Online Payment Extra Discount</span>
+            </span>
+            <span>-{formattedDiscountAmount}</span>
+          </div>
+        )}
+
+        {!isOnlinePayment && onlineDiscountAmount > 0 && (
+          <div className="flex justify-between text-[11px] text-amber-700 font-bold bg-amber-50 p-2 rounded-xl border border-amber-200">
+            <span>💡 Switch to UPI or Card to save extra {formattedDiscountAmount}!</span>
+          </div>
+        )}
+
+        <div className="flex justify-between text-sm font-black text-brand-slate-dark pt-1 border-t border-gray-200">
+          <span>Final Total Payable</span>
+          <span className="text-brand-crimson text-base">{formattedAmount}</span>
+        </div>
       </div>
 
       {/* Security Badge */}

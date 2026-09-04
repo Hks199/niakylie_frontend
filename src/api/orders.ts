@@ -43,6 +43,7 @@ export interface Order {
     totalMrp: number;
     totalDiscount: number;
     couponDiscount: number;
+    onlinePaymentDiscount?: number;
     tax: number;
     shippingFee: number;
     grandTotal: number;
@@ -52,6 +53,7 @@ export interface Order {
     subtotal: number;
     discount: number;
     couponDiscount: number;
+    onlinePaymentDiscount?: number;
     shippingFee: number;
     tax: number;
     total: number;
