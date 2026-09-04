@@ -32,14 +32,14 @@ const CustomRevenueTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-slate-900/95 text-white text-[10px] sm:text-xs p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl border border-slate-800 backdrop-blur-md pointer-events-none min-w-[130px]">
-        <p className="font-extrabold text-slate-300 border-b border-slate-800 pb-1 mb-1">{label}</p>
-        <p className="font-black text-rose-400">
-          Revenue: <span className="text-white">₹{Number(data.value || 0).toLocaleString('en-IN')}</span>
+      <div className="bg-slate-900/95 text-white text-[8px] sm:text-[10px] px-2 py-1 sm:p-2 rounded-lg sm:rounded-xl shadow-lg border border-slate-800 backdrop-blur-md pointer-events-none max-w-[130px]">
+        <p className="font-bold text-slate-300 border-b border-slate-800/80 pb-0.5 mb-0.5 truncate">{label}</p>
+        <p className="font-black text-rose-400 leading-tight">
+          ₹{Number(data.value || 0).toLocaleString('en-IN')}
         </p>
         {data.payload?.orders !== undefined && (
-          <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
-            Orders: <span className="text-slate-200">{data.payload.orders}</span>
+          <p className="text-[7.5px] sm:text-[9px] text-slate-400 font-medium leading-tight">
+            {data.payload.orders} orders
           </p>
         )}
       </div>
@@ -52,14 +52,14 @@ const CustomStatusTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-slate-900/95 text-white text-[10px] sm:text-xs p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl border border-slate-800 backdrop-blur-md pointer-events-none min-w-[120px]">
-        <p className="font-extrabold text-slate-300 border-b border-slate-800 pb-1 mb-1">{data.name}</p>
-        <p className="font-black" style={{ color: data.payload?.color || '#3B82F6' }}>
-          Orders: <span className="text-white">{data.value}</span>
+      <div className="bg-slate-900/95 text-white text-[8px] sm:text-[10px] px-2 py-1 sm:p-2 rounded-lg sm:rounded-xl shadow-lg border border-slate-800 backdrop-blur-md pointer-events-none max-w-[120px]">
+        <p className="font-bold text-slate-300 border-b border-slate-800/80 pb-0.5 mb-0.5 truncate">{data.name}</p>
+        <p className="font-black leading-tight" style={{ color: data.payload?.color || '#3B82F6' }}>
+          {data.value} <span className="text-white text-[7.5px] font-normal">orders</span>
         </p>
         {data.payload?.totalValue !== undefined && (
-          <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
-            Value: <span className="text-slate-200">₹{Number(data.payload.totalValue).toLocaleString('en-IN')}</span>
+          <p className="text-[7.5px] sm:text-[9px] text-slate-400 font-medium leading-tight">
+            ₹{Number(data.payload.totalValue).toLocaleString('en-IN')}
           </p>
         )}
       </div>
@@ -72,14 +72,14 @@ const CustomCategoryTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     return (
-      <div className="bg-slate-900/95 text-white text-[10px] sm:text-xs p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl border border-slate-800 backdrop-blur-md pointer-events-none min-w-[130px]">
-        <p className="font-extrabold text-slate-300 border-b border-slate-800 pb-1 mb-1">{label}</p>
-        <p className="font-black text-emerald-400">
-          Revenue: <span className="text-white">₹{Number(data.value || 0).toLocaleString('en-IN')}</span>
+      <div className="bg-slate-900/95 text-white text-[8px] sm:text-[10px] px-2 py-1 sm:p-2 rounded-lg sm:rounded-xl shadow-lg border border-slate-800 backdrop-blur-md pointer-events-none max-w-[130px]">
+        <p className="font-bold text-slate-300 border-b border-slate-800/80 pb-0.5 mb-0.5 truncate">{label}</p>
+        <p className="font-black text-emerald-400 leading-tight">
+          ₹{Number(data.value || 0).toLocaleString('en-IN')}
         </p>
         {data.payload?.itemsSold !== undefined && (
-          <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
-            Items Sold: <span className="text-slate-200">{data.payload.itemsSold}</span>
+          <p className="text-[7.5px] sm:text-[9px] text-slate-400 font-medium leading-tight">
+            {data.payload.itemsSold} sold
           </p>
         )}
       </div>
@@ -90,7 +90,7 @@ const CustomCategoryTooltip = ({ active, payload, label }: any) => {
 
 export function AnalyticsChartsSection() {
   const [period, setPeriod] = useState<AggregationPeriod>('monthly');
-  const [activePieIndex, setActivePieIndex] = useState<number | null>(null);
+  const [activePieIndex, setActivePieIndex] = useState<number | null>(0);
 
   const { data: revenueData = [] } = useQuery({
     queryKey: ['admin-revenue', period],
@@ -142,7 +142,7 @@ export function AnalyticsChartsSection() {
           </div>
         </div>
 
-        <div className="h-56 sm:h-72 w-full pt-2 sm:pt-4 relative">
+        <div className="h-56 sm:h-72 w-full pt-2 sm:pt-4 relative" style={{ touchAction: 'pan-y' }}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
               <defs>
@@ -158,6 +158,8 @@ export function AnalyticsChartsSection() {
                 content={<CustomRevenueTooltip />}
                 allowEscapeViewBox={{ x: true, y: true }}
                 wrapperStyle={{ zIndex: 1000, outline: 'none' }}
+                isAnimationActive={false}
+                useTranslate3d={false}
               />
               <Area
                 type="monotone"
@@ -166,6 +168,7 @@ export function AnalyticsChartsSection() {
                 strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#colorRevenue)"
+                isAnimationActive={false}
                 activeDot={{ r: 6, stroke: '#8A002C', strokeWidth: 2, fill: '#FFFFFF' }}
               />
             </AreaChart>
@@ -177,7 +180,7 @@ export function AnalyticsChartsSection() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Order Status Breakdown (Donut Chart with Touch Interactive Badges) */}
         <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3 sm:space-y-4 flex flex-col justify-between">
-          <div>
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm sm:text-base font-extrabold text-brand-slate-dark">Order Status Breakdown</h3>
@@ -188,19 +191,55 @@ export function AnalyticsChartsSection() {
                   onClick={() => setActivePieIndex(null)}
                   className="text-[9px] sm:text-[10px] font-extrabold text-brand-crimson bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100 hover:bg-rose-100 transition-colors"
                 >
-                  RESET SELECTION
+                  ALL ORDERS
                 </button>
               )}
             </div>
 
+            {/* Active Status Header Detail Card (Mobile 320px Standard) */}
+            <div className="bg-slate-900 text-white p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-sm border border-slate-800 flex items-center justify-between transition-all">
+              <div className="flex items-center space-x-2 min-w-0">
+                <span
+                  className="w-3 h-3 rounded-full flex-shrink-0 animate-pulse"
+                  style={{
+                    backgroundColor:
+                      activePieIndex !== null && formattedStatusData[activePieIndex]
+                        ? formattedStatusData[activePieIndex].color
+                        : '#10B981',
+                  }}
+                />
+                <div className="min-w-0">
+                  <p className="text-[10px] sm:text-xs font-black uppercase text-slate-200 truncate">
+                    {activePieIndex !== null && formattedStatusData[activePieIndex]
+                      ? formattedStatusData[activePieIndex].status
+                      : 'Combined Breakdown'}
+                  </p>
+                  <p className="text-[9px] sm:text-[10px] text-slate-400 font-semibold truncate">
+                    {activePieIndex !== null && formattedStatusData[activePieIndex]?.totalValue !== undefined
+                      ? `Total Revenue: ₹${Number(formattedStatusData[activePieIndex].totalValue).toLocaleString('en-IN')}`
+                      : 'Tap status below or pie slice to inspect'}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right flex-shrink-0 ml-2">
+                <p className="text-xs sm:text-sm font-black text-rose-400">
+                  {activePieIndex !== null && formattedStatusData[activePieIndex]
+                    ? `${formattedStatusData[activePieIndex].count} Orders`
+                    : `${totalStatusOrders} Total`}
+                </p>
+              </div>
+            </div>
+
             {/* Interactive Pie Container */}
-            <div className="h-44 sm:h-52 flex items-center justify-center relative mt-2">
+            <div className="h-44 sm:h-52 flex items-center justify-center relative pt-1" style={{ touchAction: 'pan-y' }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                   <Tooltip
                     content={<CustomStatusTooltip />}
                     allowEscapeViewBox={{ x: true, y: true }}
                     wrapperStyle={{ zIndex: 1000, outline: 'none' }}
+                    isAnimationActive={false}
+                    useTranslate3d={false}
                   />
                   <Pie
                     data={formattedStatusData}
@@ -213,6 +252,7 @@ export function AnalyticsChartsSection() {
                     nameKey="status"
                     isAnimationActive={false}
                     onClick={(_, index) => setActivePieIndex(activePieIndex === index ? null : index)}
+                    onTouchStart={(_, index) => setActivePieIndex(index)}
                     onMouseEnter={(_, index) => setActivePieIndex(index)}
                   >
                     {formattedStatusData.map((entry, index) => (
@@ -295,7 +335,7 @@ export function AnalyticsChartsSection() {
             <p className="text-[10px] sm:text-xs text-slate-400">Total revenue contribution per category</p>
           </div>
 
-          <div className="h-56 sm:h-64 w-full relative">
+          <div className="h-56 sm:h-64 w-full relative" style={{ touchAction: 'pan-y' }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={topCategoriesData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
@@ -305,8 +345,16 @@ export function AnalyticsChartsSection() {
                   content={<CustomCategoryTooltip />}
                   allowEscapeViewBox={{ x: true, y: true }}
                   wrapperStyle={{ zIndex: 1000, outline: 'none' }}
+                  isAnimationActive={false}
+                  useTranslate3d={false}
                 />
-                <Bar dataKey="totalRevenue" fill="#0F172A" radius={[6, 6, 0, 0]} activeBar={{ fill: '#8A002C' }} />
+                <Bar
+                  dataKey="totalRevenue"
+                  fill="#0F172A"
+                  radius={[6, 6, 0, 0]}
+                  isAnimationActive={false}
+                  activeBar={{ fill: '#8A002C' }}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
