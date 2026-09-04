@@ -404,24 +404,29 @@ export function NotificationsPage() {
           </div>
 
           {/* SMS Channel */}
-          <div className="flex items-center justify-between pt-3">
+          <div className="flex items-center justify-between pt-3 opacity-60">
             <div className="flex items-start space-x-3">
-              <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl mt-0.5">
+              <div className="p-2.5 bg-slate-100 text-slate-400 rounded-xl mt-0.5">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-extrabold text-xs text-brand-slate-dark">SMS & WhatsApp Alerts</p>
-                <p className="text-[11px] text-slate-500">Instant delivery updates and OTP verification alerts sent to your phone.</p>
+                <div className="flex items-center space-x-2">
+                  <p className="font-extrabold text-xs text-slate-600">SMS & WhatsApp Alerts</p>
+                  <span className="text-[9px] font-extrabold uppercase bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">
+                    Coming Soon
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">Instant delivery updates and OTP verification alerts sent to your phone.</p>
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
+            <label className="relative inline-flex items-center cursor-not-allowed" title="SMS & WhatsApp Alerts are currently disabled for upcoming implementation">
               <input
                 type="checkbox"
-                checked={preferences.sms}
-                onChange={() => handleTogglePref('sms')}
+                checked={false}
+                disabled
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-crimson"></div>
+              <div className="w-11 h-6 bg-slate-200 rounded-full peer cursor-not-allowed after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5"></div>
             </label>
           </div>
 
