@@ -181,30 +181,37 @@ export function AdminDashboardPage() {
 
             {/* Notifications Popover Menu (Fits 320px screens perfectly) */}
             {isNotificationsOpen && (
-              <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-sm sm:w-96 bg-white border border-gray-100 rounded-2xl sm:rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
-                  <div className="flex items-center space-x-1.5 sm:space-x-2">
-                    <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
-                    <h3 className="font-extrabold text-[11px] sm:text-xs text-brand-slate-dark uppercase tracking-wider">
-                      Admin Notifications
-                    </h3>
+              <>
+                {/* Mobile Backdrop Overlay */}
+                <div
+                  className="fixed inset-0 bg-slate-900/20 backdrop-blur-[1px] z-40 sm:hidden"
+                  onClick={() => setIsNotificationsOpen(false)}
+                />
+
+                <div className="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 w-auto bg-white border border-gray-100 rounded-2xl sm:rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                  <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+                    <div className="flex items-center space-x-1.5 sm:space-x-2">
+                      <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
+                      <h3 className="font-extrabold text-[11px] sm:text-xs text-brand-slate-dark uppercase tracking-wider">
+                        Admin Notifications
+                      </h3>
+                    </div>
+                    <div className="flex items-center space-x-1.5 sm:space-x-2">
+                      <button
+                        onClick={() => setUnreadReadStatus(false)}
+                        className="text-[9px] sm:text-[10px] font-bold text-slate-400 hover:text-brand-crimson flex items-center space-x-1"
+                      >
+                        <CheckCheck className="w-3 h-3" />
+                        <span>Mark Read</span>
+                      </button>
+                      <button
+                        onClick={() => setIsNotificationsOpen(false)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1.5 sm:space-x-2">
-                    <button
-                      onClick={() => setUnreadReadStatus(false)}
-                      className="text-[9px] sm:text-[10px] font-bold text-slate-400 hover:text-brand-crimson flex items-center space-x-1"
-                    >
-                      <CheckCheck className="w-3 h-3" />
-                      <span>Mark Read</span>
-                    </button>
-                    <button
-                      onClick={() => setIsNotificationsOpen(false)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
 
                 <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
                   {/* Out of stock inventory notification */}
@@ -323,6 +330,7 @@ export function AdminDashboardPage() {
                   </button>
                 </div>
               </div>
+              </>
             )}
           </div>
         </div>
