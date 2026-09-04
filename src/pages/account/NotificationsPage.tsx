@@ -39,11 +39,17 @@ export function NotificationsPage() {
 
   // 1. Fetch user notifications
   const { data: notificationsData, isLoading: loadingNotifications } = useQuery({
-    queryKey: ['myNotifications', filterType],
-    queryFn: () => {
-      const isRead = filterType === 'unread' ? false : undefined;
-      const type = filterType !== 'all' && filterType !== 'unread' ? filterType.toUpperCase() : undefined;
-      return notificationsApi.getMyNotifications({ isRead, type });
+    queryKey: ['myNotifications'],
+    queryFn: () => notificationsApi.getMyNotifications({ limit: 100 }),
+  });
+
+  const testNotifMutation = useMutation({
+    mutationFn: () => notificationsApi.testPushNotification(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
+      queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+      setPrefSuccess('Test notification dispatched!');
+      setTimeout(() => setPrefSuccess(''), 4000);
     },
   });
 
@@ -218,20 +224,36 @@ export function NotificationsPage() {
             <p className="text-xs text-slate-500 mt-0.5">Stay updated on your order dispatches, special deals, and account alerts.</p>
           </div>
 
-          {unreadCount > 0 && (
+          <div className="flex items-center space-x-2">
+            {unreadCount > 0 && (
+              <button
+                onClick={() => markAllReadMutation.mutate()}
+                disabled={markAllReadMutation.isPending}
+                className="flex items-center justify-center space-x-1.5 text-xs font-bold text-brand-crimson hover:text-brand-crimson-dark bg-brand-crimson/5 hover:bg-brand-crimson/10 px-4 py-2 rounded-xl transition-all"
+              >
+                {markAllReadMutation.isPending ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <CheckCheck className="w-3.5 h-3.5" />
+                )}
+                <span>Mark All as Read</span>
+              </button>
+            )}
+
             <button
-              onClick={() => markAllReadMutation.mutate()}
-              disabled={markAllReadMutation.isPending}
-              className="flex items-center justify-center space-x-1.5 text-xs font-bold text-brand-crimson hover:text-brand-crimson-dark bg-brand-crimson/5 hover:bg-brand-crimson/10 px-4 py-2 rounded-xl transition-all"
+              onClick={() => testNotifMutation.mutate()}
+              disabled={testNotifMutation.isPending}
+              className="flex items-center justify-center space-x-1.5 text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 px-3.5 py-2 rounded-xl transition-all border border-purple-200"
+              title="Generate a real-time unread test alert"
             >
-              {markAllReadMutation.isPending ? (
+              {testNotifMutation.isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <CheckCheck className="w-3.5 h-3.5" />
+                <BellRing className="w-3.5 h-3.5" />
               )}
-              <span>Mark All as Read</span>
+              <span>Test Notification</span>
             </button>
-          )}
+          </div>
         </div>
 
         {/* Filters */}
@@ -242,7 +264,7 @@ export function NotificationsPage() {
           </span>
           {[
             { id: 'all', label: 'All Notifications' },
-            { id: 'unread', label: 'Unread' },
+            { id: 'unread', label: `Unread (${unreadCount})` },
             { id: 'order_update', label: 'Orders' },
             { id: 'offer', label: 'Offers & Deals' },
           ].map((tab) => (
@@ -270,10 +292,33 @@ export function NotificationsPage() {
             <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
               <Bell className="w-6 h-6" />
             </div>
-            <p className="font-extrabold text-sm text-brand-slate-dark">No notifications to display</p>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              You are all caught up! Order status updates and promotional updates will appear here.
+            <p className="font-extrabold text-sm text-brand-slate-dark">
+              {filterType === 'unread' ? 'No Unread Notifications' : 'No notifications to display'}
             </p>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              {filterType === 'unread'
+                ? "You are all caught up! All your order updates and promotional alerts have been read."
+                : 'Order status updates and promotional updates will appear here.'}
+            </p>
+
+            <div className="flex items-center justify-center space-x-2 pt-2">
+              {filterType !== 'all' && (
+                <button
+                  onClick={() => setFilterType('all')}
+                  className="text-xs font-bold text-brand-crimson bg-brand-crimson/10 hover:bg-brand-crimson/20 px-4 py-2 rounded-xl transition-all"
+                >
+                  View All Notifications
+                </button>
+              )}
+              <button
+                onClick={() => testNotifMutation.mutate()}
+                disabled={testNotifMutation.isPending}
+                className="text-xs font-bold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-4 py-2 rounded-xl transition-all flex items-center space-x-1.5"
+              >
+                <BellRing className="w-3.5 h-3.5" />
+                <span>Send Test Unread Alert</span>
+              </button>
+            </div>
           </div>
         ) : (
           <div className="space-y-3 pt-2">
