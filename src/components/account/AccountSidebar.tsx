@@ -26,7 +26,7 @@ export function AccountSidebar({ activePage, onNavigate }: AccountSidebarProps) 
     refetchInterval: 30000,
   });
 
-  const unreadCount = unreadData?.unreadCount ?? 0;
+  const unreadCount = typeof unreadData === 'number' ? unreadData : unreadData?.unreadCount ?? 0;
 
   const firstName = user?.firstName || '';
   const lastName = user?.lastName || '';

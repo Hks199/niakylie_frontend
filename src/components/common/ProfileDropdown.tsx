@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { User as UserIcon, Package, Heart, MapPin, Shield, LogOut, ChevronRight, Sparkles } from 'lucide-react';
+import { User as UserIcon, Package, Heart, MapPin, Bell, Shield, LogOut, ChevronRight, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { checkIsAdmin } from '../../utils/roleUtils';
 
@@ -100,6 +100,17 @@ export function ProfileDropdown({ onOpenAuthModal }: ProfileDropdownProps) {
                   <div className="flex items-center space-x-2.5">
                     <MapPin className="w-4 h-4 text-slate-400 group-hover:text-brand-crimson" />
                     <span>Saved Addresses</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-brand-crimson" />
+                </a>
+
+                <a
+                  href="/account/notifications"
+                  className="flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 hover:text-brand-crimson transition-colors group"
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <Bell className="w-4 h-4 text-slate-400 group-hover:text-brand-crimson" />
+                    <span>Notifications</span>
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-brand-crimson" />
                 </a>

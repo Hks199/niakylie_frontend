@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Bell,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { notificationsApi, AppNotification, NotificationPreferences } from '../../api/notifications';
 import { profileApi } from '../../api/profile';
+import { useAuthStore } from '../../store/useAuthStore';
 import { User } from '../../types/auth';
 
 export function NotificationsPage() {
@@ -47,14 +48,15 @@ export function NotificationsPage() {
     push: profile?.notificationPreferences?.push ?? true,
   });
 
-  // Keep preferences in sync when profile loads
-  if (profile?.notificationPreferences && (!preferences.email && !preferences.sms && !preferences.push)) {
-    setPreferences({
-      email: profile.notificationPreferences.email,
-      sms: profile.notificationPreferences.sms,
-      push: profile.notificationPreferences.push,
-    });
-  }
+  useEffect(() => {
+    if (profile?.notificationPreferences) {
+      setPreferences({
+        email: profile.notificationPreferences.email ?? true,
+        sms: profile.notificationPreferences.sms ?? true,
+        push: profile.notificationPreferences.push ?? true,
+      });
+    }
+  }, [profile?.notificationPreferences]);
 
   // Mutations
   const markReadMutation = useMutation({
@@ -83,9 +85,15 @@ export function NotificationsPage() {
 
   const updatePrefMutation = useMutation({
     mutationFn: (newPrefs: NotificationPreferences) => notificationsApi.updateNotificationPreferences(newPrefs),
-    onSuccess: () => {
+    onSuccess: (updatedUser: any) => {
       setPrefSuccess('Notification preferences updated successfully!');
       queryClient.invalidateQueries({ queryKey: ['profile'] });
+      if (updatedUser?.notificationPreferences) {
+        const { user, setUser } = useAuthStore.getState();
+        if (user) {
+          setUser({ ...user, notificationPreferences: updatedUser.notificationPreferences });
+        }
+      }
       setTimeout(() => setPrefSuccess(''), 3000);
     },
     onError: (err: any) => {
@@ -99,8 +107,16 @@ export function NotificationsPage() {
     updatePrefMutation.mutate(updated);
   };
 
-  const notifications = notificationsData?.data || [];
-  const unreadCount = notificationsData?.unreadCount ?? 0;
+  const notifications: AppNotification[] = Array.isArray(notificationsData)
+    ? notificationsData
+    : Array.isArray((notificationsData as any)?.data)
+    ? (notificationsData as any).data
+    : [];
+
+  const unreadCount =
+    typeof (notificationsData as any)?.unreadCount === 'number'
+      ? (notificationsData as any).unreadCount
+      : notifications.filter((n) => !n.isRead).length;
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -194,61 +210,66 @@ export function NotificationsPage() {
           </div>
         ) : (
           <div className="space-y-3 pt-2">
-            {notifications.map((n: AppNotification) => (
-              <div
-                key={n._id}
-                className={`p-4 rounded-2xl border transition-all flex items-start space-x-4 ${
-                  !n.isRead
-                    ? 'bg-brand-crimson/5 border-brand-crimson/30 shadow-sm'
-                    : 'bg-white border-gray-100 hover:border-gray-200'
-                }`}
-              >
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0">
-                  {getIcon(n.type)}
-                </div>
-
-                <div className="flex-1 min-w-0 space-y-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h4 className="font-extrabold text-xs text-brand-slate-dark flex items-center space-x-2">
-                      <span>{n.title}</span>
-                      {!n.isRead && (
-                        <span className="w-2 h-2 rounded-full bg-brand-crimson animate-pulse" />
-                      )}
-                    </h4>
-                    <span className="text-[10px] text-slate-400 whitespace-nowrap">
-                      {new Date(n.createdAt).toLocaleDateString(undefined, {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
+            {notifications.map((n: AppNotification, idx: number) => {
+              const notifId = n._id || (n as any).id || String(idx);
+              return (
+                <div
+                  key={notifId}
+                  className={`p-4 rounded-2xl border transition-all flex items-start space-x-4 ${
+                    !n.isRead
+                      ? 'bg-brand-crimson/5 border-brand-crimson/30 shadow-sm'
+                      : 'bg-white border-gray-100 hover:border-gray-200'
+                  }`}
+                >
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex-shrink-0">
+                    {getIcon(n.type)}
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed">{n.message}</p>
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className="font-extrabold text-xs text-brand-slate-dark flex items-center space-x-2">
+                        <span>{n.title}</span>
+                        {!n.isRead && (
+                          <span className="w-2 h-2 rounded-full bg-brand-crimson animate-pulse" />
+                        )}
+                      </h4>
+                      <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                        {n.createdAt
+                          ? new Date(n.createdAt).toLocaleDateString(undefined, {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : ''}
+                      </span>
+                    </div>
 
-                  <div className="flex items-center space-x-3 pt-1">
-                    {!n.isRead && (
+                    <p className="text-xs text-slate-600 leading-relaxed">{n.message}</p>
+
+                    <div className="flex items-center space-x-3 pt-1">
+                      {!n.isRead && (
+                        <button
+                          onClick={() => markReadMutation.mutate(notifId)}
+                          disabled={markReadMutation.isPending}
+                          className="text-[11px] font-bold text-brand-crimson hover:underline"
+                        >
+                          Mark as read
+                        </button>
+                      )}
                       <button
-                        onClick={() => markReadMutation.mutate(n._id)}
-                        disabled={markReadMutation.isPending}
-                        className="text-[11px] font-bold text-brand-crimson hover:underline"
+                        onClick={() => deleteMutation.mutate(notifId)}
+                        disabled={deleteMutation.isPending}
+                        className="text-[11px] font-medium text-slate-400 hover:text-rose-600 flex items-center space-x-1"
                       >
-                        Mark as read
-                      </button>
-                    )}
-                    <button
-                      onClick={() => deleteMutation.mutate(n._id)}
-                      disabled={deleteMutation.isPending}
-                      className="text-[11px] font-medium text-slate-400 hover:text-rose-600 flex items-center space-x-1"
-                    >
                       <Trash2 className="w-3 h-3" />
                       <span>Delete</span>
                     </button>
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         )}
       </div>
