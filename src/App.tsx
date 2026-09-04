@@ -114,11 +114,11 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-bg flex flex-col justify-between">
+    <div className="min-h-screen bg-brand-bg flex flex-col justify-between overflow-x-hidden w-full max-w-full">
       <NotificationListener />
       {!isHideStoreNav && <Header />}
 
-      <main className="flex-grow w-full">
+      <main className="flex-grow w-full max-w-full overflow-x-hidden">
         {renderContent()}
       </main>
 

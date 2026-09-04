@@ -36,10 +36,10 @@ export function Header() {
         <AnnouncementBar />
 
         {/* Main Navbar */}
-        <div className="glass-nav border-b border-gray-200/80 shadow-sm transition-all">
-          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-1.5 sm:gap-4">
+        <div className="glass-nav border-b border-gray-200/80 shadow-sm transition-all overflow-hidden">
+          <div className="max-w-7xl mx-auto px-1.5 sm:px-6 lg:px-8 h-14 sm:h-20 flex items-center justify-between gap-1 sm:gap-4">
             {/* Left: Mobile Hamburger & Logo */}
-            <div className="flex items-center space-x-1 sm:space-x-4 flex-shrink-0">
+            <div className="flex items-center space-x-0.5 sm:space-x-4 flex-shrink-0">
               <button
                 onClick={() => setIsMobileDrawerOpen(true)}
                 className="lg:hidden p-1 rounded-lg text-slate-700 hover:text-brand-crimson hover:bg-slate-100 transition-colors focus:outline-none"
@@ -52,7 +52,7 @@ export function Header() {
                 <img
                   src="/asset/niakylie_logo.png"
                   alt="NiaKylie Fashion"
-                  className="h-8 sm:h-12 w-auto object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
+                  className="h-7 sm:h-12 w-auto object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
                 />
               </a>
             </div>
@@ -63,12 +63,12 @@ export function Header() {
             </div>
 
             {/* Center Right: Search Bar */}
-            <div className="flex-1 min-w-0 max-w-full sm:max-w-md mx-1 sm:mx-4">
+            <div className="flex-1 min-w-0 max-w-full sm:max-w-md mx-0.5 sm:mx-4">
               <SearchBar />
             </div>
 
             {/* Right: Action Icons */}
-            <div className="flex items-center space-x-1 sm:space-x-5 flex-shrink-0">
+            <div className="flex items-center space-x-0.5 sm:space-x-5 flex-shrink-0">
               {/* Profile Dropdown */}
               <ProfileDropdown onOpenAuthModal={() => setIsAuthModalOpen(true)} />
 

@@ -40,10 +40,10 @@ export function TrendingProductsCarousel({
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl w-max flex-wrap">
+        <div className="flex items-center space-x-1 sm:space-x-2 bg-slate-100 p-1 rounded-2xl max-w-full flex-wrap justify-center sm:justify-start">
           <button
             onClick={() => setActiveTab('featured')}
-            className={`px-4 sm:px-5 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 sm:px-5 py-1.5 sm:py-2 text-[10.5px] sm:text-xs font-bold rounded-xl transition-all ${
               activeTab === 'featured'
                 ? 'bg-brand-crimson text-white shadow-md'
                 : 'text-slate-600 hover:text-brand-slate-dark'
@@ -53,7 +53,7 @@ export function TrendingProductsCarousel({
           </button>
           <button
             onClick={() => setActiveTab('trending')}
-            className={`px-4 sm:px-5 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 sm:px-5 py-1.5 sm:py-2 text-[10.5px] sm:text-xs font-bold rounded-xl transition-all ${
               activeTab === 'trending'
                 ? 'bg-brand-crimson text-white shadow-md'
                 : 'text-slate-600 hover:text-brand-slate-dark'
@@ -63,7 +63,7 @@ export function TrendingProductsCarousel({
           </button>
           <button
             onClick={() => setActiveTab('bestSellers')}
-            className={`px-4 sm:px-5 py-2 text-xs font-bold rounded-xl transition-all ${
+            className={`px-3 sm:px-5 py-1.5 sm:py-2 text-[10.5px] sm:text-xs font-bold rounded-xl transition-all ${
               activeTab === 'bestSellers'
                 ? 'bg-brand-crimson text-white shadow-md'
                 : 'text-slate-600 hover:text-brand-slate-dark'

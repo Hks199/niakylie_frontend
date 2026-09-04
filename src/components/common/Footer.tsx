@@ -329,23 +329,27 @@ export function Footer() {
         </div>
 
         {/* 3. Bottom Bar: Payment Logos & Copyright */}
-        <div className="mt-12 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div className="flex items-center space-x-3">
-            <img
-              src="/asset/niakylie_logo.png"
-              alt="NiaKylie Fashion"
-              className="h-8 w-auto object-contain rounded-lg"
-            />
-            <span>© 2026 NiaKylie Women Collection. All rights reserved.</span>
-            <span className="text-slate-300">|</span>
-            <a href="/admin" className="text-slate-500 hover:text-brand-crimson font-semibold flex items-center space-x-1">
-              <Shield className="w-3 h-3 text-amber-500" />
-              <span>Admin Login</span>
-            </a>
+        <div className="mt-12 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 overflow-hidden">
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-3 text-center sm:text-left">
+            <div className="flex items-center space-x-2">
+              <img
+                src="/asset/niakylie_logo.png"
+                alt="NiaKylie Fashion"
+                className="h-7 sm:h-8 w-auto object-contain rounded-lg flex-shrink-0"
+              />
+              <span className="text-[11px] sm:text-xs">© 2026 NiaKylie Women Collection. All rights reserved.</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="hidden sm:inline text-slate-300">|</span>
+              <a href="/admin" className="text-[11px] sm:text-xs text-slate-500 hover:text-brand-crimson font-semibold flex items-center space-x-1">
+                <Shield className="w-3 h-3 text-amber-500" />
+                <span>Admin Login</span>
+              </a>
+            </div>
           </div>
 
           {/* Payment Method Badges */}
-          <div className="flex items-center space-x-2 text-[10px] font-bold text-slate-400">
+          <div className="flex items-center justify-center flex-wrap gap-1.5 text-[9.5px] sm:text-[10px] font-bold text-slate-400">
             <span className="bg-slate-100 px-2 py-1 rounded text-slate-700">Razorpay</span>
             <span className="bg-slate-100 px-2 py-1 rounded text-slate-700">VISA</span>
             <span className="bg-slate-100 px-2 py-1 rounded text-slate-700">Mastercard</span>

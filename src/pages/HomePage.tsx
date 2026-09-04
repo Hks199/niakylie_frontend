@@ -61,7 +61,7 @@ export function HomePage() {
   const blogs = blogsRaw as any[];
 
   return (
-    <div className="w-full space-y-2 animate-in fade-in duration-300">
+    <div className="w-full max-w-full overflow-x-hidden space-y-2 animate-in fade-in duration-300">
       {/* 1. Hero Banner Carousel (HOMEPAGE type) */}
       <HeroBannerCarousel banners={homepageBanners} />
 

@@ -89,17 +89,17 @@ export function SearchBar() {
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit(query)}
-          placeholder="Search for Sarees, Kurtas, Lehengas, Brands & More..."
-          className="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-xs sm:text-sm text-brand-slate placeholder:text-slate-400 pl-10 pr-9 py-2.5 rounded-full border border-transparent focus:border-brand-crimson/50 focus:ring-4 focus:ring-brand-crimson/10 outline-none transition-all duration-200"
+          placeholder="Search Sarees, Kurtas..."
+          className="w-full bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-[11px] sm:text-sm text-brand-slate placeholder:text-slate-400 pl-8 pr-7 py-1.5 sm:py-2.5 rounded-full border border-transparent focus:border-brand-crimson/50 focus:ring-4 focus:ring-brand-crimson/10 outline-none transition-all duration-200"
         />
-        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
         {query && (
           <button
             onClick={() => {
               setQuery('');
               setSuggestions([]);
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-full"
           >
             <X className="w-3.5 h-3.5" />
           </button>

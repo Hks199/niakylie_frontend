@@ -129,19 +129,19 @@ export function TestimonialsSection() {
   const current = REVIEWS[currentIndex];
 
   return (
-    <section className="bg-slate-50 py-16 px-4 sm:px-6 lg:px-8 border-y border-gray-100">
+    <section className="bg-slate-50 py-12 sm:py-16 px-3.5 sm:px-6 lg:px-8 border-y border-gray-100 overflow-hidden">
       <div className="max-w-4xl mx-auto text-center">
         <div className="inline-flex items-center space-x-1.5 bg-brand-crimson/10 text-brand-crimson px-3.5 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider mb-4">
           <Quote className="w-3.5 h-3.5" />
           <span>REAL CUSTOMER LOVE</span>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-slate-dark font-display tracking-tight mb-8">
+        <h2 className="text-2xl sm:text-4xl font-extrabold text-brand-slate-dark font-display tracking-tight mb-8">
           Over 5000+ Happy Women Dressed
         </h2>
 
         {/* Testimonial Card Slider */}
-        <div className="relative bg-white rounded-3xl p-8 sm:p-12 border border-gray-100 shadow-xl transition-all">
+        <div className="relative bg-white rounded-3xl p-5 sm:p-12 border border-gray-100 shadow-xl transition-all">
           <div className="flex flex-col items-center space-y-4">
             {/* Stars */}
             <div className="flex items-center space-x-1 text-amber-500">
@@ -151,13 +151,13 @@ export function TestimonialsSection() {
             </div>
 
             {/* Comment */}
-            <p className="text-sm sm:text-base text-slate-700 italic max-w-2xl font-serif leading-relaxed">
+            <p className="text-xs sm:text-base text-slate-700 italic max-w-2xl font-serif leading-relaxed px-2 sm:px-0">
               "{current.comment}"
             </p>
 
             {/* Product Purchased Tag */}
             {current.productName && (
-              <span className="text-xs bg-slate-100 text-slate-600 font-semibold px-3 py-1 rounded-full">
+              <span className="text-[11px] sm:text-xs bg-slate-100 text-slate-600 font-semibold px-3 py-1 rounded-full truncate max-w-[260px] sm:max-w-none">
                 Purchased: {current.productName}
               </span>
             )}
@@ -167,19 +167,19 @@ export function TestimonialsSection() {
               <img
                 src={current.avatarUrl}
                 alt={current.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-brand-crimson"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-brand-crimson flex-shrink-0"
               />
               <div className="text-left">
-                <div className="flex items-center space-x-1.5">
-                  <h4 className="font-extrabold text-sm text-brand-slate-dark">{current.name}</h4>
+                <div className="flex items-center space-x-1.5 flex-wrap">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-brand-slate-dark">{current.name}</h4>
                   {current.verifiedBuyer && (
-                    <span className="inline-flex items-center text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">
+                    <span className="inline-flex items-center text-[9px] sm:text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">
                       <ShieldCheck className="w-3 h-3 mr-0.5" />
                       Verified
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-400">{current.location}</p>
+                <p className="text-[11px] sm:text-xs text-slate-400">{current.location}</p>
               </div>
             </div>
           </div>
@@ -187,31 +187,31 @@ export function TestimonialsSection() {
           {/* Nav Controls */}
           <button
             onClick={handlePrev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-100 hover:bg-brand-crimson hover:text-white text-slate-600 transition-colors focus:outline-none"
+            className="absolute left-1.5 sm:left-3 top-1/2 -translate-y-1/2 p-1.5 sm:p-2 rounded-full bg-slate-100 hover:bg-brand-crimson hover:text-white text-slate-600 transition-colors focus:outline-none"
             aria-label="Previous Review"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <button
             onClick={handleNext}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-100 hover:bg-brand-crimson hover:text-white text-slate-600 transition-colors focus:outline-none"
+            className="absolute right-1.5 sm:right-3 top-1/2 -translate-y-1/2 p-1.5 sm:p-2 rounded-full bg-slate-100 hover:bg-brand-crimson hover:text-white text-slate-600 transition-colors focus:outline-none"
             aria-label="Next Review"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* 10 Dots Navigation Indicator */}
-        <div className="flex items-center justify-center space-x-2 mt-6">
+        <div className="flex items-center justify-center space-x-1.5 sm:space-x-2 mt-6 flex-wrap max-w-full px-2 overflow-hidden">
           {REVIEWS.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`h-2.5 rounded-full transition-all duration-300 ${
                 index === currentIndex
-                  ? 'w-7 bg-brand-crimson'
-                  : 'w-2.5 bg-gray-300 hover:bg-gray-400'
+                  ? 'w-6 sm:w-7 bg-brand-crimson'
+                  : 'w-2 sm:w-2.5 bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
