@@ -69,10 +69,8 @@ export function Header() {
 
             {/* Right: Action Icons */}
             <div className="flex items-center space-x-1 sm:space-x-5 flex-shrink-0">
-              {/* Profile Dropdown: Hidden on mobile screens < sm (320px), accessed via mobile sidebar drawer */}
-              <div className="hidden sm:block">
-                <ProfileDropdown onOpenAuthModal={() => setIsAuthModalOpen(true)} />
-              </div>
+              {/* Profile Dropdown */}
+              <ProfileDropdown onOpenAuthModal={() => setIsAuthModalOpen(true)} />
 
               {/* Notification Bell Link & Badge */}
               <a
