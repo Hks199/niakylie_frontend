@@ -181,6 +181,35 @@ export function NotificationsPage() {
     if (filterType === 'unread') {
       return !n.isRead || (n as any).isRead === 'false';
     }
+
+    if (filterType === 'order_update') {
+      const notifType = (n.type || '').toUpperCase();
+      return notifType.includes('ORDER') || !!n.metadata?.orderNumber;
+    }
+
+    if (filterType === 'offer') {
+      const notifType = (n.type || '').toUpperCase();
+      if (notifType.includes('ORDER') || !!n.metadata?.orderNumber) return false;
+      if (n.metadata?.isTestPush) return false;
+
+      const isOfferType =
+        notifType === 'OFFER' ||
+        notifType === 'COUPON' ||
+        notifType === 'PRICE_DROP' ||
+        notifType === 'PROMOTIONAL';
+
+      const titleAndMsg = ((n.title || '') + ' ' + (n.message || '')).toLowerCase();
+      const hasOfferKeyword =
+        titleAndMsg.includes('off') ||
+        titleAndMsg.includes('discount') ||
+        titleAndMsg.includes('coupon') ||
+        titleAndMsg.includes('deal') ||
+        titleAndMsg.includes('sale') ||
+        titleAndMsg.includes('offer');
+
+      return isOfferType || hasOfferKeyword;
+    }
+
     return true;
   });
 
