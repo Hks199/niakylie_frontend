@@ -152,37 +152,37 @@ export function AdminBrandsPanel() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-3.5 sm:space-y-5">
       {/* Top Header Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-start sm:items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0 font-bold">
-            <Award className="w-5 h-5" />
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm flex items-start sm:items-center justify-between flex-wrap gap-3 sm:gap-4">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0 font-bold">
+            <Award className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-extrabold text-brand-slate-dark font-display">Brand Management</h2>
-            <p className="text-xs text-slate-400">Create, manage, and upload logos for fashion & designer brands (POST/PUT/DELETE /api/v1/brands)</p>
+            <h2 className="text-sm sm:text-lg font-extrabold text-brand-slate-dark font-display">Brand Management</h2>
+            <p className="text-[10px] sm:text-xs text-slate-400">Create, manage, and upload logos for fashion & designer brands (POST/PUT/DELETE /api/v1/brands)</p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3">
           <button
             onClick={() => {
               queryClient.invalidateQueries({ queryKey: ['admin-brands'] });
               refetch();
             }}
             disabled={isRefetching}
-            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             title="Refresh Brands List"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
           </button>
 
           <button
             onClick={handleOpenCreateModal}
-            className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-lg transition-all"
+            className="inline-flex items-center space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-lg transition-all"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>ADD BRAND</span>
           </button>
         </div>
@@ -190,64 +190,64 @@ export function AdminBrandsPanel() {
 
       {/* Success Notification */}
       {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-3 text-xs font-bold flex items-center space-x-2 animate-in fade-in duration-200">
-          <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 text-[11px] sm:text-xs font-bold flex items-center space-x-2 animate-in fade-in duration-200">
+          <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 flex-shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {/* Search & Filter Bar */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-4 shadow-sm flex items-center justify-between gap-4">
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3 sm:gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search brand name or slug..."
-            className="w-full bg-slate-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-brand-crimson"
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold text-slate-700 outline-none focus:border-brand-crimson"
           />
         </div>
-        <p className="text-xs font-bold text-slate-400 hidden sm:block">
+        <p className="text-[11px] sm:text-xs font-bold text-slate-400 hidden sm:block">
           Total Brands: <span className="text-brand-slate-dark">{brands.length}</span>
         </p>
       </div>
 
       {/* Brands Table Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="py-16 flex items-center justify-center space-x-2">
-            <RefreshCw className="w-6 h-6 animate-spin text-slate-300" />
-            <span className="text-xs text-slate-400 font-semibold">Loading brand catalog...</span>
+          <div className="py-12 sm:py-16 flex items-center justify-center space-x-2">
+            <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-slate-300" />
+            <span className="text-[11px] sm:text-xs text-slate-400 font-semibold">Loading brand catalog...</span>
           </div>
         ) : brands.length === 0 ? (
-          <div className="py-16 text-center space-y-3">
-            <Award className="w-12 h-12 text-slate-200 mx-auto" />
+          <div className="py-12 sm:py-16 text-center space-y-2.5 sm:space-y-3">
+            <Award className="w-10 h-10 sm:w-12 sm:h-12 text-slate-200 mx-auto" />
             <div>
-              <p className="text-sm font-extrabold text-slate-600">No Brands Found</p>
-              <p className="text-xs text-slate-400">Click "ADD BRAND" above to create your first brand partner.</p>
+              <p className="text-xs sm:text-sm font-extrabold text-slate-600">No Brands Found</p>
+              <p className="text-[11px] sm:text-xs text-slate-400">Click "ADD BRAND" above to create your first brand partner.</p>
             </div>
             <button
               onClick={handleOpenCreateModal}
-              className="inline-flex items-center space-x-1.5 text-xs font-extrabold text-brand-crimson hover:underline"
+              className="inline-flex items-center space-x-1 text-[11px] sm:text-xs font-extrabold text-brand-crimson hover:underline"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Brand Now</span>
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto scrollbar-none">
+            <table className="w-full text-left border-collapse min-w-[550px]">
               <thead>
-                <tr className="border-b border-gray-100 text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">
-                  <th className="pb-3 pl-2">Brand Profile</th>
-                  <th className="pb-3">Slug</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3">Created Date</th>
-                  <th className="pb-3 pr-2 text-right">Actions</th>
+                <tr className="border-b border-gray-100 text-[9px] sm:text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">
+                  <th className="pb-2.5 sm:pb-3 pl-2">Brand Profile</th>
+                  <th className="pb-2.5 sm:pb-3">Slug</th>
+                  <th className="pb-2.5 sm:pb-3">Status</th>
+                  <th className="pb-2.5 sm:pb-3">Created Date</th>
+                  <th className="pb-2.5 sm:pb-3 pr-2 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50 text-xs font-semibold">
+              <tbody className="divide-y divide-gray-50 text-[11px] sm:text-xs font-semibold">
                 {brands.map((b) => {
                   const brandId = b._id || b.id || '';
                   const logoUrl = b.logo
@@ -258,31 +258,31 @@ export function AdminBrandsPanel() {
 
                   return (
                     <tr key={brandId} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="py-3.5 pl-2 flex items-center space-x-3">
+                      <td className="py-2.5 sm:py-3.5 pl-2 flex items-center space-x-2.5 sm:space-x-3">
                         {logoUrl ? (
                           <img
                             src={logoUrl}
                             alt={b.name}
-                            className="w-10 h-10 rounded-xl object-contain bg-slate-50 p-1 border border-gray-100"
+                            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl object-contain bg-slate-50 p-1 border border-gray-100 flex-shrink-0"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700 font-extrabold text-sm uppercase">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700 font-extrabold text-xs sm:text-sm uppercase flex-shrink-0">
                             {b.name?.[0] || 'B'}
                           </div>
                         )}
-                        <div>
-                          <p className="font-extrabold text-brand-slate-dark text-sm">{b.name}</p>
+                        <div className="min-w-0">
+                          <p className="font-extrabold text-brand-slate-dark text-xs sm:text-sm truncate">{b.name}</p>
                           {b.description && (
-                            <p className="text-[11px] text-slate-400 line-clamp-1 max-w-sm">{b.description}</p>
+                            <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1 max-w-xs">{b.description}</p>
                           )}
                         </div>
                       </td>
 
-                      <td className="py-3.5 font-mono text-[11px] text-slate-500">{b.slug || '—'}</td>
+                      <td className="py-2.5 sm:py-3.5 font-mono text-[10px] sm:text-[11px] text-slate-500">{b.slug || '—'}</td>
 
-                      <td className="py-3.5">
+                      <td className="py-2.5 sm:py-3.5">
                         <span
-                          className={`text-[9px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
+                          className={`text-[8px] sm:text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
                             b.status !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
                           }`}
                         >
@@ -290,7 +290,7 @@ export function AdminBrandsPanel() {
                         </span>
                       </td>
 
-                      <td className="py-3.5 text-slate-400 text-[11px]">
+                      <td className="py-2.5 sm:py-3.5 text-slate-400 text-[10px] sm:text-[11px]">
                         {b.createdAt
                           ? new Date(b.createdAt).toLocaleDateString('en-IN', {
                               day: 'numeric',
@@ -300,11 +300,11 @@ export function AdminBrandsPanel() {
                           : '—'}
                       </td>
 
-                      <td className="py-3.5 pr-2 text-right">
+                      <td className="py-2.5 sm:py-3.5 pr-2 text-right">
                         <div className="flex items-center justify-end space-x-1">
                           <button
                             onClick={() => handleOpenEditModal(b)}
-                            className="p-2 text-slate-400 hover:text-brand-crimson hover:bg-rose-50 rounded-xl transition-colors"
+                            className="p-1.5 sm:p-2 text-slate-400 hover:text-brand-crimson hover:bg-rose-50 rounded-lg sm:rounded-xl transition-colors cursor-pointer"
                             title="Edit Brand Details"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -312,7 +312,7 @@ export function AdminBrandsPanel() {
                           <button
                             onClick={() => handleDelete(brandId)}
                             disabled={deletingId === brandId}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50"
+                            className="p-1.5 sm:p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg sm:rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
                             title="Delete Brand"
                           >
                             {deletingId === brandId ? (
@@ -334,15 +334,25 @@ export function AdminBrandsPanel() {
 
       {/* Modal: Create / Edit Brand */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-5">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setIsModalOpen(false);
+              setErrorMessage('');
+              setFormData(DEFAULT_FORM);
+              setEditingBrand(null);
+            }
+          }}
+        >
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl p-4 sm:p-8 space-y-4">
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3 flex-shrink-0">
               <div>
-                <h3 className="text-lg font-extrabold text-brand-slate-dark">
-                  {editingBrand ? 'Edit Brand' : 'Create Brand'}
+                <h3 className="text-xs sm:text-lg font-extrabold text-brand-slate-dark">
+                  {editingBrand ? 'Edit Brand Partner' : 'Create Brand Partner'}
                 </h3>
-                <p className="text-[10px] text-slate-400 font-mono mt-1">
+                <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono mt-0.5">
                   {editingBrand ? 'PUT /api/v1/brands/:id' : 'POST /api/v1/brands'} · multipart/form-data
                 </p>
               </div>
@@ -353,15 +363,16 @@ export function AdminBrandsPanel() {
                   setFormData(DEFAULT_FORM);
                   setEditingBrand(null);
                 }}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors cursor-pointer"
+                title="Close Modal"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4 text-[11px] sm:text-xs font-medium overflow-y-auto max-h-[72vh] pr-1 flex-1">
               {errorMessage && (
-                <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-start space-x-2">
+                <div className="p-2.5 sm:p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-[11px] sm:text-xs flex items-start space-x-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{errorMessage}</span>
                 </div>
@@ -369,7 +380,7 @@ export function AdminBrandsPanel() {
 
               {/* Brand Name */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">
                   Brand Name <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -379,35 +390,35 @@ export function AdminBrandsPanel() {
                   value={formData.name}
                   onChange={handleInputChange}
                   placeholder="e.g. Zara, NiaKylie Luxe, Anita Dongre"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">Brand Profile Description</label>
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">Brand Profile Description</label>
                 <textarea
                   name="description"
-                  rows={3}
+                  rows={2}
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder="Brief summary of brand background, couture specialties, or heritage..."
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Brand Logo Upload */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
+                <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1 uppercase">
                   <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
                   <span>Brand Logo Image</span>
-                  <span className="text-[10px] font-normal text-slate-400 ml-1">(JPG/PNG/WEBP, Max 5MB)</span>
+                  <span className="text-[9px] font-normal text-slate-400 ml-1 lowercase">(JPG/PNG/WEBP, Max 5MB)</span>
                 </label>
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={handleFileChange}
-                  className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-crimson file:text-white hover:file:bg-brand-crimson-dark cursor-pointer"
+                  className="w-full text-[11px] sm:text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] sm:file:text-xs file:font-bold file:bg-brand-crimson file:text-white hover:file:bg-brand-crimson-dark cursor-pointer"
                 />
                 {formData.logoFile && (
                   <p className="text-[10px] text-emerald-600 font-semibold mt-1">✓ {formData.logoFile.name}</p>
@@ -415,36 +426,36 @@ export function AdminBrandsPanel() {
               </div>
 
               {/* SEO Meta Box */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 border border-gray-200 rounded-2xl p-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3">
                 <div className="sm:col-span-2">
-                  <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  <p className="text-[9px] sm:text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
                     SEO Meta Optimization (Optional)
                   </p>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-extrabold text-slate-700 mb-1">SEO Title</label>
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold text-slate-700 mb-1">SEO Title</label>
                   <input
                     type="text"
                     name="seoTitle"
                     value={formData.seoTitle}
                     onChange={handleInputChange}
                     placeholder="Shop Zara Clothing Online"
-                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-extrabold text-slate-700 mb-1">SEO Description</label>
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold text-slate-700 mb-1">SEO Description</label>
                   <input
                     type="text"
                     name="seoDescription"
                     value={formData.seoDescription}
                     onChange={handleInputChange}
                     placeholder="Exclusive designer collection..."
-                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-extrabold text-slate-700 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold text-slate-700 mb-1">
                     SEO Keywords (Comma-Separated)
                   </label>
                   <input
@@ -453,7 +464,7 @@ export function AdminBrandsPanel() {
                     value={formData.seoKeywords}
                     onChange={handleInputChange}
                     placeholder="zara, couture, dresses, women fashion"
-                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
                   />
                 </div>
               </div>
@@ -469,13 +480,13 @@ export function AdminBrandsPanel() {
                       onChange={handleInputChange}
                       className="rounded border-gray-300 text-brand-crimson focus:ring-brand-crimson"
                     />
-                    <span className="text-xs font-bold text-slate-700">Active Brand Partner</span>
+                    <span className="text-[11px] sm:text-xs font-bold text-slate-700">Active Brand Partner</span>
                   </label>
                 </div>
               )}
 
               {/* Form Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-end space-x-2 sm:space-x-3 pt-3 border-t border-gray-100 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -484,18 +495,18 @@ export function AdminBrandsPanel() {
                     setFormData(DEFAULT_FORM);
                     setEditingBrand(null);
                   }}
-                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                  className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-gray-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:bg-slate-50 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-6 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
+                  className="inline-flex items-center space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                       <span>{editingBrand ? 'SAVING...' : 'CREATING...'}</span>
                     </>
                   ) : (
