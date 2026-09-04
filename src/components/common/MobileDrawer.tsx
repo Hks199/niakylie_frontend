@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronDown, Heart, ShoppingBag, HelpCircle, PhoneCall, FolderTree, Bell } from 'lucide-react';
+import { X, ChevronDown, Heart, ShoppingBag, HelpCircle, PhoneCall, FolderTree, Bell, User } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useCartStore } from '../../store/useCartStore';
 import { useWishlistStore } from '../../store/useWishlistStore';
@@ -134,22 +134,34 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
           </div>
 
           {/* User Status Bar */}
-          <div className="p-4 bg-slate-50 border-b border-gray-100 flex items-center justify-between">
+          <div className="p-3.5 bg-slate-50 border-b border-gray-100 flex items-center justify-between">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-brand-crimson text-white font-bold flex items-center justify-center text-xs shadow-sm">
-                  {user?.firstName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+              <a
+                href="/account/profile"
+                onClick={onClose}
+                className="flex items-center justify-between w-full p-1 rounded-xl hover:bg-slate-200/60 transition-colors group"
+              >
+                <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-brand-crimson text-white font-bold flex items-center justify-center text-xs shadow-sm flex-shrink-0">
+                    {user?.firstName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-brand-slate-dark truncate group-hover:text-brand-crimson">
+                      {[user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'My Account'}
+                    </p>
+                    <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-xs font-bold text-brand-slate-dark truncate">
-                    {[user?.firstName, user?.lastName].filter(Boolean).join(' ') || 'Customer Account'}
-                  </p>
-                  <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
-                </div>
-              </div>
+                <span className="text-[10px] font-extrabold text-brand-crimson bg-brand-crimson/10 px-2 py-1 rounded-lg flex-shrink-0">
+                  Profile →
+                </span>
+              </a>
             ) : (
               <div className="flex items-center justify-between w-full">
-                <span className="text-xs font-semibold text-slate-600">Welcome Guest!</span>
+                <div className="flex items-center space-x-2">
+                  <User className="w-4 h-4 text-brand-crimson" />
+                  <span className="text-xs font-bold text-slate-700">Account Profile</span>
+                </div>
                 <button
                   onClick={() => {
                     onClose();
@@ -254,30 +266,44 @@ export function MobileDrawer({ isOpen, onClose, onOpenAuthModal }: MobileDrawerP
         </div>
 
         {/* Bottom Drawer Actions */}
-        <div className="p-4 border-t border-gray-100 bg-slate-50 space-y-3">
-          <div className="grid grid-cols-3 gap-1.5">
+        <div className="p-3 sm:p-4 border-t border-gray-100 bg-slate-50 space-y-2.5">
+          <div className="grid grid-cols-4 gap-1 sm:gap-1.5">
+            <a
+              href={isAuthenticated ? '/account/profile' : '#'}
+              onClick={(e) => {
+                onClose();
+                if (!isAuthenticated) {
+                  e.preventDefault();
+                  onOpenAuthModal();
+                }
+              }}
+              className="flex flex-col items-center justify-center bg-white border border-gray-200 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+            >
+              <User className="w-4 h-4 text-brand-crimson mb-0.5" />
+              <span>Profile</span>
+            </a>
             <a
               href="/account/wishlist"
               onClick={onClose}
-              className="flex items-center justify-center space-x-1 bg-white border border-gray-200 p-2 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+              className="flex flex-col items-center justify-center bg-white border border-gray-200 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
             >
-              <Heart className="w-3.5 h-3.5 text-brand-crimson" />
+              <Heart className="w-4 h-4 text-brand-crimson mb-0.5" />
               <span>Wishlist ({wishlistItems.length})</span>
             </a>
             <a
               href="/account/notifications"
               onClick={onClose}
-              className="flex items-center justify-center space-x-1 bg-white border border-gray-200 p-2 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+              className="flex flex-col items-center justify-center bg-white border border-gray-200 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
             >
-              <Bell className="w-3.5 h-3.5 text-brand-crimson" />
+              <Bell className="w-4 h-4 text-brand-crimson mb-0.5" />
               <span>Alerts</span>
             </a>
             <a
               href="/cart"
               onClick={onClose}
-              className="flex items-center justify-center space-x-1 bg-white border border-gray-200 p-2 rounded-xl text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
+              className="flex flex-col items-center justify-center bg-white border border-gray-200 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-bold text-slate-700 hover:border-brand-crimson transition-all shadow-xs"
             >
-              <ShoppingBag className="w-3.5 h-3.5 text-brand-crimson" />
+              <ShoppingBag className="w-4 h-4 text-brand-crimson mb-0.5" />
               <span>Bag ({itemCount})</span>
             </a>
           </div>

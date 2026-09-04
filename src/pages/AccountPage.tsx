@@ -60,19 +60,19 @@ export function AccountPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-300">
-      <h1 className="text-2xl sm:text-3xl font-extrabold text-brand-slate-dark font-display mb-6">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 animate-in fade-in duration-300">
+      <h1 className="text-xl sm:text-3xl font-extrabold text-brand-slate-dark font-display mb-3 sm:mb-6">
         My Account
       </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Sidebar (3 cols) */}
-        <div className="lg:col-span-3 sticky top-24">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
+        {/* Sidebar (3 cols on desktop, non-sticky responsive on mobile) */}
+        <div className="lg:col-span-3 lg:sticky lg:top-24 z-10 min-w-0">
           <AccountSidebar activePage={activePage} onNavigate={handleNavigate} />
         </div>
 
-        {/* Content Area (9 cols) */}
-        <div className="lg:col-span-9">
+        {/* Content Area (9 cols on desktop) */}
+        <div className="lg:col-span-9 min-w-0">
           {renderContent()}
         </div>
       </div>

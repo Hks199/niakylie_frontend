@@ -37,22 +37,22 @@ export function Header() {
 
         {/* Main Navbar */}
         <div className="glass-nav border-b border-gray-200/80 shadow-sm transition-all">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-1.5 sm:gap-4">
             {/* Left: Mobile Hamburger & Logo */}
-            <div className="flex items-center space-x-3 sm:space-x-4">
+            <div className="flex items-center space-x-1 sm:space-x-4 flex-shrink-0">
               <button
                 onClick={() => setIsMobileDrawerOpen(true)}
-                className="lg:hidden p-1.5 rounded-lg text-slate-700 hover:text-brand-crimson hover:bg-slate-100 transition-colors focus:outline-none"
+                className="lg:hidden p-1 rounded-lg text-slate-700 hover:text-brand-crimson hover:bg-slate-100 transition-colors focus:outline-none"
                 aria-label="Open navigation menu"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
 
-              <a href="/" className="flex items-center space-x-2 group">
+              <a href="/" className="flex items-center space-x-1 group">
                 <img
                   src="/asset/niakylie_logo.png"
                   alt="NiaKylie Fashion"
-                  className="h-10 sm:h-12 w-auto object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
+                  className="h-8 sm:h-12 w-auto object-contain rounded-xl group-hover:scale-105 transition-transform shadow-sm"
                 />
               </a>
             </div>
@@ -68,9 +68,11 @@ export function Header() {
             </div>
 
             {/* Right: Action Icons */}
-            <div className="flex items-center space-x-3 sm:space-x-5">
-              {/* Profile Dropdown */}
-              <ProfileDropdown onOpenAuthModal={() => setIsAuthModalOpen(true)} />
+            <div className="flex items-center space-x-1 sm:space-x-5 flex-shrink-0">
+              {/* Profile Dropdown: Hidden on mobile screens < sm (320px), accessed via mobile sidebar drawer */}
+              <div className="hidden sm:block">
+                <ProfileDropdown onOpenAuthModal={() => setIsAuthModalOpen(true)} />
+              </div>
 
               {/* Notification Bell Link & Badge */}
               <a
@@ -84,12 +86,12 @@ export function Header() {
                 className="flex flex-col items-center group text-brand-slate hover:text-brand-crimson transition-colors relative"
                 aria-label="View Notifications"
               >
-                <div className="p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
-                  <Bell className="w-5 h-5" />
+                <div className="p-1 sm:p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
+                  <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <span className="text-[10px] font-bold tracking-tight hidden sm:block">Alerts</span>
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[9px] sm:text-[10px] font-extrabold w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shadow-sm">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
@@ -101,12 +103,12 @@ export function Header() {
                 className="flex flex-col items-center group text-brand-slate hover:text-brand-crimson transition-colors relative"
                 aria-label="View Wishlist"
               >
-                <div className="p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
-                  <Heart className="w-5 h-5" />
+                <div className="p-1 sm:p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <span className="text-[10px] font-bold tracking-tight hidden sm:block">Wishlist</span>
                 {wishlistItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[9px] sm:text-[10px] font-extrabold w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shadow-sm">
                     {wishlistItems.length}
                   </span>
                 )}
@@ -118,12 +120,12 @@ export function Header() {
                 className="flex flex-col items-center group text-brand-slate hover:text-brand-crimson transition-colors relative focus:outline-none"
                 aria-label="Open Shopping Bag"
               >
-                <div className="p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
-                  <ShoppingBag className="w-5 h-5" />
+                <div className="p-1 sm:p-1.5 rounded-full group-hover:bg-brand-crimson/10 transition-colors">
+                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <span className="text-[10px] font-bold tracking-tight hidden sm:block">Bag</span>
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1 -right-1 bg-brand-crimson text-white text-[9px] sm:text-[10px] font-extrabold w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center shadow-sm">
                     {itemCount}
                   </span>
                 )}

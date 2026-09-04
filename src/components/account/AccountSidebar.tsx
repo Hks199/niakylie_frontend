@@ -42,39 +42,39 @@ export function AccountSidebar({ activePage, onNavigate }: AccountSidebarProps) 
   };
 
   return (
-    <aside className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
+    <aside className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm">
       {/* User Profile Header */}
-      <div className="bg-brand-slate-dark text-white p-6 space-y-3">
-        <div className="w-14 h-14 rounded-full bg-brand-crimson flex items-center justify-center font-extrabold text-lg shadow-lg">
+      <div className="bg-brand-slate-dark text-white p-4 sm:p-6 flex items-center space-x-3 lg:space-x-0 lg:block lg:space-y-3">
+        <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-brand-crimson flex items-center justify-center font-extrabold text-sm sm:text-lg shadow-lg flex-shrink-0">
           {initials}
         </div>
-        <div>
-          <p className="font-extrabold text-sm">{displayName}</p>
-          <p className="text-[11px] text-slate-300">{email}</p>
+        <div className="min-w-0 flex-1">
+          <p className="font-extrabold text-xs sm:text-sm truncate">{displayName}</p>
+          <p className="text-[10px] sm:text-[11px] text-slate-300 truncate">{email}</p>
         </div>
       </div>
 
       {/* Navigation Menu */}
-      <nav className="p-3 space-y-1">
+      <nav className="p-2 sm:p-3 flex lg:flex-col overflow-x-auto gap-1.5 lg:gap-1 scrollbar-none">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const isActive = activePage === id;
           return (
             <button
               key={id}
               onClick={() => onNavigate(id)}
-              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center justify-between space-x-2.5 px-3 py-2 sm:px-4 sm:py-3 rounded-xl text-xs font-bold transition-all flex-shrink-0 lg:flex-shrink lg:w-full ${
                 isActive
                   ? 'bg-brand-crimson text-white shadow-md'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-brand-slate-dark'
               }`}
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2.5">
                 <Icon className="w-4 h-4 flex-shrink-0" />
-                <span>{label}</span>
+                <span className="whitespace-nowrap lg:whitespace-normal">{label}</span>
               </div>
               {id === 'notifications' && unreadCount > 0 && (
                 <span
-                  className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                  className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ml-1.5 ${
                     isActive ? 'bg-white text-brand-crimson' : 'bg-brand-crimson text-white'
                   }`}
                 >
@@ -89,20 +89,20 @@ export function AccountSidebar({ activePage, onNavigate }: AccountSidebarProps) 
         {isAdmin && (
           <a
             href="/admin"
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-extrabold bg-slate-900 text-white hover:bg-brand-crimson transition-all mt-2 shadow-sm"
+            className="flex items-center space-x-2.5 px-3 py-2 sm:px-4 sm:py-3 rounded-xl text-xs font-extrabold bg-slate-900 text-white hover:bg-brand-crimson transition-all flex-shrink-0 lg:flex-shrink lg:w-full lg:mt-2 shadow-sm"
           >
             <Shield className="w-4 h-4 flex-shrink-0 text-amber-400" />
-            <span>Admin Dashboard</span>
+            <span className="whitespace-nowrap lg:whitespace-normal">Admin Dashboard</span>
           </a>
         )}
 
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-all mt-2"
+          className="flex items-center space-x-2.5 px-3 py-2 sm:px-4 sm:py-3 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-all flex-shrink-0 lg:flex-shrink lg:w-full lg:mt-2"
         >
           <LogOut className="w-4 h-4 flex-shrink-0" />
-          <span>Logout</span>
+          <span className="whitespace-nowrap lg:whitespace-normal">Logout</span>
         </button>
       </nav>
     </aside>
