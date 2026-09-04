@@ -38,16 +38,16 @@ export function CartItemList({ items }: CartItemListProps) {
         return (
           <div
             key={item.id || item._id}
-            className="flex items-start space-x-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm relative group"
+            className="flex items-start space-x-2.5 sm:space-x-4 bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm relative group"
           >
             {/* Thumbnail */}
-            <div className="w-20 h-24 sm:w-24 sm:h-28 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-gray-100">
+            <div className="w-16 h-20 sm:w-24 sm:h-28 rounded-lg sm:rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-gray-100">
               <img src={image} alt={title} className="w-full h-full object-cover" />
             </div>
 
             {/* Product & Variant Details */}
-            <div className="flex-1 min-w-0 space-y-1">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+            <div className="flex-1 min-w-0 space-y-0.5 sm:space-y-1">
+              <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                 {brand}
               </span>
 
@@ -56,36 +56,36 @@ export function CartItemList({ items }: CartItemListProps) {
               </h4>
 
               {/* Size & Color Pills */}
-              <div className="flex items-center space-x-2 text-[11px] font-semibold text-slate-500 pt-0.5">
-                <span className="bg-slate-100 px-2 py-0.5 rounded-md">Size: {size}</span>
-                <span className="bg-slate-100 px-2 py-0.5 rounded-md">Color: {color}</span>
+              <div className="flex items-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-[11px] font-semibold text-slate-500 pt-0.5 flex-wrap gap-y-1">
+                <span className="bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-md">Size: {size}</span>
+                <span className="bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-md">Color: {color}</span>
               </div>
 
               {/* Price Breakdown */}
-              <div className="flex items-baseline space-x-2 pt-1">
-                <span className="text-sm font-extrabold text-brand-slate-dark">
+              <div className="flex items-baseline space-x-1.5 sm:space-x-2 pt-1">
+                <span className="text-xs sm:text-sm font-extrabold text-brand-slate-dark">
                   ₹{item.price.toLocaleString('en-IN')}
                 </span>
                 {originalPrice > item.price && (
-                  <span className="text-xs text-slate-400 line-through">
+                  <span className="text-[10px] sm:text-xs text-slate-400 line-through">
                     ₹{originalPrice.toLocaleString('en-IN')}
                   </span>
                 )}
                 {discount > 0 && (
-                  <span className="text-[10px] font-extrabold text-brand-crimson">
+                  <span className="text-[9px] sm:text-[10px] font-extrabold text-brand-crimson">
                     {discount}% OFF
                   </span>
                 )}
               </div>
 
               {/* Actions & Quantity Dropdown */}
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center space-x-1 text-xs">
+              <div className="flex items-center justify-between pt-1.5 sm:pt-2">
+                <div className="flex items-center space-x-1 text-[11px] sm:text-xs">
                   <span className="font-bold text-slate-500">Qty:</span>
                   <select
                     value={item.quantity}
                     onChange={(e) => updateQuantity(item.id || item._id || '', parseInt(e.target.value, 10))}
-                    className="bg-slate-50 border border-gray-200 rounded-lg px-2 py-1 font-bold text-brand-slate-dark outline-none cursor-pointer"
+                    className="bg-slate-50 border border-gray-200 rounded-md sm:rounded-lg px-1.5 py-0.5 sm:py-1 font-bold text-brand-slate-dark outline-none cursor-pointer text-[11px] sm:text-xs"
                   >
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((qty) => (
                       <option key={qty} value={qty}>
@@ -98,7 +98,7 @@ export function CartItemList({ items }: CartItemListProps) {
                 {/* Move to Wishlist */}
                 <button
                   onClick={() => moveToWishlist(item.id || item._id || '', productIdStr)}
-                  className="inline-flex items-center space-x-1 text-xs font-bold text-slate-500 hover:text-brand-crimson transition-colors"
+                  className="inline-flex items-center space-x-1 text-[10px] sm:text-xs font-bold text-slate-500 hover:text-brand-crimson transition-colors"
                 >
                   <Heart className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Move to Wishlist</span>
@@ -111,7 +111,7 @@ export function CartItemList({ items }: CartItemListProps) {
                   aria-label="Remove Item"
                   title="Remove from bag"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>

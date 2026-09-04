@@ -148,18 +148,18 @@ export function ProductListingPage() {
   const breadcrumbs = buildBreadcrumbTrail(currentCategory, allCategories);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-4 sm:py-6">
       {/* Breadcrumb Header */}
       <PLPBreadcrumbHeader title={currentTitle} totalItems={total} breadcrumbs={breadcrumbs} />
 
       {/* Control Bar: Mobile Filter Trigger & Sort Dropdown */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         {/* Mobile Filter Button */}
         <button
           onClick={() => setIsMobileFilterOpen(true)}
-          className="lg:hidden flex items-center space-x-2 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md"
+          className="lg:hidden flex items-center space-x-1.5 bg-slate-900 text-white text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-md"
         >
-          <SlidersHorizontal className="w-4 h-4" />
+          <SlidersHorizontal className="w-3.5 h-3.5" />
           <span>FILTER</span>
         </button>
 
@@ -200,7 +200,7 @@ export function ProductListingPage() {
             <ProductGridSkeleton />
           ) : products.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
                 {products.map((product) => (
                   <ProductCard key={product.id || product._id} product={product} />
                 ))}
