@@ -221,32 +221,32 @@ export function AdminCouponsPanel() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
       {/* Top Header Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3.5 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center space-x-3">
-            <div className="p-3 bg-brand-crimson/10 rounded-2xl text-brand-crimson">
-              <Tag className="w-6 h-6" />
+            <div className="p-2.5 sm:p-3 bg-brand-crimson/10 rounded-xl sm:rounded-2xl text-brand-crimson flex-shrink-0">
+              <Tag className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+              <h2 className="text-base sm:text-xl font-extrabold text-brand-slate-dark font-display">
                 Promo Code & Coupon Management
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-[10px] sm:text-xs text-slate-400">
                 Create and manage flat & percentage promotional discount codes across all products
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end flex-wrap gap-y-2">
             <button
               onClick={() => {
                 queryClient.invalidateQueries({ queryKey: ['admin-coupons'] });
                 refetch();
               }}
               disabled={isRefetching}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl border border-gray-200 text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+              className="flex items-center space-x-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border border-gray-200 text-[10px] sm:text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
@@ -254,9 +254,9 @@ export function AdminCouponsPanel() {
 
             <button
               onClick={handleOpenCreateModal}
-              className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white text-xs font-extrabold px-4 py-2 rounded-2xl shadow-lg shadow-brand-crimson/20 transition-all"
+              className="inline-flex items-center space-x-1.5 bg-brand-crimson hover:bg-brand-crimson-dark text-white text-[10px] sm:text-xs font-extrabold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg shadow-brand-crimson/20 transition-all"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Create Promo Code</span>
             </button>
           </div>
@@ -264,48 +264,48 @@ export function AdminCouponsPanel() {
 
         {/* Success Alert */}
         {successMessage && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center space-x-2 text-emerald-800 text-xs font-bold animate-in fade-in duration-200">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex items-center space-x-2 text-emerald-800 text-[11px] sm:text-xs font-bold animate-in fade-in duration-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{successMessage}</span>
           </div>
         )}
 
         {/* Quick Metric Badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl">
-            <p className="text-[10px] font-extrabold uppercase text-slate-400">Total Promo Codes</p>
-            <p className="text-lg font-black text-brand-slate-dark">{totalCount}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 pt-1">
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl">
+            <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-slate-400">Total Codes</p>
+            <p className="text-base sm:text-lg font-black text-brand-slate-dark">{totalCount}</p>
           </div>
 
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl">
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-emerald-600">Active Promo Codes</p>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-emerald-600">Active Codes</p>
+              <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500" />
             </div>
-            <p className="text-lg font-black text-emerald-900">{activeCount}</p>
+            <p className="text-base sm:text-lg font-black text-emerald-900">{activeCount}</p>
           </div>
 
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl">
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-blue-600">Flat ₹ OFF</p>
-              <IndianRupee className="w-3.5 h-3.5 text-blue-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-blue-600">Flat ₹ OFF</p>
+              <IndianRupee className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-500" />
             </div>
-            <p className="text-lg font-black text-blue-900">{flatCount}</p>
+            <p className="text-base sm:text-lg font-black text-blue-900">{flatCount}</p>
           </div>
 
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl">
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-purple-600">Percentage % OFF</p>
-              <Percent className="w-3.5 h-3.5 text-purple-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-purple-600">Percent % OFF</p>
+              <Percent className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-500" />
             </div>
-            <p className="text-lg font-black text-purple-900">{percentageCount}</p>
+            <p className="text-base sm:text-lg font-black text-purple-900">{percentageCount}</p>
           </div>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 pt-1">
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -314,7 +314,7 @@ export function AdminCouponsPanel() {
                 setPage(1);
               }}
               placeholder="Search by promo code or title..."
-              className="w-full bg-slate-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2 text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
+              className="w-full bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-9 pr-8 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
             />
             {search && (
               <button
@@ -330,14 +330,14 @@ export function AdminCouponsPanel() {
           </div>
 
           <div className="relative w-full sm:w-auto">
-            <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             <select
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-2xl pl-9 pr-9 py-2 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
+              className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-8 pr-8 py-2 text-[11px] sm:text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
             >
               <option value="">All Statuses</option>
               <option value="true">Active Only</option>
@@ -351,7 +351,7 @@ export function AdminCouponsPanel() {
       <AdminOnlinePaymentDiscountCard />
 
       {/* Main Table Container */}
-      <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-3">
             <Loader2 className="w-8 h-8 animate-spin text-brand-crimson" />
@@ -375,17 +375,17 @@ export function AdminCouponsPanel() {
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto scrollbar-none">
+            <table className="w-full text-left border-collapse min-w-[680px]">
               <thead>
                 <tr className="border-b border-gray-100 bg-slate-50/50 text-[10px] uppercase font-black tracking-wider text-slate-400">
-                  <th className="py-3.5 px-5">Promo Code</th>
-                  <th className="py-3.5 px-4">Title & Details</th>
-                  <th className="py-3.5 px-4">Discount</th>
-                  <th className="py-3.5 px-4">Min Spend</th>
-                  <th className="py-3.5 px-4">Validity</th>
-                  <th className="py-3.5 px-4 text-center">Status</th>
-                  <th className="py-3.5 px-5 text-right">Actions</th>
+                  <th className="py-3 px-4 sm:px-5">Promo Code</th>
+                  <th className="py-3 px-3 sm:px-4">Title & Details</th>
+                  <th className="py-3 px-3 sm:px-4">Discount</th>
+                  <th className="py-3 px-3 sm:px-4">Min Spend</th>
+                  <th className="py-3 px-3 sm:px-4">Validity</th>
+                  <th className="py-3 px-3 sm:px-4 text-center">Status</th>
+                  <th className="py-3 px-4 sm:px-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-xs">
@@ -396,31 +396,31 @@ export function AdminCouponsPanel() {
                   return (
                     <tr key={coupon._id} className="hover:bg-slate-50/60 transition-colors">
                       {/* Code */}
-                      <td className="py-4 px-5">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-mono font-black text-xs text-brand-crimson bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-xl tracking-wider">
+                      <td className="py-3 sm:py-4 px-4 sm:px-5">
+                        <div className="flex items-center space-x-1.5 sm:space-x-2">
+                          <span className="font-mono font-black text-[11px] sm:text-xs text-brand-crimson bg-rose-50 border border-rose-200 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl tracking-wider">
                             {coupon.code}
                           </span>
-                          <Sparkles className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500 flex-shrink-0" />
                         </div>
                       </td>
 
                       {/* Title */}
-                      <td className="py-4 px-4 max-w-xs">
-                        <p className="font-bold text-slate-800 text-xs truncate">
+                      <td className="py-3 sm:py-4 px-3 sm:px-4 max-w-xs">
+                        <p className="font-bold text-slate-800 text-[11px] sm:text-xs truncate">
                           {coupon.title || coupon.code}
                         </p>
                         {coupon.description && (
-                          <p className="text-[11px] text-slate-400 line-clamp-1">
+                          <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1">
                             {coupon.description}
                           </p>
                         )}
                       </td>
 
                       {/* Discount */}
-                      <td className="py-4 px-4">
+                      <td className="py-3 sm:py-4 px-3 sm:px-4">
                         <span
-                          className={`inline-flex items-center space-x-1 text-xs font-black px-2.5 py-1 rounded-xl border ${
+                          className={`inline-flex items-center space-x-1 text-[11px] sm:text-xs font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl border ${
                             isFlat
                               ? 'bg-blue-50 text-blue-800 border-blue-200'
                               : 'bg-purple-50 text-purple-800 border-purple-200'
@@ -434,7 +434,7 @@ export function AdminCouponsPanel() {
                             <>
                               <span>{coupon.value}% OFF</span>
                               {coupon.maxDiscount && (
-                                <span className="text-[10px] text-purple-600 font-normal">
+                                <span className="text-[9px] sm:text-[10px] text-purple-600 font-normal">
                                   (Max ₹{coupon.maxDiscount})
                                 </span>
                               )}
@@ -444,16 +444,16 @@ export function AdminCouponsPanel() {
                       </td>
 
                       {/* Min Spend */}
-                      <td className="py-4 px-4 font-bold text-slate-700">
+                      <td className="py-3 sm:py-4 px-3 sm:px-4 font-bold text-slate-700 text-[11px] sm:text-xs">
                         {coupon.minOrderAmount > 0 ? (
                           `₹${coupon.minOrderAmount.toLocaleString('en-IN')}`
                         ) : (
-                          <span className="text-slate-400 font-normal text-[11px]">No Min</span>
+                          <span className="text-slate-400 font-normal text-[10px] sm:text-[11px]">No Min</span>
                         )}
                       </td>
 
                       {/* Validity */}
-                      <td className="py-4 px-4 text-[11px] text-slate-500 whitespace-nowrap">
+                      <td className="py-3 sm:py-4 px-3 sm:px-4 text-[10px] sm:text-[11px] text-slate-500 whitespace-nowrap">
                         <div className="flex items-center space-x-1">
                           <Calendar className="w-3 h-3 text-slate-400" />
                           <span>
@@ -465,18 +465,18 @@ export function AdminCouponsPanel() {
                           </span>
                         </div>
                         {isExpired && (
-                          <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded">
+                          <span className="text-[9px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded">
                             EXPIRED
                           </span>
                         )}
                       </td>
 
                       {/* Active Status */}
-                      <td className="py-4 px-4 text-center">
+                      <td className="py-3 sm:py-4 px-3 sm:px-4 text-center">
                         <button
                           onClick={() => handleToggleStatus(coupon._id)}
                           disabled={togglingId === coupon._id}
-                          className={`inline-flex items-center space-x-1 text-[10px] font-extrabold px-2.5 py-1 rounded-xl border transition-all ${
+                          className={`inline-flex items-center space-x-1 text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl border transition-all ${
                             coupon.isActive
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200'
                               : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200'
@@ -499,11 +499,11 @@ export function AdminCouponsPanel() {
                       </td>
 
                       {/* Actions */}
-                      <td className="py-4 px-5 text-right">
-                        <div className="flex items-center justify-end space-x-2">
+                      <td className="py-3 sm:py-4 px-4 sm:px-5 text-right">
+                        <div className="flex items-center justify-end space-x-1.5 sm:space-x-2">
                           <button
                             onClick={() => handleOpenEditModal(coupon)}
-                            className="p-1.5 rounded-xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson hover:bg-rose-50 transition-colors"
+                            className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson hover:bg-rose-50 transition-colors"
                             title="Edit Promo Code"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -512,7 +512,7 @@ export function AdminCouponsPanel() {
                           <button
                             onClick={() => handleDelete(coupon._id, coupon.code)}
                             disabled={deletingId === coupon._id}
-                            className="p-1.5 rounded-xl border border-gray-200 text-rose-600 hover:bg-rose-100 hover:border-rose-300 transition-colors disabled:opacity-50"
+                            className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-gray-200 text-rose-600 hover:bg-rose-100 hover:border-rose-300 transition-colors disabled:opacity-50"
                             title="Delete Promo Code"
                           >
                             {deletingId === coupon._id ? (
@@ -531,8 +531,8 @@ export function AdminCouponsPanel() {
 
             {/* Pagination Controls Bar */}
             {totalCount > 0 && (
-              <div className="px-6 py-4 border-t border-gray-100 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-                <div className="flex items-center space-x-2 text-slate-500 font-medium">
+              <div className="px-3.5 sm:px-6 py-3 sm:py-4 border-t border-gray-100 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-[11px] sm:text-xs">
+                <div className="flex items-center space-x-1.5 sm:space-x-2 text-slate-500 font-medium text-[10px] sm:text-xs">
                   <span>Showing</span>
                   <span className="font-bold text-slate-800">
                     {Math.min((page - 1) * limit + 1, totalCount)}
@@ -546,16 +546,16 @@ export function AdminCouponsPanel() {
                   <span>promo codes</span>
                 </div>
 
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-slate-500 font-medium">Items per page:</span>
+                <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto justify-between sm:justify-end">
+                  <div className="flex items-center space-x-1.5 sm:space-x-2 text-[10px] sm:text-xs">
+                    <span className="text-slate-500 font-medium">Per page:</span>
                     <select
                       value={limit}
                       onChange={(e) => {
                         setLimit(Number(e.target.value));
                         setPage(1);
                       }}
-                      className="bg-white border border-gray-200 rounded-xl px-2.5 py-1 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson cursor-pointer shadow-sm"
+                      className="bg-white border border-gray-200 rounded-lg sm:rounded-xl px-2 py-1 text-[10px] sm:text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson cursor-pointer shadow-sm"
                     >
                       <option value={10}>10</option>
                       <option value={20}>20</option>
@@ -563,27 +563,27 @@ export function AdminCouponsPanel() {
                     </select>
                   </div>
 
-                  <div className="flex items-center space-x-1.5">
+                  <div className="flex items-center space-x-1 sm:space-x-1.5">
                     <button
                       onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                       disabled={page <= 1}
-                      className="p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
+                      className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
                       title="Previous Page"
                     >
-                      <ChevronLeft className="w-4 h-4" />
+                      <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
 
-                    <div className="px-3.5 py-1 bg-white border border-gray-200 rounded-xl font-bold text-slate-700 text-xs shadow-sm">
+                    <div className="px-2.5 sm:px-3.5 py-1 bg-white border border-gray-200 rounded-lg sm:rounded-xl font-bold text-slate-700 text-[10px] sm:text-xs shadow-sm">
                       Page {page} of {totalPages}
                     </div>
 
                     <button
                       onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={page >= totalPages}
-                      className="p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
+                      className="p-1 sm:p-1.5 rounded-lg sm:rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors cursor-pointer disabled:cursor-not-allowed shadow-sm"
                       title="Next Page"
                     >
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </button>
                   </div>
                 </div>
@@ -595,33 +595,33 @@ export function AdminCouponsPanel() {
 
       {/* ─── CREATE / EDIT PROMO CODE MODAL ─────────────────────────── */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white border border-gray-100 rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-lg w-full shadow-2xl space-y-3.5 sm:space-y-4 max-h-[92vh] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-2.5 sm:pb-3 flex-shrink-0">
               <div className="flex items-center space-x-2">
-                <Tag className="w-5 h-5 text-brand-crimson" />
-                <h3 className="text-base font-extrabold text-brand-slate-dark font-display">
+                <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-brand-crimson" />
+                <h3 className="text-sm sm:text-base font-extrabold text-brand-slate-dark font-display">
                   {editingCoupon ? 'Edit Promo Code' : 'Create New Promo Code'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+                className="p-1 rounded-lg sm:rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {errorMessage && (
-              <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3 text-xs font-bold text-rose-700">
+              <div className="bg-rose-50 border border-rose-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 text-[11px] sm:text-xs font-bold text-rose-700 flex-shrink-0">
                 {errorMessage}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4 text-[11px] sm:text-xs overflow-y-auto max-h-[72vh] pr-1 flex-1">
               {/* Code */}
               <div>
-                <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                   Promo Code *
                 </label>
                 <input
@@ -630,14 +630,14 @@ export function AdminCouponsPanel() {
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                   placeholder="e.g. FLAT100, FESTIVE20"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-mono font-bold uppercase outline-none focus:border-brand-crimson focus:bg-white"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-mono font-bold uppercase outline-none focus:border-brand-crimson focus:bg-white"
                 />
               </div>
 
               {/* Title & Description */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                     Title
                   </label>
                   <input
@@ -645,12 +645,12 @@ export function AdminCouponsPanel() {
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g. Flat ₹100 Off"
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                     Discount Type *
                   </label>
                   <select
@@ -658,7 +658,7 @@ export function AdminCouponsPanel() {
                     onChange={(e) =>
                       setFormData({ ...formData, type: e.target.value as 'FLAT' | 'PERCENTAGE' })
                     }
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson cursor-pointer"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson cursor-pointer"
                   >
                     <option value="FLAT">FLAT ₹ OFF</option>
                     <option value="PERCENTAGE">PERCENTAGE % OFF</option>
@@ -667,7 +667,7 @@ export function AdminCouponsPanel() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                   Description
                 </label>
                 <input
@@ -675,14 +675,14 @@ export function AdminCouponsPanel() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="e.g. Get ₹100 discount on any purchase"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white"
                 />
               </div>
 
               {/* Value & Min Subtotal */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                     {formData.type === 'FLAT' ? 'Discount Amount (₹) *' : 'Discount Percent (%) *'}
                   </label>
                   <input
@@ -691,12 +691,12 @@ export function AdminCouponsPanel() {
                     min="1"
                     value={formData.value}
                     onChange={(e) => setFormData({ ...formData, value: Number(e.target.value) })}
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-bold outline-none focus:border-brand-crimson focus:bg-white"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-bold outline-none focus:border-brand-crimson focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                     Min Subtotal Required (₹)
                   </label>
                   <input
@@ -706,7 +706,7 @@ export function AdminCouponsPanel() {
                     onChange={(e) =>
                       setFormData({ ...formData, minOrderAmount: Number(e.target.value) })
                     }
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-bold outline-none focus:border-brand-crimson focus:bg-white"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-bold outline-none focus:border-brand-crimson focus:bg-white"
                   />
                 </div>
               </div>
@@ -714,7 +714,7 @@ export function AdminCouponsPanel() {
               {/* Start & End Date */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                     Start Date *
                   </label>
                   <input
@@ -722,12 +722,12 @@ export function AdminCouponsPanel() {
                     required
                     value={formData.startDate}
                     onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500 mb-1">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500 mb-1">
                     Expiration Date *
                   </label>
                   <input
@@ -735,18 +735,18 @@ export function AdminCouponsPanel() {
                     required
                     value={formData.endDate}
                     onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson"
                   />
                 </div>
               </div>
 
               {/* Active Switch */}
               <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                <span className="text-xs font-bold text-slate-700">Enable Promo Code Immediately</span>
+                <span className="text-[11px] sm:text-xs font-bold text-slate-700">Enable Promo Code Immediately</span>
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
-                  className={`w-11 h-6 rounded-full p-1 transition-colors ${
+                  className={`w-10 h-5 sm:w-11 sm:h-6 rounded-full p-0.5 sm:p-1 transition-colors flex-shrink-0 ${
                     formData.isActive ? 'bg-emerald-500' : 'bg-slate-300'
                   }`}
                 >
@@ -759,22 +759,22 @@ export function AdminCouponsPanel() {
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-gray-200 text-slate-600 font-bold hover:bg-slate-50"
+                  className="px-3.5 sm:px-4 py-2 rounded-xl border border-gray-200 text-slate-600 font-bold text-[11px] sm:text-xs hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold px-5 py-2 rounded-xl shadow-lg transition-all disabled:opacity-50"
+                  className="inline-flex items-center space-x-1.5 sm:space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-5 py-2 rounded-xl shadow-lg transition-all disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                       <span>Saving...</span>
                     </>
                   ) : (
