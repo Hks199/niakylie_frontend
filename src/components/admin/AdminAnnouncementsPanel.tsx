@@ -216,39 +216,39 @@ export function AdminAnnouncementsPanel() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
       {/* Top Header & Actions */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3.5 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center space-x-3">
-            <div className="p-3 rounded-2xl bg-rose-50 text-brand-crimson border border-rose-100">
-              <Megaphone className="w-6 h-6" />
+            <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-rose-50 text-brand-crimson border border-rose-100 flex-shrink-0">
+              <Megaphone className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-brand-slate-dark">
+              <h2 className="text-base sm:text-xl font-extrabold text-brand-slate-dark">
                 Storefront Announcement Bar
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-[10px] sm:text-xs text-slate-400">
                 Manage live rotating top bar announcements, offer badges, and promotional ticker links
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2.5 w-full sm:w-auto">
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end flex-wrap gap-y-2">
             <button
               onClick={() => refetch()}
               disabled={isRefetching}
               title="Refresh Announcements"
-              className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+              className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             >
-              <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefetching ? 'animate-spin' : ''}`} />
             </button>
 
             <button
               onClick={handleOpenCreateModal}
-              className="flex-1 sm:flex-none flex items-center justify-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-2.5 rounded-2xl transition-all shadow-md hover:shadow-lg"
+              className="flex-1 sm:flex-none flex items-center justify-center space-x-1.5 sm:space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[10px] sm:text-xs px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all shadow-md hover:shadow-lg"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Create Announcement</span>
             </button>
           </div>
@@ -256,37 +256,37 @@ export function AdminAnnouncementsPanel() {
 
         {/* Success Alert */}
         {successMessage && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center space-x-2 text-emerald-800 text-xs font-bold animate-in fade-in duration-200">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex items-center space-x-2 text-emerald-800 text-[11px] sm:text-xs font-bold animate-in fade-in duration-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
             <span>{successMessage}</span>
           </div>
         )}
 
         {/* KPI Metric Badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl">
-            <p className="text-[10px] font-extrabold uppercase text-slate-400">Total Announcements</p>
-            <p className="text-lg font-black text-brand-slate-dark">{totalCountAll}</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 pt-1">
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl">
+            <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-slate-400">Total Tickers</p>
+            <p className="text-base sm:text-lg font-black text-brand-slate-dark">{totalCountAll}</p>
           </div>
 
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl">
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-emerald-600">Active Store Tickers</p>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-emerald-600">Active Tickers</p>
+              <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500" />
             </div>
-            <p className="text-lg font-black text-emerald-900">{activeCount}</p>
+            <p className="text-base sm:text-lg font-black text-emerald-900">{activeCount}</p>
           </div>
 
-          <div className="bg-slate-50 border border-gray-100 p-3 rounded-2xl col-span-2 sm:col-span-1">
-            <p className="text-[10px] font-extrabold uppercase text-purple-600">Display Order</p>
-            <p className="text-xs text-slate-500 font-semibold mt-1">Sorted by Priority & Recency</p>
+          <div className="bg-slate-50 border border-gray-100 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl col-span-2 sm:col-span-1">
+            <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-purple-600">Display Order</p>
+            <p className="text-[10px] sm:text-xs text-slate-500 font-semibold mt-0.5 sm:mt-1">Priority & Recency</p>
           </div>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 pt-1">
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -295,7 +295,7 @@ export function AdminAnnouncementsPanel() {
                 setPage(1);
               }}
               placeholder="Search announcement message or badge..."
-              className="w-full bg-slate-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2 text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
+              className="w-full bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-9 pr-8 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
             />
             {search && (
               <button
@@ -311,14 +311,14 @@ export function AdminAnnouncementsPanel() {
           </div>
 
           <div className="relative w-full sm:w-auto">
-            <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             <select
               value={statusFilter}
               onChange={(e) => {
                 setStatusFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-2xl pl-9 pr-9 py-2 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
+              className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-8 pr-8 py-2 text-[11px] sm:text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
             >
               <option value="">All Statuses</option>
               <option value="true">Active Only</option>
@@ -329,49 +329,49 @@ export function AdminAnnouncementsPanel() {
       </div>
 
       {/* Main Announcements Table */}
-      <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 space-y-3">
-            <Loader2 className="w-8 h-8 animate-spin text-brand-crimson" />
+          <div className="flex flex-col items-center justify-center py-16 sm:py-20 space-y-3">
+            <Loader2 className="w-7 h-7 sm:w-8 sm:h-8 animate-spin text-brand-crimson" />
             <p className="text-xs font-semibold text-slate-500">Loading store announcements...</p>
           </div>
         ) : announcements.length === 0 ? (
-          <div className="py-20 text-center space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mx-auto text-brand-crimson">
-              <Megaphone className="w-6 h-6" />
+          <div className="py-16 sm:py-20 text-center space-y-3 px-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center mx-auto text-brand-crimson">
+              <Megaphone className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
-            <h3 className="text-sm font-extrabold text-brand-slate-dark">No Announcements Found</h3>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+            <h3 className="text-xs sm:text-sm font-extrabold text-brand-slate-dark">No Announcements Found</h3>
+            <p className="text-[11px] sm:text-xs text-slate-400 max-w-sm mx-auto">
               Create custom store announcements to display sale codes, free shipping offers, or new arrivals at the top of the store.
             </p>
             <button
               onClick={handleOpenCreateModal}
-              className="inline-flex items-center space-x-1.5 text-xs font-extrabold bg-brand-crimson text-white px-4 py-2 rounded-xl shadow hover:bg-brand-crimson-dark transition-colors"
+              className="inline-flex items-center space-x-1.5 text-[11px] sm:text-xs font-extrabold bg-brand-crimson text-white px-3.5 sm:px-4 py-2 rounded-xl shadow hover:bg-brand-crimson-dark transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>Create Announcement</span>
             </button>
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto scrollbar-none">
+              <table className="w-full text-left border-collapse min-w-[620px]">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-gray-100 text-[11px] font-extrabold uppercase text-slate-400 tracking-wider">
-                    <th className="py-3.5 px-4 sm:px-6">Announcement Text</th>
-                    <th className="py-3.5 px-4">Badge & Icon</th>
-                    <th className="py-3.5 px-4">Target Link</th>
-                    <th className="py-3.5 px-4">Priority</th>
-                    <th className="py-3.5 px-4">Status</th>
-                    <th className="py-3.5 px-4 text-right">Actions</th>
+                  <tr className="bg-slate-50 border-b border-gray-100 text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-400 tracking-wider">
+                    <th className="py-3 px-3.5 sm:px-6">Announcement Text</th>
+                    <th className="py-3 px-3">Badge & Icon</th>
+                    <th className="py-3 px-3">Target Link</th>
+                    <th className="py-3 px-3">Priority</th>
+                    <th className="py-3 px-3">Status</th>
+                    <th className="py-3 px-3 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 text-xs font-medium">
+                <tbody className="divide-y divide-gray-100 text-[11px] sm:text-xs font-medium">
                   {announcements.map((item) => (
                     <tr key={item._id} className="hover:bg-slate-50/60 transition-colors">
-                      <td className="py-4 px-4 sm:px-6">
-                        <div className="flex items-center space-x-2.5">
-                          <span className="p-1.5 rounded-lg bg-slate-100 text-slate-700">
+                      <td className="py-3 sm:py-4 px-3.5 sm:px-6">
+                        <div className="flex items-center space-x-2">
+                          <span className="p-1 sm:p-1.5 rounded-lg bg-slate-100 text-slate-700 flex-shrink-0">
                             {renderIconComponent(item.icon)}
                           </span>
                           <span className="font-extrabold text-brand-slate-dark max-w-xs sm:max-w-md truncate">
@@ -380,39 +380,39 @@ export function AdminAnnouncementsPanel() {
                         </div>
                       </td>
 
-                      <td className="py-4 px-4">
-                        <span className="inline-flex items-center space-x-1 text-[10px] uppercase font-black bg-rose-50 text-brand-crimson px-2.5 py-1 rounded-full border border-rose-200">
+                      <td className="py-3 sm:py-4 px-3">
+                        <span className="inline-flex items-center space-x-1 text-[9px] sm:text-[10px] uppercase font-black bg-rose-50 text-brand-crimson px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full border border-rose-200">
                           {renderIconComponent(item.icon)}
                           <span>{item.badge || 'Announcement'}</span>
                         </span>
                       </td>
 
-                      <td className="py-4 px-4">
+                      <td className="py-3 sm:py-4 px-3">
                         {item.link ? (
                           <a
                             href={item.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center space-x-1 text-slate-600 hover:text-brand-crimson hover:underline font-mono text-[11px]"
+                            className="inline-flex items-center space-x-1 text-slate-600 hover:text-brand-crimson hover:underline font-mono text-[10px] sm:text-[11px]"
                           >
                             <LinkIcon className="w-3 h-3" />
-                            <span className="max-w-[120px] truncate">{item.link}</span>
+                            <span className="max-w-[110px] truncate">{item.link}</span>
                             <ExternalLink className="w-2.5 h-2.5" />
                           </a>
                         ) : (
-                          <span className="text-slate-300 italic text-[11px]">None</span>
+                          <span className="text-slate-300 italic text-[10px] sm:text-[11px]">None</span>
                         )}
                       </td>
 
-                      <td className="py-4 px-4 font-mono font-bold text-slate-600">
+                      <td className="py-3 sm:py-4 px-3 font-mono font-bold text-slate-600">
                         {item.priority || 0}
                       </td>
 
-                      <td className="py-4 px-4">
+                      <td className="py-3 sm:py-4 px-3">
                         <button
                           onClick={() => handleToggleStatus(item._id)}
                           disabled={togglingId === item._id}
-                          className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase transition-all ${
+                          className={`inline-flex items-center space-x-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase transition-all ${
                             item.isActive
                               ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
                               : 'bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200'
@@ -434,25 +434,25 @@ export function AdminAnnouncementsPanel() {
                         </button>
                       </td>
 
-                      <td className="py-4 px-4 text-right">
+                      <td className="py-3 sm:py-4 px-3 text-right">
                         <div className="flex items-center justify-end space-x-1">
                           <button
                             onClick={() => handleOpenEditModal(item)}
-                            className="p-1.5 rounded-lg text-slate-500 hover:text-brand-crimson hover:bg-rose-50 transition-colors"
+                            className="p-1 sm:p-1.5 rounded-lg text-slate-500 hover:text-brand-crimson hover:bg-rose-50 transition-colors"
                             title="Edit Announcement"
                           >
-                            <Edit2 className="w-4 h-4" />
+                            <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           </button>
                           <button
                             onClick={() => handleDelete(item._id)}
                             disabled={deletingId === item._id}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50"
+                            className="p-1 sm:p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50"
                             title="Delete Announcement"
                           >
                             {deletingId === item._id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                             ) : (
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             )}
                           </button>
                         </div>
@@ -465,8 +465,8 @@ export function AdminAnnouncementsPanel() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="p-4 border-t border-gray-100 bg-slate-50/50 flex items-center justify-between">
-                <span className="text-xs text-slate-500 font-medium">
+              <div className="p-3 sm:p-4 border-t border-gray-100 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                <span className="text-[11px] sm:text-xs text-slate-500 font-medium">
                   Showing Page <strong className="text-slate-800">{page}</strong> of{' '}
                   <strong className="text-slate-800">{totalPages}</strong>
                 </span>
@@ -475,17 +475,17 @@ export function AdminAnnouncementsPanel() {
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                    className="p-1 sm:p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
-                  <span className="text-xs font-mono font-bold text-slate-700 px-2">{page}</span>
+                  <span className="text-[11px] sm:text-xs font-mono font-bold text-slate-700 px-2">{page}</span>
                   <button
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={page >= totalPages}
-                    className="p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
+                    className="p-1 sm:p-1.5 rounded-xl border border-gray-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-40"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
@@ -496,34 +496,34 @@ export function AdminAnnouncementsPanel() {
 
       {/* Modal Form for Create / Edit */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white border border-gray-100 rounded-3xl shadow-2xl max-w-lg w-full p-6 space-y-4 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl shadow-2xl max-w-lg w-full p-4 sm:p-6 space-y-3.5 sm:space-y-4 max-h-[92vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-2.5 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center space-x-2">
-                <Megaphone className="w-5 h-5 text-brand-crimson" />
-                <h3 className="font-extrabold text-base text-brand-slate-dark">
+                <Megaphone className="w-4 h-4 sm:w-5 sm:h-5 text-brand-crimson" />
+                <h3 className="font-extrabold text-xs sm:text-base text-brand-slate-dark">
                   {editingItem ? 'Edit Announcement' : 'Create New Announcement'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-lg sm:rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
             {errorMessage && (
-              <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3 flex items-center space-x-2 text-rose-700 text-xs font-bold">
+              <div className="bg-rose-50 border border-rose-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 flex items-center space-x-2 text-rose-700 text-[11px] sm:text-xs font-bold flex-shrink-0">
                 <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-500" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs font-medium">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 text-[11px] sm:text-xs font-medium overflow-y-auto max-h-[72vh] pr-1 flex-1">
               {/* Message Text */}
               <div className="space-y-1">
-                <label className="block text-[11px] font-extrabold uppercase text-slate-500">
+                <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500">
                   Announcement Message Text <span className="text-rose-500">*</span>
                 </label>
                 <textarea
@@ -532,13 +532,13 @@ export function AdminAnnouncementsPanel() {
                   value={formData.text}
                   onChange={(e) => setFormData({ ...formData, text: e.target.value })}
                   placeholder="e.g. FLAT 50% OFF FESTIVE SALE | Use Code: FESTIVE50"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-2xl p-3 outline-none focus:border-brand-crimson focus:bg-white font-medium transition-all"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 text-[11px] sm:text-xs outline-none focus:border-brand-crimson focus:bg-white font-medium transition-all"
                 />
               </div>
 
               {/* Badge Text & Preset Chips */}
               <div className="space-y-1.5">
-                <label className="block text-[11px] font-extrabold uppercase text-slate-500">
+                <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500">
                   Offer Badge Text
                 </label>
                 <input
@@ -546,15 +546,15 @@ export function AdminAnnouncementsPanel() {
                   value={formData.badge}
                   onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
                   placeholder="e.g. Limited Time, Free Shipping"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-brand-crimson focus:bg-white"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson focus:bg-white"
                 />
-                <div className="flex flex-wrap gap-1.5 pt-1">
+                <div className="flex flex-wrap gap-1 pt-0.5">
                   {BADGE_PRESETS.map((preset) => (
                     <button
                       type="button"
                       key={preset}
                       onClick={() => setFormData({ ...formData, badge: preset })}
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full transition-colors ${
+                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full transition-colors ${
                         formData.badge === preset
                           ? 'bg-brand-crimson text-white'
                           : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -567,15 +567,15 @@ export function AdminAnnouncementsPanel() {
               </div>
 
               {/* Icon & Priority Row */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500">
                     Badge Icon
                   </label>
                   <select
                     value={formData.icon}
                     onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson appearance-none cursor-pointer"
                   >
                     {ICON_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -586,7 +586,7 @@ export function AdminAnnouncementsPanel() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-[11px] font-extrabold uppercase text-slate-500">
+                  <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500">
                     Priority (Order)
                   </label>
                   <input
@@ -597,14 +597,14 @@ export function AdminAnnouncementsPanel() {
                       setFormData({ ...formData, priority: parseInt(e.target.value) || 0 })
                     }
                     placeholder="0"
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson"
                   />
                 </div>
               </div>
 
               {/* Target Link URL */}
               <div className="space-y-1">
-                <label className="block text-[11px] font-extrabold uppercase text-slate-500">
+                <label className="block text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-500">
                   Shortcut Target Link (Optional)
                 </label>
                 <input
@@ -612,17 +612,17 @@ export function AdminAnnouncementsPanel() {
                   value={formData.link}
                   onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                   placeholder="e.g. /category/silk-sarees or #sale"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Active Toggle Switch */}
               <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                <span className="text-xs font-extrabold text-slate-700">Activate Ticker On Storefront</span>
+                <span className="text-[11px] sm:text-xs font-extrabold text-slate-700">Activate Ticker On Storefront</span>
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
-                  className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
+                  className={`w-10 h-5 sm:w-11 sm:h-6 flex items-center rounded-full p-0.5 sm:p-1 transition-colors flex-shrink-0 ${
                     formData.isActive ? 'bg-emerald-500' : 'bg-slate-300'
                   }`}
                 >
@@ -634,21 +634,21 @@ export function AdminAnnouncementsPanel() {
                 </button>
               </div>
 
-              <div className="flex items-center justify-end space-x-2 pt-3">
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-slate-500 font-bold hover:bg-slate-100 transition-colors"
+                  className="px-3.5 sm:px-4 py-2 rounded-xl text-slate-500 font-bold text-[11px] sm:text-xs hover:bg-slate-100 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold px-6 py-2 rounded-xl shadow-md transition-all flex items-center space-x-1.5 disabled:opacity-50"
+                  className="bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-6 py-2 rounded-xl shadow-md transition-all flex items-center space-x-1.5 disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                   ) : (
                     <span>{editingItem ? 'Save Changes' : 'Publish Announcement'}</span>
                   )}
