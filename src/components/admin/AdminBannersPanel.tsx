@@ -223,21 +223,21 @@ export function AdminBannersPanel() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       {/* Header Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm flex items-start sm:items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-brand-crimson/10 text-brand-crimson flex items-center justify-center flex-shrink-0 font-bold">
-            <ImageIcon className="w-5 h-5" />
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-brand-crimson/10 text-brand-crimson flex items-center justify-center flex-shrink-0 font-bold">
+            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-extrabold text-brand-slate-dark font-display">Banner & Hero Slider Management</h2>
-            <p className="text-xs text-slate-400">Manage homepage hero carousels, offer banners, festival popups, and CTA links</p>
+            <h2 className="text-xs sm:text-lg font-extrabold text-brand-slate-dark font-display">Banner & Hero Slider Management</h2>
+            <p className="text-[9px] sm:text-xs text-slate-400">Manage homepage hero carousels, offer banners, festival popups, and CTA links</p>
           </div>
         </div>
 
         {/* Header Actions */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-start">
           <button
             onClick={() => {
               queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
@@ -245,17 +245,17 @@ export function AdminBannersPanel() {
               refetch();
             }}
             disabled={isRefetching}
-            className="p-2.5 rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+            className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             title="Refresh Banners List"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRefetching ? 'animate-spin text-brand-crimson' : ''}`} />
           </button>
 
           <button
             onClick={handleOpenCreateModal}
-            className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-lg transition-all"
+            className="inline-flex items-center space-x-1.5 sm:space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[10px] sm:text-xs px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl shadow-lg transition-all"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             <span>ADD NEW BANNER</span>
           </button>
         </div>
@@ -263,32 +263,32 @@ export function AdminBannersPanel() {
 
       {/* Success Notification Banner */}
       {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-3 text-xs font-bold flex items-center space-x-2 animate-in fade-in duration-200">
-          <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 text-[11px] sm:text-xs font-bold flex items-center space-x-2 animate-in fade-in duration-200">
+          <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 flex-shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {/* Search & Filter Type Bar */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-4 shadow-sm flex items-center justify-between flex-wrap gap-3">
-        <div className="relative flex-1 max-w-md min-w-[240px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+        <div className="relative flex-1 min-w-full sm:min-w-[240px]">
+          <Search className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search banner headline or subtitle..."
-            className="w-full bg-slate-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs font-semibold text-slate-700 outline-none focus:border-brand-crimson"
+            className="w-full bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-3.5 sm:pr-4 py-2 sm:py-2.5 text-[11px] sm:text-xs font-semibold text-slate-700 outline-none focus:border-brand-crimson"
           />
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-2xl">
+        <div className="flex items-center overflow-x-auto scrollbar-none space-x-1 sm:space-x-1.5 bg-slate-100 p-1 rounded-xl sm:rounded-2xl w-full sm:w-auto">
           {['ALL', BannerType.HOMEPAGE, BannerType.OFFER, BannerType.FESTIVAL, BannerType.POPUP].map((type) => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all ${
+              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-extrabold transition-all whitespace-nowrap ${
                 filterType === type
                   ? 'bg-brand-crimson text-white shadow-sm'
                   : 'text-slate-500 hover:text-slate-900'
@@ -301,65 +301,65 @@ export function AdminBannersPanel() {
       </div>
 
       {/* Banners Grid / Table */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="py-16 flex items-center justify-center space-x-2">
-            <RefreshCw className="w-6 h-6 animate-spin text-slate-300" />
+          <div className="py-12 sm:py-16 flex items-center justify-center space-x-2">
+            <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-slate-300" />
             <span className="text-xs text-slate-400 font-semibold">Loading banners...</span>
           </div>
         ) : filteredBanners.length === 0 ? (
-          <div className="py-16 text-center space-y-3">
-            <ImageIcon className="w-12 h-12 text-slate-200 mx-auto" />
+          <div className="py-12 sm:py-16 text-center space-y-3">
+            <ImageIcon className="w-10 h-10 sm:w-12 sm:h-12 text-slate-200 mx-auto" />
             <div>
-              <p className="text-sm font-extrabold text-slate-600">No Banners Found</p>
-              <p className="text-xs text-slate-400">Click "ADD NEW BANNER" to create promotional hero sliders.</p>
+              <p className="text-xs sm:text-sm font-extrabold text-slate-600">No Banners Found</p>
+              <p className="text-[11px] sm:text-xs text-slate-400">Click "ADD NEW BANNER" to create promotional hero sliders.</p>
             </div>
             <button
               onClick={handleOpenCreateModal}
-              className="inline-flex items-center space-x-1.5 text-xs font-extrabold text-brand-crimson hover:underline"
+              className="inline-flex items-center space-x-1.5 text-[11px] sm:text-xs font-extrabold text-brand-crimson hover:underline"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create First Banner</span>
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5">
             {filteredBanners.map((banner) => (
               <div
                 key={banner._id}
-                className="bg-slate-50 border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
+                className="bg-slate-50 border border-gray-200/80 rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
               >
                 {/* Image Banner Preview */}
-                <div className="relative h-44 w-full bg-slate-900 overflow-hidden">
+                <div className="relative h-36 sm:h-44 w-full bg-slate-900 overflow-hidden">
                   <img
                     src={resolveImageUrl(banner.imageUrl)}
                     alt={banner.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent p-3 flex flex-col justify-between">
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent p-2.5 sm:p-3 flex flex-col justify-between">
                     <div className="flex items-center justify-between">
-                      <span className="bg-slate-950/70 text-amber-400 backdrop-blur-md text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full border border-amber-500/20">
+                      <span className="bg-slate-950/70 text-amber-400 backdrop-blur-md text-[8px] sm:text-[9px] font-extrabold uppercase px-1.5 sm:px-2 py-0.5 rounded-full border border-amber-500/20">
                         {banner.type} · ORDER #{banner.displayOrder || 0}
                       </span>
                       <button
                         onClick={() => handleToggleActive(banner._id)}
                         disabled={togglingId === banner._id}
-                        className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full flex items-center space-x-1 backdrop-blur-md shadow-sm transition-all ${
+                        className={`text-[8px] sm:text-[10px] font-extrabold px-2 sm:px-2.5 py-0.5 rounded-full flex items-center space-x-1 backdrop-blur-md shadow-sm transition-all ${
                           banner.isActive
                             ? 'bg-emerald-500/90 text-white'
                             : 'bg-slate-800/90 text-slate-400'
                         }`}
                       >
                         {togglingId === banner._id ? (
-                          <RefreshCw className="w-3 h-3 animate-spin" />
+                          <RefreshCw className="w-2.5 h-2.5 sm:w-3 sm:h-3 animate-spin" />
                         ) : banner.isActive ? (
                           <>
-                            <ToggleRight className="w-3.5 h-3.5" />
+                            <ToggleRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             <span>ACTIVE</span>
                           </>
                         ) : (
                           <>
-                            <ToggleLeft className="w-3.5 h-3.5" />
+                            <ToggleLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             <span>INACTIVE</span>
                           </>
                         )}
@@ -368,37 +368,37 @@ export function AdminBannersPanel() {
 
                     <div>
                       {banner.discountBadge && (
-                        <span className="bg-brand-crimson text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full inline-block uppercase tracking-wider mb-1 shadow-sm">
+                        <span className="bg-brand-crimson text-white text-[8px] sm:text-[9px] font-extrabold px-1.5 sm:px-2 py-0.5 rounded-full inline-block uppercase tracking-wider mb-1 shadow-sm">
                           {banner.discountBadge}
                         </span>
                       )}
-                      <h3 className="text-white font-extrabold text-sm line-clamp-1">{banner.title}</h3>
+                      <h3 className="text-white font-extrabold text-xs sm:text-sm line-clamp-1">{banner.title}</h3>
                       {banner.subtitle && (
-                        <p className="text-slate-300 text-[11px] line-clamp-1">{banner.subtitle}</p>
+                        <p className="text-slate-300 text-[10px] sm:text-[11px] line-clamp-1">{banner.subtitle}</p>
                       )}
                     </div>
                   </div>
                 </div>
 
                 {/* Banner Details Body */}
-                <div className="p-4 space-y-3 text-xs text-slate-600 flex-1 flex flex-col justify-between">
+                <div className="p-3 sm:p-4 space-y-2.5 sm:space-y-3 text-[11px] sm:text-xs text-slate-600 flex-1 flex flex-col justify-between">
                   <div className="space-y-1.5">
                     {banner.linkUrl && (
-                      <div className="flex items-center space-x-1.5 text-[11px] text-brand-crimson font-bold">
-                        <ExternalLink className="w-3 h-3" />
+                      <div className="flex items-center space-x-1.5 text-[10px] sm:text-[11px] text-brand-crimson font-bold">
+                        <ExternalLink className="w-3 h-3 flex-shrink-0" />
                         <a href={banner.linkUrl} target="_blank" rel="noreferrer" className="hover:underline line-clamp-1">
                           {banner.linkLabel || 'CTA Link'}: {banner.linkUrl}
                         </a>
                       </div>
                     )}
                     {banner.mobileImageUrl && (
-                      <div className="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
+                      <div className="text-[9px] sm:text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
                         <Check className="w-3 h-3" />
                         <span>Mobile Image Uploaded</span>
                       </div>
                     )}
                     {(banner.startDate || banner.endDate) && (
-                      <div className="text-[10px] text-slate-400 flex items-center space-x-1">
+                      <div className="text-[9px] sm:text-[10px] text-slate-400 flex items-center space-x-1">
                         <Calendar className="w-3 h-3 text-slate-400" />
                         <span>
                           {banner.startDate ? new Date(banner.startDate).toLocaleDateString() : 'Now'} —{' '}
@@ -409,12 +409,12 @@ export function AdminBannersPanel() {
                   </div>
 
                   {/* Actions Bar */}
-                  <div className="pt-3 border-t border-gray-200/60 flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase">POS: {banner.position || 'TOP'}</span>
-                    <div className="flex items-center space-x-2">
+                  <div className="pt-2.5 sm:pt-3 border-t border-gray-200/60 flex items-center justify-between">
+                    <span className="text-[9px] sm:text-[10px] font-mono text-slate-400 uppercase">POS: {banner.position || 'TOP'}</span>
+                    <div className="flex items-center space-x-1.5 sm:space-x-2">
                       <button
                         onClick={() => handleOpenEditModal(banner)}
-                        className="px-3 py-1.5 bg-white border border-gray-200 hover:border-brand-crimson hover:text-brand-crimson text-slate-700 font-extrabold rounded-xl transition-all flex items-center space-x-1 text-[11px]"
+                        className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-white border border-gray-200 hover:border-brand-crimson hover:text-brand-crimson text-slate-700 font-extrabold rounded-lg sm:rounded-xl transition-all flex items-center space-x-1 text-[10px] sm:text-[11px]"
                       >
                         <Edit2 className="w-3 h-3" />
                         <span>Edit</span>
@@ -422,13 +422,13 @@ export function AdminBannersPanel() {
                       <button
                         onClick={() => handleDelete(banner._id)}
                         disabled={deletingId === banner._id}
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors disabled:opacity-50"
+                        className="p-1 sm:p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg sm:rounded-xl transition-colors disabled:opacity-50"
                         title="Delete Banner"
                       >
                         {deletingId === banner._id ? (
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <RefreshCw className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-spin" />
                         ) : (
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         )}
                       </button>
                     </div>
@@ -442,15 +442,25 @@ export function AdminBannersPanel() {
 
       {/* Modal: Create / Edit Banner */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-5">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsModalOpen(false);
+              setErrorMessage('');
+              setFormData(DEFAULT_FORM);
+              setEditingBanner(null);
+            }
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-200"
+        >
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col shadow-2xl p-4 sm:p-8 space-y-4 sm:space-y-5 overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3 sm:pb-4 flex-shrink-0">
               <div>
-                <h3 className="text-lg font-extrabold text-brand-slate-dark">
+                <h3 className="text-base sm:text-lg font-extrabold text-brand-slate-dark">
                   {editingBanner ? 'Edit Promotional Banner' : 'Create New Banner'}
                 </h3>
-                <p className="text-[10px] text-slate-400 font-mono mt-1">
+                <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono mt-0.5">
                   {editingBanner ? 'PUT /api/v1/banners/admin/:id' : 'POST /api/v1/banners/admin'} · multipart/form-data
                 </p>
               </div>
@@ -461,13 +471,13 @@ export function AdminBannersPanel() {
                   setFormData(DEFAULT_FORM);
                   setEditingBanner(null);
                 }}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
+                className="p-1.5 sm:p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="overflow-y-auto max-h-[72vh] pr-1 space-y-3.5 sm:space-y-4">
               {errorMessage && (
                 <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-start space-x-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -477,7 +487,7 @@ export function AdminBannersPanel() {
 
               {/* Title */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">
+                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">
                   Banner Headline Title <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -486,46 +496,46 @@ export function AdminBannersPanel() {
                   required
                   value={formData.title}
                   onChange={handleInputChange}
-                  placeholder="e.g. Festive Royal Banarasi Edit, Grand Clearance Sale"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  placeholder="e.g. Festive Royal Banarasi Edit"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Subtitle */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">Subtitle Caption</label>
+                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">Subtitle Caption</label>
                 <input
                   type="text"
                   name="subtitle"
                   value={formData.subtitle}
                   onChange={handleInputChange}
                   placeholder="e.g. Flat 40% Off on Designer Wear"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Offer Badge / Tag */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">
-                  Offer Badge Tag (e.g. DEAL OF THE DAY, BUY 1 GET 1 FREE)
+                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">
+                  Offer Badge Tag
                 </label>
                 <input
                   type="text"
                   name="discountBadge"
                   value={formData.discountBadge}
                   onChange={handleInputChange}
-                  placeholder="e.g. DEAL OF THE DAY, BUY 1 GET 1 FREE, FESTIVE SALE"
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  placeholder="e.g. DEAL OF THE DAY, FESTIVE SALE"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
                 {/* Preset Chips */}
-                <div className="flex flex-wrap gap-1.5 mt-2">
-                  <span className="text-[10px] text-slate-400 font-bold self-center mr-1">Quick Presets:</span>
+                <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-2">
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold self-center mr-1">Presets:</span>
                   {BADGE_PRESET_OPTIONS.map((preset) => (
                     <button
                       key={preset}
                       type="button"
                       onClick={() => setFormData((prev) => ({ ...prev, discountBadge: preset }))}
-                      className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg border transition-all ${
+                      className={`text-[9px] sm:text-[10px] font-extrabold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg border transition-all ${
                         formData.discountBadge === preset
                           ? 'bg-brand-crimson text-white border-brand-crimson'
                           : 'bg-slate-100 text-slate-600 border-gray-200 hover:border-slate-300'
@@ -538,29 +548,29 @@ export function AdminBannersPanel() {
               </div>
 
               {/* Type & Position Grid */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Banner Type</label>
+                  <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">Banner Type</label>
                   <select
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-2.5 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                   >
-                    <option value={BannerType.HOMEPAGE}>HOMEPAGE (Hero Slider)</option>
-                    <option value={BannerType.OFFER}>OFFER (Promo Grid)</option>
-                    <option value={BannerType.FESTIVAL}>FESTIVAL (Seasonal)</option>
-                    <option value={BannerType.POPUP}>POPUP (Modal)</option>
+                    <option value={BannerType.HOMEPAGE}>HOMEPAGE</option>
+                    <option value={BannerType.OFFER}>OFFER</option>
+                    <option value={BannerType.FESTIVAL}>FESTIVAL</option>
+                    <option value={BannerType.POPUP}>POPUP</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Display Position</label>
+                  <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">Display Position</label>
                   <select
                     name="position"
                     value={formData.position}
                     onChange={handleInputChange}
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-2.5 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                   >
                     <option value={BannerPosition.TOP}>TOP</option>
                     <option value={BannerPosition.MIDDLE}>MIDDLE</option>
@@ -571,57 +581,56 @@ export function AdminBannersPanel() {
               </div>
 
               {/* Link URL & CTA Label Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1">Landing Target URL</label>
+                  <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">Target URL</label>
                   <input
                     type="text"
                     name="linkUrl"
                     value={formData.linkUrl}
                     onChange={handleInputChange}
-                    placeholder="/category/sarees or /sale"
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    placeholder="/category/sarees"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-extrabold text-slate-700 mb-1">CTA Button Text</label>
+                  <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">CTA Text</label>
                   <input
                     type="text"
                     name="linkLabel"
                     value={formData.linkLabel}
                     onChange={handleInputChange}
                     placeholder="Shop Collection"
-                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                    className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                   />
                 </div>
               </div>
 
               {/* Display Order */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1">Display Sort Order (Number)</label>
+                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1">Sort Order (#)</label>
                 <input
                   type="number"
                   name="displayOrder"
                   min={0}
                   value={formData.displayOrder}
                   onChange={handleInputChange}
-                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs font-semibold outline-none focus:border-brand-crimson"
                 />
               </div>
 
               {/* Desktop Image File */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
+                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
                   <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
                   <span>Desktop Banner Image {!editingBanner && <span className="text-rose-500">*</span>}</span>
-                  <span className="text-[10px] font-normal text-slate-400 ml-1">(JPG/PNG/WEBP, Max 5MB)</span>
                 </label>
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => handleFileChange(e, 'imageFile')}
-                  className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-crimson file:text-white hover:file:bg-brand-crimson-dark cursor-pointer"
+                  className="w-full text-xs text-slate-600 file:mr-2.5 sm:file:mr-3 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-xl file:border-0 file:text-[11px] sm:file:text-xs file:font-bold file:bg-brand-crimson file:text-white hover:file:bg-brand-crimson-dark cursor-pointer"
                 />
                 {formData.imageFile && (
                   <p className="text-[10px] text-emerald-600 font-semibold mt-1">✓ {formData.imageFile.name}</p>
@@ -630,15 +639,15 @@ export function AdminBannersPanel() {
 
               {/* Mobile Image File */}
               <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
+                <label className="block text-[11px] sm:text-xs font-extrabold text-slate-700 mb-1 flex items-center space-x-1">
                   <ImageIcon className="w-3.5 h-3.5 text-slate-500" />
-                  <span>Mobile Banner Image (Optional)</span>
+                  <span>Mobile Image (Optional)</span>
                 </label>
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => handleFileChange(e, 'mobileImageFile')}
-                  className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 cursor-pointer"
+                  className="w-full text-xs text-slate-600 file:mr-2.5 sm:file:mr-3 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4 file:rounded-xl file:border-0 file:text-[11px] sm:file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 cursor-pointer"
                 />
                 {formData.mobileImageFile && (
                   <p className="text-[10px] text-emerald-600 font-semibold mt-1">✓ {formData.mobileImageFile.name}</p>
@@ -655,12 +664,12 @@ export function AdminBannersPanel() {
                     onChange={handleInputChange}
                     className="rounded border-gray-300 text-brand-crimson focus:ring-brand-crimson"
                   />
-                  <span className="text-xs font-bold text-slate-700">Banner is Active & Visible</span>
+                  <span className="text-[11px] sm:text-xs font-bold text-slate-700">Banner is Active & Visible</span>
                 </label>
               </div>
 
               {/* Form Actions */}
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-end space-x-2.5 sm:space-x-3 pt-3 border-t border-gray-100 flex-shrink-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -669,18 +678,18 @@ export function AdminBannersPanel() {
                     setFormData(DEFAULT_FORM);
                     setEditingBanner(null);
                   }}
-                  className="px-5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                  className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl border border-gray-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-xs px-6 py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
+                  className="inline-flex items-center space-x-1.5 sm:space-x-2 bg-brand-crimson hover:bg-brand-crimson-dark text-white font-extrabold text-[11px] sm:text-xs px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl shadow-lg transition-all disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin" />
                       <span>{editingBanner ? 'SAVING...' : 'CREATING...'}</span>
                     </>
                   ) : (
