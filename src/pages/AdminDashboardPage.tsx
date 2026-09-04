@@ -368,7 +368,7 @@ export function AdminDashboardPage() {
           />
 
           {/* Slide-over Content */}
-          <div className="relative z-10 w-72 max-w-[85vw] h-full p-3 shadow-2xl animate-in slide-in-from-left duration-300">
+          <div className="relative z-10 w-72 max-w-[85vw] h-full max-h-[100dvh] p-2.5 sm:p-3 shadow-2xl animate-in slide-in-from-left duration-300">
             <AdminSidebar
               activeTab={activeTab}
               onSelectTab={setActiveTab}
