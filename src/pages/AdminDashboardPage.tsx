@@ -112,24 +112,24 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 animate-in fade-in duration-300 space-y-4 sm:space-y-6">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-3.5 sm:py-8 animate-in fade-in duration-300 space-y-3.5 sm:space-y-6">
       {/* Top Admin Header Bar */}
-      <div className="flex items-center justify-between flex-wrap gap-3 bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-sm">
-        <div className="flex items-center space-x-3">
+      <div className="flex items-center justify-between flex-wrap gap-2.5 sm:gap-3 bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-5 shadow-sm">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
           {/* Mobile Menu Toggle Button */}
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden p-2 rounded-xl border border-gray-200 text-slate-700 hover:bg-slate-50 transition-colors"
+            className="lg:hidden p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-gray-200 text-slate-700 hover:bg-slate-50 transition-colors"
             aria-label="Open Admin Menu"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <div>
-            <h1 className="text-lg sm:text-2xl font-extrabold text-brand-slate-dark font-display">
+            <h1 className="text-base sm:text-2xl font-extrabold text-brand-slate-dark font-display">
               Executive Control Center
             </h1>
-            <p className="text-[11px] sm:text-xs text-slate-400">Overview of sales performance, store activity, and inventory health</p>
+            <p className="text-[10px] sm:text-xs text-slate-400">Overview of sales performance, store activity, and inventory health</p>
           </div>
         </div>
 
@@ -139,7 +139,7 @@ export function AdminDashboardPage() {
             onClick={handleClearCache}
             disabled={isClearingCache}
             title="Clear Redis Metrics Cache"
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-xl sm:rounded-2xl border border-gray-200 text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+            className="flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-2xl border border-gray-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isClearingCache ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">Clear Cache</span>
@@ -165,7 +165,7 @@ export function AdminDashboardPage() {
                 setUnreadReadStatus(false);
               }}
               aria-label="View Admin Notifications"
-              className={`relative p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border transition-colors cursor-pointer ${
+              className={`relative p-1.5 sm:p-2.5 rounded-lg sm:rounded-2xl border transition-colors cursor-pointer ${
                 isNotificationsOpen
                   ? 'bg-rose-50 border-brand-crimson text-brand-crimson'
                   : 'border-gray-200 text-slate-600 hover:text-brand-crimson hover:border-brand-crimson bg-white'
@@ -173,26 +173,26 @@ export function AdminDashboardPage() {
             >
               <Bell className="w-4 h-4" />
               {unreadReadStatus && totalAlerts > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center border-2 border-white animate-pulse">
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] sm:min-w-[18px] sm:h-[18px] px-1 rounded-full bg-rose-500 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center border-2 border-white animate-pulse">
                   {totalAlerts}
                 </span>
               )}
             </button>
 
-            {/* Notifications Popover Menu */}
+            {/* Notifications Popover Menu (Fits 320px screens perfectly) */}
             {isNotificationsOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-gray-100 rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
-                  <div className="flex items-center space-x-2">
-                    <Bell className="w-4 h-4 text-brand-crimson" />
-                    <h3 className="font-extrabold text-xs text-brand-slate-dark uppercase tracking-wider">
+              <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-sm sm:w-96 bg-white border border-gray-100 rounded-2xl sm:rounded-3xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                <div className="p-3 sm:p-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/50">
+                  <div className="flex items-center space-x-1.5 sm:space-x-2">
+                    <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-crimson" />
+                    <h3 className="font-extrabold text-[11px] sm:text-xs text-brand-slate-dark uppercase tracking-wider">
                       Admin Notifications
                     </h3>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1.5 sm:space-x-2">
                     <button
                       onClick={() => setUnreadReadStatus(false)}
-                      className="text-[10px] font-bold text-slate-400 hover:text-brand-crimson flex items-center space-x-1"
+                      className="text-[9px] sm:text-[10px] font-bold text-slate-400 hover:text-brand-crimson flex items-center space-x-1"
                     >
                       <CheckCheck className="w-3 h-3" />
                       <span>Mark Read</span>

@@ -216,19 +216,19 @@ export function AdminOrdersPanel() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
       {/* Top Header Card */}
-      <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-brand-crimson/10 rounded-2xl text-brand-crimson">
-              <ShoppingCart className="w-6 h-6" />
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm space-y-3 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center space-x-2.5 sm:space-x-3">
+            <div className="p-2.5 sm:p-3 bg-brand-crimson/10 rounded-xl sm:rounded-2xl text-brand-crimson flex-shrink-0">
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-brand-slate-dark font-display">
+              <h2 className="text-base sm:text-xl font-extrabold text-brand-slate-dark font-display">
                 Order Control Center
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-[10px] sm:text-xs text-slate-400">
                 Manage live store orders, status transitions, courier dispatching, and cancellations
               </p>
             </div>
@@ -241,7 +241,7 @@ export function AdminOrdersPanel() {
                 refetch();
               }}
               disabled={isRefetching}
-              className="flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl border border-gray-200 text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
+              className="flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl sm:rounded-2xl border border-gray-200 text-[11px] sm:text-xs font-bold text-slate-600 hover:text-brand-crimson hover:border-brand-crimson transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefetching ? 'animate-spin' : ''}`} />
               <span>Refresh</span>
@@ -250,18 +250,18 @@ export function AdminOrdersPanel() {
         </div>
 
         {/* Quick Metric Badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 pt-1">
           <div
             onClick={() => {
               setStatusFilter('');
               setPage(1);
             }}
-            className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
+            className={`cursor-pointer bg-slate-50 border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all ${
               statusFilter === '' ? 'border-brand-crimson shadow-sm bg-rose-50/20' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
           >
-            <p className="text-[10px] font-extrabold uppercase text-slate-400">All Orders</p>
-            <p className="text-lg font-black text-brand-slate-dark">{totalCount}</p>
+            <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-slate-400">All Orders</p>
+            <p className="text-base sm:text-lg font-black text-brand-slate-dark">{totalCount}</p>
           </div>
 
           <div
@@ -269,15 +269,15 @@ export function AdminOrdersPanel() {
               setStatusFilter('CONFIRMED');
               setPage(1);
             }}
-            className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
+            className={`cursor-pointer bg-slate-50 border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all ${
               statusFilter === 'CONFIRMED' || statusFilter === 'PENDING' ? 'border-blue-500 shadow-sm bg-blue-50/30' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-blue-600">Pending / Confirmed</p>
-              <Clock className="w-3.5 h-3.5 text-blue-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-blue-600 truncate">Pending / Confirmed</p>
+              <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-500 flex-shrink-0" />
             </div>
-            <p className="text-lg font-black text-blue-900">{pendingCount}</p>
+            <p className="text-base sm:text-lg font-black text-blue-900">{pendingCount}</p>
           </div>
 
           <div
@@ -285,15 +285,15 @@ export function AdminOrdersPanel() {
               setStatusFilter('SHIPPED');
               setPage(1);
             }}
-            className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
+            className={`cursor-pointer bg-slate-50 border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all ${
               statusFilter === 'SHIPPED' ? 'border-purple-500 shadow-sm bg-purple-50/30' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-purple-600">In-Transit / Shipped</p>
-              <Truck className="w-3.5 h-3.5 text-purple-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-purple-600 truncate">Shipped</p>
+              <Truck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-500 flex-shrink-0" />
             </div>
-            <p className="text-lg font-black text-purple-900">{shippedCount}</p>
+            <p className="text-base sm:text-lg font-black text-purple-900">{shippedCount}</p>
           </div>
 
           <div
@@ -301,15 +301,15 @@ export function AdminOrdersPanel() {
               setStatusFilter('DELIVERED');
               setPage(1);
             }}
-            className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
+            className={`cursor-pointer bg-slate-50 border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all ${
               statusFilter === 'DELIVERED' ? 'border-emerald-500 shadow-sm bg-emerald-50/30' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-emerald-600">Delivered</p>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-emerald-600 truncate">Delivered</p>
+              <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 flex-shrink-0" />
             </div>
-            <p className="text-lg font-black text-emerald-900">{deliveredCount}</p>
+            <p className="text-base sm:text-lg font-black text-emerald-900">{deliveredCount}</p>
           </div>
 
           <div
@@ -317,23 +317,23 @@ export function AdminOrdersPanel() {
               setStatusFilter('CANCELLED');
               setPage(1);
             }}
-            className={`cursor-pointer bg-slate-50 border p-3 rounded-2xl transition-all ${
+            className={`cursor-pointer bg-slate-50 border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all ${
               statusFilter === 'CANCELLED' ? 'border-rose-500 shadow-sm bg-rose-50/20' : 'border-gray-100 hover:bg-slate-100/60'
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[10px] font-extrabold uppercase text-rose-600">Cancelled</p>
-              <Ban className="w-3.5 h-3.5 text-rose-500" />
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-rose-600 truncate">Cancelled</p>
+              <Ban className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-rose-500 flex-shrink-0" />
             </div>
-            <p className="text-lg font-black text-rose-900">{cancelledCount}</p>
+            <p className="text-base sm:text-lg font-black text-rose-900">{cancelledCount}</p>
           </div>
         </div>
 
         {/* Search & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 pt-1">
           {/* Live Search Input */}
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
             <input
               type="text"
               value={search}
@@ -342,7 +342,7 @@ export function AdminOrdersPanel() {
                 setPage(1);
               }}
               placeholder="Search by order #, customer name, email..."
-              className="w-full bg-slate-50 border border-gray-200 rounded-2xl pl-10 pr-4 py-2 text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
+              className="w-full bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-9 pr-8 py-2 text-[11px] sm:text-xs font-medium outline-none focus:border-brand-crimson focus:bg-white transition-all"
             />
             {search && (
               <button
@@ -358,16 +358,16 @@ export function AdminOrdersPanel() {
           </div>
 
           {/* Status Filter Dropdown */}
-          <div className="flex items-center space-x-3 w-full sm:w-auto">
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
             <div className="relative w-full sm:w-auto">
-              <Filter className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
               <select
                 value={statusFilter}
                 onChange={(e) => {
                   setStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-2xl pl-9 pr-9 py-2 text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
+                className="w-full sm:w-auto bg-slate-50 border border-gray-200 rounded-xl sm:rounded-2xl pl-8 pr-8 py-2 text-[11px] sm:text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson appearance-none cursor-pointer"
               >
                 <option value="">All Statuses</option>
                 {ORDER_STATUSES.map((s) => (
@@ -382,7 +382,7 @@ export function AdminOrdersPanel() {
             {statusFilter && (
               <button
                 onClick={() => setStatusFilter('')}
-                className="text-xs font-bold text-rose-600 hover:underline whitespace-nowrap"
+                className="text-[11px] sm:text-xs font-bold text-rose-600 hover:underline whitespace-nowrap"
               >
                 Clear Filter
               </button>
@@ -392,7 +392,7 @@ export function AdminOrdersPanel() {
       </div>
 
       {/* Main Orders Table */}
-      <div className="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center space-y-3">
             <RefreshCw className="w-8 h-8 animate-spin text-brand-crimson" />
@@ -405,18 +405,18 @@ export function AdminOrdersPanel() {
             <p className="text-xs text-slate-400">Try clearing search filters or checking again later.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto scrollbar-none">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="border-b border-gray-100 text-[10px] uppercase font-extrabold text-slate-400 tracking-wider bg-slate-50/70">
-                  <th className="py-3.5 px-5">Order # / Invoice</th>
-                  <th className="py-3.5 px-4">Customer Info</th>
-                  <th className="py-3.5 px-4">Items</th>
-                  <th className="py-3.5 px-4">Grand Total</th>
-                  <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4">Courier & Tracking</th>
-                  <th className="py-3.5 px-4">Date</th>
-                  <th className="py-3.5 px-5 text-right">Admin Controls</th>
+                <tr className="border-b border-gray-100 text-[9px] sm:text-[10px] uppercase font-extrabold text-slate-400 tracking-wider bg-slate-50/70">
+                  <th className="py-3 px-4">Order # / Invoice</th>
+                  <th className="py-3 px-3">Customer Info</th>
+                  <th className="py-3 px-3">Items</th>
+                  <th className="py-3 px-3">Grand Total</th>
+                  <th className="py-3 px-3">Status</th>
+                  <th className="py-3 px-3">Courier & Tracking</th>
+                  <th className="py-3 px-3">Date</th>
+                  <th className="py-3 px-4 text-right">Admin Controls</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">

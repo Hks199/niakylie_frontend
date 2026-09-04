@@ -246,21 +246,21 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-4 sm:p-6 animate-in fade-in duration-300">
+    <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center p-3 sm:p-6 animate-in fade-in duration-300">
       {/* Decorative Glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-crimson/20 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl space-y-4 sm:space-y-6">
         {/* Brand Header */}
-        <div className="text-center space-y-2">
-          <div className="w-14 h-14 bg-brand-crimson text-white rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-brand-crimson/30">
-            <Shield className="w-7 h-7" />
+        <div className="text-center space-y-1.5 sm:space-y-2">
+          <div className="w-11 h-11 sm:w-14 sm:h-14 bg-brand-crimson text-white rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-brand-crimson/30">
+            <Shield className="w-5 h-5 sm:w-7 sm:h-7" />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white font-display tracking-tight">
+            <h1 className="text-lg sm:text-2xl font-extrabold text-white font-display tracking-tight">
               NiaKylie Admin Portal
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">Management & Executive Control Center</p>
+            <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5">Management & Executive Control Center</p>
           </div>
         </div>
 

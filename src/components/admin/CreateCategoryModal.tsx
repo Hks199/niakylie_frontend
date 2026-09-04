@@ -229,36 +229,34 @@ export const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-slate-100">
         {/* Modal Header */}
-        <div className="px-6 py-4 bg-slate-900 text-white flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-2xl bg-brand-crimson/20 text-brand-crimson flex items-center justify-center font-bold">
-              {categoryType === 'main' ? <FolderPlus className="w-5 h-5 text-amber-400" /> : <Layers className="w-5 h-5 text-brand-crimson" />}
+        <div className="px-4 sm:px-6 py-3 sm:py-4 bg-slate-900 text-white flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl bg-brand-crimson/20 text-brand-crimson flex items-center justify-center font-bold flex-shrink-0">
+              {categoryType === 'main' ? <FolderPlus className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" /> : <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-brand-crimson" />}
             </div>
             <div>
-              <h2 className="text-base font-extrabold text-white tracking-wide font-display">
+              <h2 className="text-xs sm:text-base font-extrabold text-white tracking-wide font-display">
                 Create {categoryType === 'main' ? 'Main Category (Level 1)' : 'Sub-Category (Level 2)'}
               </h2>
-              <p className="text-[11px] text-slate-400 font-mono">POST /api/v1/categories · multipart/form-data</p>
+              <p className="text-[9px] sm:text-[11px] text-slate-400 font-mono">POST /api/v1/categories · multipart/form-data</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handleClose}
-            className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 sm:p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
             title="Close Modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 sm:p-7 overflow-y-auto space-y-5 flex-1">
+        <div className="p-3.5 sm:p-7 overflow-y-auto space-y-4 sm:space-y-5 flex-1">
           {/* Notification Feedback Banners */}
           {errorMessage && (
             <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-semibold flex items-start space-x-2.5 animate-in fade-in duration-200">

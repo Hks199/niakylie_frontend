@@ -42,25 +42,25 @@ export function KpiSummaryGrid({ kpis }: KpiSummaryGridProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
       {cards.map((card, idx) => {
         const Icon = card.icon;
         return (
           <div
             key={idx}
-            className="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm space-y-3 hover:shadow-md transition-shadow"
+            className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3 sm:p-5 shadow-sm space-y-2 sm:space-y-3 hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">
+              <span className="text-[9px] sm:text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">
                 {card.title}
               </span>
-              <div className={`p-2 rounded-2xl ${card.iconBg}`}>
-                <Icon className="w-4 h-4" />
+              <div className={`p-1.5 sm:p-2 rounded-lg sm:rounded-2xl ${card.iconBg}`}>
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </div>
 
             <div className="flex items-baseline justify-between">
-              <span className="text-xl font-extrabold text-brand-slate-dark tracking-tight">
+              <span className="text-base sm:text-xl font-extrabold text-brand-slate-dark tracking-tight truncate">
                 {card.value}
               </span>
             </div>
