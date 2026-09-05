@@ -329,9 +329,26 @@ export const adminApi = {
     return await apiClient.patch(`/orders/admin/${orderId}/approve-return`);
   },
 
+  // PATCH /orders/admin/:orderId/reject-return
+  rejectReturn: async (orderId: string, reason: string) => {
+    return await apiClient.patch(`/orders/admin/${orderId}/reject-return`, { reason });
+  },
+
   // PATCH /orders/admin/:orderId/refund
-  markRefunded: async (orderId: string, notes?: string) => {
-    return await apiClient.patch(`/orders/admin/${orderId}/refund`, { notes });
+  markRefunded: async (
+    orderId: string,
+    payload?: {
+      notes?: string;
+      refundMethod?: 'UPI' | 'BANK' | 'RAZORPAY';
+      refundDetails?: {
+        upiId?: string;
+        bankAccountNumber?: string;
+        bankIfsc?: string;
+        bankAccountName?: string;
+      };
+    },
+  ) => {
+    return await apiClient.patch(`/orders/admin/${orderId}/refund`, payload || {});
   },
 
   // ─── 6. REVIEW MODERATION ────────────────────────────────

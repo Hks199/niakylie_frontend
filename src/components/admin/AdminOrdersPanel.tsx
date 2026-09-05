@@ -19,7 +19,8 @@ import {
   X,
   Send,
   Printer,
-  ShieldCheck,
+  RotateCcw,
+  Banknote,
 } from 'lucide-react';
 import { adminApi } from '../../api/admin';
 import { formatImageUrl } from '../../utils/imageUtils';
@@ -45,6 +46,9 @@ const ORDER_STATUSES = [
   'OUT_FOR_DELIVERY',
   'DELIVERED',
   'CANCELLED',
+  'RETURN_REQUESTED',
+  'RETURNED',
+  'REFUNDED',
 ];
 
 const COURIER_OPTIONS = [
@@ -68,6 +72,10 @@ export function AdminOrdersPanel() {
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [trackingModalOrder, setTrackingModalOrder] = useState<any | null>(null);
   const [cancelModalOrder, setCancelModalOrder] = useState<any | null>(null);
+  const [refundModalOrder, setRefundModalOrder] = useState<any | null>(null);
+  const [rejectReason, setRejectReason] = useState('');
+  const [refundNotes, setRefundNotes] = useState('');
+  const [isProcessingReturn, setIsProcessingReturn] = useState(false);
 
   // Tracking Form State
   const [courierPartner, setCourierPartner] = useState('NiaKylie Express Logistics');
@@ -127,6 +135,70 @@ export function AdminOrdersPanel() {
   const cancelledCount = orders.filter(
     (o: any) => o.orderStatus === 'CANCELLED' || o.status === 'CANCELLED'
   ).length;
+  const returnRequestedCount = orders.filter(
+    (o: any) => o.orderStatus === 'RETURN_REQUESTED' || o.status === 'RETURN_REQUESTED'
+  ).length;
+
+  const refreshOrders = async () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-summary'] });
+    await refetch();
+  };
+
+  const handleApproveReturn = async (order: any) => {
+    const orderId = order._id || order.id || order.orderNumber;
+    setIsProcessingReturn(true);
+    try {
+      await adminApi.approveReturn(orderId);
+      await refreshOrders();
+      if (selectedOrder) setSelectedOrder(null);
+    } catch (err) {
+      console.error('Failed to approve return', err);
+      alert((err as any)?.message || 'Failed to approve return');
+    } finally {
+      setIsProcessingReturn(false);
+    }
+  };
+
+  const handleRejectReturn = async (order: any) => {
+    const reason = rejectReason.trim() || window.prompt('Rejection reason') || '';
+    if (!reason.trim()) return;
+    const orderId = order._id || order.id || order.orderNumber;
+    setIsProcessingReturn(true);
+    try {
+      await adminApi.rejectReturn(orderId, reason.trim());
+      setRejectReason('');
+      await refreshOrders();
+      if (selectedOrder) setSelectedOrder(null);
+    } catch (err) {
+      console.error('Failed to reject return', err);
+      alert((err as any)?.message || 'Failed to reject return');
+    } finally {
+      setIsProcessingReturn(false);
+    }
+  };
+
+  const handleProcessRefund = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!refundModalOrder) return;
+    const orderId =
+      refundModalOrder._id || refundModalOrder.id || refundModalOrder.orderNumber;
+    setIsProcessingReturn(true);
+    try {
+      await adminApi.markRefunded(orderId, {
+        notes: refundNotes || 'Return refund processed by admin',
+      });
+      setRefundModalOrder(null);
+      setRefundNotes('');
+      await refreshOrders();
+      if (selectedOrder) setSelectedOrder(null);
+    } catch (err) {
+      console.error('Failed to process refund', err);
+      alert((err as any)?.message || 'Failed to process refund');
+    } finally {
+      setIsProcessingReturn(false);
+    }
+  };
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
     setUpdatingId(orderId);
@@ -251,7 +323,7 @@ export function AdminOrdersPanel() {
         </div>
 
         {/* Quick Metric Badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 pt-1">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 pt-1">
           <div
             onClick={() => {
               setStatusFilter('');
@@ -311,6 +383,22 @@ export function AdminOrdersPanel() {
               <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-500 flex-shrink-0" />
             </div>
             <p className="text-base sm:text-lg font-black text-emerald-900">{deliveredCount}</p>
+          </div>
+
+          <div
+            onClick={() => {
+              setStatusFilter('RETURN_REQUESTED');
+              setPage(1);
+            }}
+            className={`cursor-pointer bg-slate-50 border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl transition-all ${
+              statusFilter === 'RETURN_REQUESTED' ? 'border-orange-500 shadow-sm bg-orange-50/30' : 'border-gray-100 hover:bg-slate-100/60'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[9px] sm:text-[10px] font-extrabold uppercase text-orange-600 truncate">Returns</p>
+              <RotateCcw className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-500 flex-shrink-0" />
+            </div>
+            <p className="text-base sm:text-lg font-black text-orange-900">{returnRequestedCount}</p>
           </div>
 
           <div
@@ -612,13 +700,48 @@ export function AdminOrdersPanel() {
                           </button>
 
                           {/* Quick Cancel Order Button */}
-                          {!isCancelled && currentStatus !== 'DELIVERED' && (
+                          {!isCancelled && currentStatus !== 'DELIVERED' && currentStatus !== 'RETURN_REQUESTED' && currentStatus !== 'RETURNED' && currentStatus !== 'REFUNDED' && (
                             <button
                               onClick={() => setCancelModalOrder(order)}
                               title="Cancel Order"
                               className="p-2 rounded-xl border border-gray-200 text-rose-600 hover:bg-rose-100 hover:border-rose-300 transition-colors"
                             >
                               <Ban className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+
+                          {currentStatus === 'RETURN_REQUESTED' && (
+                            <>
+                              <button
+                                onClick={() => handleApproveReturn(order)}
+                                disabled={isProcessingReturn}
+                                title="Approve Return (restock)"
+                                className="p-2 rounded-xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors disabled:opacity-50"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleRejectReturn(order)}
+                                disabled={isProcessingReturn}
+                                title="Reject Return"
+                                className="p-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50"
+                              >
+                                <XCircle className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
+
+                          {currentStatus === 'RETURNED' && (
+                            <button
+                              onClick={() => {
+                                setRefundModalOrder(order);
+                                setRefundNotes('');
+                              }}
+                              disabled={isProcessingReturn}
+                              title="Process Refund"
+                              className="p-2 rounded-xl border border-teal-200 text-teal-700 hover:bg-teal-50 transition-colors disabled:opacity-50"
+                            >
+                              <Banknote className="w-3.5 h-3.5" />
                             </button>
                           )}
 
@@ -935,6 +1058,86 @@ export function AdminOrdersPanel() {
               </div>
             </div>
 
+            {/* Return / Refund Panel */}
+            {selectedOrder.returnInfo && (
+              <div className="border border-orange-200 bg-orange-50/60 rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center space-x-2">
+                    <RotateCcw className="w-4 h-4 text-orange-600" />
+                    <p className="text-xs font-extrabold text-orange-800 uppercase tracking-wider">
+                      Return Request · {selectedOrder.returnInfo.status || 'REQUESTED'}
+                    </p>
+                  </div>
+                  {selectedOrder.returnInfo.refundAmount != null && (
+                    <p className="text-sm font-black text-brand-slate-dark">
+                      ₹{Number(selectedOrder.returnInfo.refundAmount).toLocaleString('en-IN')}
+                    </p>
+                  )}
+                </div>
+                <p className="text-xs text-slate-700">
+                  Reason: <span className="font-semibold">{selectedOrder.returnInfo.reason || '—'}</span>
+                </p>
+                {selectedOrder.returnInfo.refundMethod && (
+                  <p className="text-[11px] text-slate-600">
+                    Refund via: <span className="font-bold">{selectedOrder.returnInfo.refundMethod}</span>
+                    {selectedOrder.returnInfo.refundDetails?.upiId && (
+                      <> · UPI {selectedOrder.returnInfo.refundDetails.upiId}</>
+                    )}
+                    {selectedOrder.returnInfo.refundDetails?.bankAccountNumber && (
+                      <>
+                        {' '}
+                        · A/C {selectedOrder.returnInfo.refundDetails.bankAccountNumber} (
+                        {selectedOrder.returnInfo.refundDetails.bankIfsc})
+                      </>
+                    )}
+                  </p>
+                )}
+                {Array.isArray(selectedOrder.returnInfo.items) && (
+                  <ul className="text-[11px] text-slate-600 list-disc pl-4">
+                    {selectedOrder.returnInfo.items.map((ri: any, i: number) => (
+                      <li key={i}>
+                        {ri.name || ri.sku} × {ri.quantity} — ₹
+                        {Number(ri.refundAmount || 0).toLocaleString('en-IN')}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {(selectedOrder.orderStatus === 'RETURN_REQUESTED' ||
+                    selectedOrder.status === 'RETURN_REQUESTED') && (
+                    <>
+                      <button
+                        onClick={() => handleApproveReturn(selectedOrder)}
+                        disabled={isProcessingReturn}
+                        className="text-[11px] font-extrabold bg-emerald-600 text-white px-3.5 py-2 rounded-xl disabled:opacity-50"
+                      >
+                        Approve & Restock
+                      </button>
+                      <button
+                        onClick={() => handleRejectReturn(selectedOrder)}
+                        disabled={isProcessingReturn}
+                        className="text-[11px] font-extrabold bg-rose-600 text-white px-3.5 py-2 rounded-xl disabled:opacity-50"
+                      >
+                        Reject Return
+                      </button>
+                    </>
+                  )}
+                  {(selectedOrder.orderStatus === 'RETURNED' || selectedOrder.status === 'RETURNED') && (
+                    <button
+                      onClick={() => {
+                        setRefundModalOrder(selectedOrder);
+                        setRefundNotes('');
+                      }}
+                      disabled={isProcessingReturn}
+                      className="text-[11px] font-extrabold bg-teal-600 text-white px-3.5 py-2 rounded-xl disabled:opacity-50"
+                    >
+                      Process Refund
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Address & Customer Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Shipping Address */}
@@ -1049,6 +1252,88 @@ export function AdminOrdersPanel() {
                 Close Details
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── MODAL 4: PROCESS RETURN REFUND ─────────────────────────────── */}
+      {refundModalOrder && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+          <div className="bg-white border border-gray-100 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center space-x-2">
+                <Banknote className="w-5 h-5 text-teal-600" />
+                <h3 className="text-base font-extrabold text-brand-slate-dark font-display">
+                  Process Return Refund
+                </h3>
+              </div>
+              <button
+                onClick={() => setRefundModalOrder(null)}
+                className="p-2 rounded-xl border border-gray-200 text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600">
+              Order{' '}
+              <span className="font-bold">
+                {refundModalOrder.orderNumber || refundModalOrder.orderId}
+              </span>
+              {' · '}
+              Amount ₹
+              {Number(
+                refundModalOrder.returnInfo?.refundAmount ||
+                  refundModalOrder.pricing?.grandTotal ||
+                  0,
+              ).toLocaleString('en-IN')}
+            </p>
+
+            {(refundModalOrder.paymentInfo?.method || '').toUpperCase() === 'COD' && (
+              <div className="text-[11px] bg-slate-50 border border-gray-100 rounded-xl p-3 space-y-1">
+                <p className="font-extrabold text-slate-700">COD refund destination</p>
+                <p>
+                  Method: {refundModalOrder.returnInfo?.refundMethod || 'UPI/BANK'}
+                </p>
+                {refundModalOrder.returnInfo?.refundDetails?.upiId && (
+                  <p>UPI: {refundModalOrder.returnInfo.refundDetails.upiId}</p>
+                )}
+                {refundModalOrder.returnInfo?.refundDetails?.bankAccountNumber && (
+                  <p>
+                    Bank: {refundModalOrder.returnInfo.refundDetails.bankAccountName} ·{' '}
+                    {refundModalOrder.returnInfo.refundDetails.bankAccountNumber} ·{' '}
+                    {refundModalOrder.returnInfo.refundDetails.bankIfsc}
+                  </p>
+                )}
+              </div>
+            )}
+
+            <form onSubmit={handleProcessRefund} className="space-y-3">
+              <textarea
+                value={refundNotes}
+                onChange={(e) => setRefundNotes(e.target.value)}
+                rows={2}
+                placeholder="Refund notes (optional)"
+                className="w-full text-xs border border-gray-200 rounded-xl px-3 py-2.5 outline-none focus:border-brand-crimson resize-none"
+              />
+              <div className="flex justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setRefundModalOrder(null)}
+                  className="px-4 py-2 rounded-xl border border-gray-200 text-xs font-bold text-slate-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isProcessingReturn}
+                  className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-teal-600 text-white text-xs font-extrabold disabled:opacity-50"
+                >
+                  {isProcessingReturn && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                  <span>Confirm Refund</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

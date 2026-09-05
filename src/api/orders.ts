@@ -22,7 +22,41 @@ export interface CreateOrderPayload {
   razorpaySignature?: string;
 }
 
-export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'PACKED' | 'SHIPPED' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'CANCELLED';
+export type OrderStatus =
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'PACKED'
+  | 'SHIPPED'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED'
+  | 'CANCELLED'
+  | 'RETURN_REQUESTED'
+  | 'RETURNED'
+  | 'REFUNDED';
+
+export interface ReturnItemSelection {
+  productId: string;
+  variantId?: string;
+  sku?: string;
+  quantity: number;
+}
+
+export interface CodRefundDetails {
+  upiId?: string;
+  bankAccountNumber?: string;
+  bankIfsc?: string;
+  bankAccountName?: string;
+}
+
+export interface RequestReturnPayload {
+  orderId: string;
+  reason: string;
+  notes?: string;
+  items: ReturnItemSelection[];
+  refundMethod?: 'UPI' | 'BANK';
+  refundDetails?: CodRefundDetails;
+  images?: string[];
+}
 
 export interface Order {
   id: string;
@@ -38,6 +72,8 @@ export interface Order {
   courierName?: string;
   trackingNumber?: string;
   trackingUrl?: string;
+  shippingInfo?: any;
+  returnInfo?: any;
   pricing?: {
     subtotal: number;
     totalMrp: number;
@@ -214,9 +250,13 @@ export const ordersApi = {
           paymentMethod: item.paymentInfo?.method || item.paymentMethod || 'COD',
           deliveryAddress: item.shippingAddress || item.deliveryAddress || {},
           estimatedDelivery: item.estimatedDelivery || estDate,
+          shippingInfo: item.shippingInfo,
+          returnInfo: item.returnInfo,
           items: (item.items || []).map((it: any) => ({
             id: it.productId || it._id || it.sku,
             productId: it.productId,
+            variantId: it.variantId,
+            sku: it.sku,
             name: it.name || it.title || 'NiaKylie Fashion Item',
             price: it.unitPrice || it.price || 0,
             quantity: it.quantity || 1,
@@ -266,9 +306,13 @@ export const ordersApi = {
         paymentMethod: res.paymentInfo?.method || res.paymentMethod || 'COD',
         deliveryAddress: res.shippingAddress || res.deliveryAddress || {},
         estimatedDelivery: res.estimatedDelivery || estDate,
+        shippingInfo: res.shippingInfo,
+        returnInfo: res.returnInfo,
         items: (res.items || []).map((it: any) => ({
           id: it.productId || it._id || it.sku,
           productId: it.productId,
+          variantId: it.variantId,
+          sku: it.sku,
           name: it.name || it.title || 'NiaKylie Fashion Item',
           price: it.unitPrice || it.price || 0,
           quantity: it.quantity || 1,
@@ -303,6 +347,17 @@ export const ordersApi = {
       console.error('Failed to cancel order:', error);
       return { success: false };
     }
+  },
+
+  requestReturn: async (payload: RequestReturnPayload): Promise<Order> => {
+    const res: any = await apiClient.post('/orders/my/return', payload);
+    return {
+      ...res,
+      id: res.orderNumber || res.orderId || res._id || res.id,
+      orderId: res.orderNumber || res.orderId || res._id || res.id,
+      status: res.orderStatus || res.status,
+      returnInfo: res.returnInfo,
+    };
   },
 
   downloadInvoice: async (id: string): Promise<void> => {

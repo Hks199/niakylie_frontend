@@ -6,14 +6,21 @@ interface OrderTrackingTimelineProps {
   courierName?: string;
   trackingNumber?: string;
   trackingUrl?: string;
+  returnInfo?: any;
 }
 
 const STAGES: { id: OrderStatus; label: string; sub: string }[] = [
-  { id: 'CONFIRMED',        label: 'Order Placed',       sub: 'We have received your order' },
-  { id: 'PACKED',           label: 'Packed',             sub: 'Your order is being packed' },
-  { id: 'SHIPPED',          label: 'Shipped',            sub: 'Order has been dispatched' },
-  { id: 'OUT_FOR_DELIVERY', label: 'Out for Delivery',   sub: 'Order is on its way to you' },
-  { id: 'DELIVERED',        label: 'Delivered',          sub: 'Order delivered successfully!' },
+  { id: 'CONFIRMED', label: 'Order Placed', sub: 'We have received your order' },
+  { id: 'PACKED', label: 'Packed', sub: 'Your order is being packed' },
+  { id: 'SHIPPED', label: 'Shipped', sub: 'Order has been dispatched' },
+  { id: 'OUT_FOR_DELIVERY', label: 'Out for Delivery', sub: 'Order is on its way to you' },
+  { id: 'DELIVERED', label: 'Delivered', sub: 'Order delivered successfully!' },
+];
+
+const RETURN_STAGES: { id: OrderStatus; label: string; sub: string }[] = [
+  { id: 'RETURN_REQUESTED', label: 'Return Requested', sub: 'Waiting for admin review' },
+  { id: 'RETURNED', label: 'Return Approved', sub: 'Return accepted — refund pending' },
+  { id: 'REFUNDED', label: 'Refunded', sub: 'Refund has been processed' },
 ];
 
 const STATUS_ORDER: Record<OrderStatus, number> = {
@@ -24,29 +31,102 @@ const STATUS_ORDER: Record<OrderStatus, number> = {
   OUT_FOR_DELIVERY: 4,
   DELIVERED: 5,
   CANCELLED: -1,
+  RETURN_REQUESTED: 6,
+  RETURNED: 7,
+  REFUNDED: 8,
 };
 
-export function OrderTrackingTimeline({ status, courierName, trackingNumber, trackingUrl }: OrderTrackingTimelineProps) {
+function StageList({
+  stages,
+  currentLevel,
+}: {
+  stages: { id: OrderStatus; label: string; sub: string }[];
+  currentLevel: number;
+}) {
+  return (
+    <div className="relative">
+      {stages.map((stage, idx) => {
+        const stageLevel = STATUS_ORDER[stage.id];
+        const isCompleted = currentLevel > stageLevel;
+        const isActive = currentLevel === stageLevel;
+        const isLast = idx === stages.length - 1;
+
+        return (
+          <div key={stage.id} className="flex items-start space-x-4">
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center border-2 flex-shrink-0 transition-all ${
+                  isCompleted
+                    ? 'bg-brand-crimson border-brand-crimson text-white'
+                    : isActive
+                    ? 'bg-white border-brand-crimson text-brand-crimson shadow-md shadow-brand-crimson/20'
+                    : 'bg-white border-gray-200 text-slate-300'
+                }`}
+              >
+                {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+              </div>
+              {!isLast && (
+                <div
+                  className={`w-0.5 h-10 mt-1 transition-all ${
+                    isCompleted ? 'bg-brand-crimson' : 'bg-gray-200'
+                  }`}
+                />
+              )}
+            </div>
+            <div className="pb-8">
+              <p
+                className={`text-xs font-extrabold ${
+                  isActive ? 'text-brand-crimson' : isCompleted ? 'text-brand-slate-dark' : 'text-slate-400'
+                }`}
+              >
+                {stage.label}
+                {isActive && (
+                  <span className="ml-2 text-[9px] bg-brand-crimson text-white px-1.5 py-0.5 rounded-full uppercase">
+                    Current
+                  </span>
+                )}
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">{stage.sub}</p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function OrderTrackingTimeline({
+  status,
+  courierName,
+  trackingNumber,
+  trackingUrl,
+  returnInfo,
+}: OrderTrackingTimelineProps) {
   const currentLevel = STATUS_ORDER[status] ?? 1;
+  const isReturnFlow =
+    status === 'RETURN_REQUESTED' || status === 'RETURNED' || status === 'REFUNDED';
 
   if (status === 'CANCELLED') {
     return (
       <div className="bg-rose-50 border border-rose-200 rounded-2xl p-5 text-center">
         <p className="text-rose-700 font-extrabold text-sm">This order has been cancelled.</p>
-        <p className="text-rose-500 text-xs mt-1">Refund will be processed within 5-7 business days.</p>
+        <p className="text-rose-500 text-xs mt-1">
+          If payment was collected online, refund will be processed within 5–7 business days.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      {/* Courier Info */}
       {courierName && trackingNumber && (
         <div className="bg-slate-50 border border-gray-200 rounded-2xl p-4 flex items-center justify-between">
           <div>
             <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Courier Partner</p>
             <p className="text-sm font-extrabold text-brand-slate-dark">{courierName}</p>
-            <p className="text-xs text-slate-500">Tracking: <span className="font-bold">{trackingNumber}</span></p>
+            <p className="text-xs text-slate-500">
+              Tracking: <span className="font-bold">{trackingNumber}</span>
+            </p>
           </div>
           {trackingUrl && (
             <a
@@ -62,47 +142,32 @@ export function OrderTrackingTimeline({ status, courierName, trackingNumber, tra
         </div>
       )}
 
-      {/* Stepper Timeline */}
-      <div className="relative">
-        {STAGES.map((stage, idx) => {
-          const isCompleted = currentLevel > STATUS_ORDER[stage.id];
-          const isActive = currentLevel === STATUS_ORDER[stage.id];
-          const isLast = idx === STAGES.length - 1;
+      <StageList stages={STAGES} currentLevel={Math.min(currentLevel, 5)} />
 
-          return (
-            <div key={stage.id} className="flex items-start space-x-4">
-              {/* Icon Column */}
-              <div className="flex flex-col items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 flex-shrink-0 transition-all ${
-                  isCompleted
-                    ? 'bg-brand-crimson border-brand-crimson text-white'
-                    : isActive
-                    ? 'bg-white border-brand-crimson text-brand-crimson shadow-md shadow-brand-crimson/20'
-                    : 'bg-white border-gray-200 text-slate-300'
-                }`}>
-                  {isCompleted ? (
-                    <CheckCircle2 className="w-4 h-4" />
-                  ) : (
-                    <Circle className="w-4 h-4" />
-                  )}
-                </div>
-                {!isLast && (
-                  <div className={`w-0.5 h-10 mt-1 transition-all ${isCompleted ? 'bg-brand-crimson' : 'bg-gray-200'}`} />
-                )}
-              </div>
-
-              {/* Label Column */}
-              <div className="pb-8">
-                <p className={`text-xs font-extrabold ${isActive ? 'text-brand-crimson' : isCompleted ? 'text-brand-slate-dark' : 'text-slate-400'}`}>
-                  {stage.label}
-                  {isActive && <span className="ml-2 text-[9px] bg-brand-crimson text-white px-1.5 py-0.5 rounded-full uppercase">Current</span>}
-                </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">{stage.sub}</p>
-              </div>
+      {isReturnFlow && (
+        <div className="pt-2 border-t border-dashed border-gray-200">
+          <p className="text-[10px] font-extrabold uppercase tracking-wider text-orange-600 mb-3">
+            Return & Refund
+          </p>
+          {returnInfo?.reason && (
+            <p className="text-[11px] text-slate-500 mb-3">
+              Reason: <span className="font-semibold text-slate-700">{returnInfo.reason}</span>
+              {returnInfo.refundAmount != null && (
+                <>
+                  {' '}
+                  · Est. ₹{Number(returnInfo.refundAmount).toLocaleString('en-IN')}
+                </>
+              )}
+            </p>
+          )}
+          {returnInfo?.status === 'REJECTED' && returnInfo?.rejectionReason && (
+            <div className="mb-3 p-3 bg-rose-50 border border-rose-200 rounded-xl text-[11px] text-rose-700">
+              Return rejected: {returnInfo.rejectionReason}
             </div>
-          );
-        })}
-      </div>
+          )}
+          <StageList stages={RETURN_STAGES} currentLevel={currentLevel} />
+        </div>
+      )}
     </div>
   );
 }
