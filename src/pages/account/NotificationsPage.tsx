@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Bell,
@@ -15,15 +15,33 @@ import {
   AlertCircle,
   Filter,
   BellRing,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { notificationsApi, AppNotification, NotificationPreferences } from '../../api/notifications';
 import { profileApi } from '../../api/profile';
 import { useAuthStore } from '../../store/useAuthStore';
 import { User } from '../../types/auth';
+import { checkIsAdmin } from '../../utils/roleUtils';
+
+const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
+
+/** Admin-only: product review alerts must not appear in the customer notification inbox */
+function isProductReviewNotification(n: AppNotification): boolean {
+  const meta = n.metadata || {};
+  if (meta.isAdminEvent && (meta.targetTab === 'reviews' || meta.reviewId)) return true;
+  if (meta.targetTab === 'reviews' || meta.reviewId) return true;
+  const title = (n.title || '').toLowerCase();
+  return title.includes('product review') || title.includes('customer review') || title.includes('new review');
+}
 
 export function NotificationsPage() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const isAdmin = checkIsAdmin(user);
   const [filterType, setFilterType] = useState<string>('all');
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [prefSuccess, setPrefSuccess] = useState('');
   const [prefError, setPrefError] = useState('');
   const [permissionStatus, setPermissionStatus] = useState<string>('default');
@@ -37,10 +55,26 @@ export function NotificationsPage() {
     }
   }, []);
 
-  // 1. Fetch user notifications
-  const { data: notificationsData, isLoading: loadingNotifications } = useQuery({
-    queryKey: ['myNotifications'],
-    queryFn: () => notificationsApi.getMyNotifications({ limit: 100 }),
+  const queryParams = useMemo(() => {
+    const params: { page: number; limit: number; isRead?: boolean; type?: string } = {
+      page,
+      limit,
+    };
+    if (filterType === 'unread') {
+      params.isRead = false;
+    } else if (filterType === 'order_update') {
+      params.type = 'ORDER_UPDATE';
+    } else if (filterType === 'offer') {
+      params.type = 'OFFER';
+    }
+    return params;
+  }, [page, limit, filterType]);
+
+  // 1. Fetch user notifications (paginated)
+  const { data: notificationsData, isLoading: loadingNotifications, isFetching } = useQuery({
+    queryKey: ['myNotifications', queryParams],
+    queryFn: () => notificationsApi.getMyNotifications(queryParams),
+    placeholderData: (prev) => prev,
   });
 
   // 2. Fetch user profile for initial notification preferences
@@ -64,6 +98,11 @@ export function NotificationsPage() {
       });
     }
   }, [profile?.notificationPreferences]);
+
+  const handleFilterChange = (nextFilter: string) => {
+    setFilterType(nextFilter);
+    setPage(1);
+  };
 
   // Mutations
   const markReadMutation = useMutation({
@@ -171,41 +210,25 @@ export function NotificationsPage() {
     ? (notificationsData as any).data
     : [];
 
+  // Server already applies filter/type; only strip residual admin review alerts for customers
   const notifications = rawNotifications.filter((n) => {
-    if (filterType === 'unread') {
-      return !n.isRead || (n as any).isRead === 'false';
-    }
-
-    if (filterType === 'order_update') {
-      const notifType = (n.type || '').toUpperCase();
-      return notifType.includes('ORDER') || !!n.metadata?.orderNumber;
-    }
-
-    if (filterType === 'offer') {
-      const notifType = (n.type || '').toUpperCase();
-      if (notifType.includes('ORDER') || !!n.metadata?.orderNumber) return false;
-      if (n.metadata?.isTestPush) return false;
-
-      const isOfferType =
-        notifType === 'OFFER' ||
-        notifType === 'COUPON' ||
-        notifType === 'PRICE_DROP' ||
-        notifType === 'PROMOTIONAL';
-
-      const titleAndMsg = ((n.title || '') + ' ' + (n.message || '')).toLowerCase();
-      const hasOfferKeyword =
-        titleAndMsg.includes('off') ||
-        titleAndMsg.includes('discount') ||
-        titleAndMsg.includes('coupon') ||
-        titleAndMsg.includes('deal') ||
-        titleAndMsg.includes('sale') ||
-        titleAndMsg.includes('offer');
-
-      return isOfferType || hasOfferKeyword;
-    }
-
+    if (!isAdmin && isProductReviewNotification(n)) return false;
     return true;
   });
+
+  const totalCount =
+    typeof (notificationsData as any)?.total === 'number'
+      ? (notificationsData as any).total
+      : notifications.length;
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / limit));
+
+  // Keep page in bounds when total shrinks (e.g. after delete)
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   const unreadCount =
     typeof (notificationsData as any)?.unreadCount === 'number'
@@ -277,7 +300,7 @@ export function NotificationsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setFilterType(tab.id)}
+              onClick={() => handleFilterChange(tab.id)}
               className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all whitespace-nowrap ${
                 filterType === tab.id
                   ? 'bg-brand-slate-dark text-white shadow-sm'
@@ -290,7 +313,7 @@ export function NotificationsPage() {
         </div>
 
         {/* Notifications List */}
-        {loadingNotifications ? (
+        {loadingNotifications && !notifications.length ? (
           <div className="flex items-center justify-center py-10 sm:py-12">
             <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-brand-crimson" />
           </div>
@@ -311,7 +334,7 @@ export function NotificationsPage() {
             {filterType !== 'all' && (
               <div className="pt-1.5 sm:pt-2">
                 <button
-                  onClick={() => setFilterType('all')}
+                  onClick={() => handleFilterChange('all')}
                   className="text-[11px] sm:text-xs font-bold text-brand-crimson bg-brand-crimson/10 hover:bg-brand-crimson/20 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all"
                 >
                   View All Notifications
@@ -320,7 +343,7 @@ export function NotificationsPage() {
             )}
           </div>
         ) : (
-          <div className="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
+          <div className={`space-y-2.5 sm:space-y-3 pt-1 sm:pt-2 ${isFetching ? 'opacity-60' : ''} transition-opacity`}>
             {notifications.map((n: AppNotification, idx: number) => {
               const notifId = n._id || (n as any).id || String(idx);
               const notifType = (n.type || '').toUpperCase();
@@ -413,6 +436,69 @@ export function NotificationsPage() {
                 </div>
               );
             })}
+
+            {/* Pagination Controls */}
+            {totalCount > 0 && (
+              <div className="pt-3 sm:pt-4 mt-1 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] sm:text-xs">
+                <div className="flex items-center flex-wrap justify-center gap-x-1.5 text-slate-500 font-medium">
+                  <span>Showing</span>
+                  <span className="font-bold text-slate-800">
+                    {Math.min((page - 1) * limit + 1, totalCount)}
+                  </span>
+                  <span>–</span>
+                  <span className="font-bold text-slate-800">
+                    {Math.min(page * limit, totalCount)}
+                  </span>
+                  <span>of</span>
+                  <span className="font-bold text-slate-800">{totalCount}</span>
+                </div>
+
+                <div className="flex items-center gap-2.5 sm:gap-4">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-slate-500 font-medium hidden sm:inline">Per page</span>
+                    <select
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(Number(e.target.value));
+                        setPage(1);
+                      }}
+                      className="bg-white border border-gray-200 rounded-lg sm:rounded-xl px-2 py-1 text-[10px] sm:text-xs font-bold text-slate-700 outline-none focus:border-brand-crimson cursor-pointer shadow-sm"
+                      aria-label="Items per page"
+                    >
+                      {PAGE_SIZE_OPTIONS.map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center space-x-1 sm:space-x-1.5">
+                    <button
+                      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={page <= 1 || isFetching}
+                      className="p-1.5 rounded-lg sm:rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors disabled:cursor-not-allowed shadow-sm"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    <div className="px-2.5 sm:px-3.5 py-1 bg-white border border-gray-200 rounded-lg sm:rounded-xl font-bold text-slate-700 shadow-sm whitespace-nowrap">
+                      {page} / {totalPages}
+                    </div>
+
+                    <button
+                      onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                      disabled={page >= totalPages || isFetching}
+                      className="p-1.5 rounded-lg sm:rounded-xl border border-gray-200 bg-white text-slate-600 hover:text-brand-crimson hover:border-brand-crimson disabled:opacity-30 disabled:hover:text-slate-600 disabled:hover:border-gray-200 transition-colors disabled:cursor-not-allowed shadow-sm"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

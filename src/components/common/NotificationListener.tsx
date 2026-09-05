@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Bell, Package, Tag, X, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
+import { checkIsAdmin } from '../../utils/roleUtils';
 
 interface ToastNotification {
   id: string;
@@ -11,10 +12,25 @@ interface ToastNotification {
   createdAt: string;
 }
 
+function isAdminOnlyNotification(payload: any): boolean {
+  const meta = payload?.metadata || {};
+  if (meta.isAdminEvent) return true;
+  if (meta.targetTab === 'reviews' || meta.reviewId) return true;
+  const title = String(payload?.title || '').toLowerCase();
+  return (
+    title.includes('product review') ||
+    title.includes('customer review') ||
+    title.includes('new review') ||
+    title.includes('stock alert') ||
+    title.includes('low inventory')
+  );
+}
+
 export function NotificationListener() {
   const { isAuthenticated, token, user } = useAuthStore();
   const queryClient = useQueryClient();
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
+  const isAdmin = checkIsAdmin(user);
 
   // Function to show toast
   const addToast = (notif: { title: string; message: string; type?: string; id?: string }) => {
@@ -91,12 +107,20 @@ export function NotificationListener() {
         try {
           const parsed = JSON.parse(eventData);
           if (parsed) {
+            const notifPayload = parsed.data || parsed;
+
+            // Skip admin-only alerts (product reviews, stock, etc.) for customers
+            if (!isAdmin && isAdminOnlyNotification(notifPayload)) {
+              return;
+            }
+
             queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
             queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-            queryClient.invalidateQueries({ queryKey: ['admin-summary'] });
-            queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
+            if (isAdmin) {
+              queryClient.invalidateQueries({ queryKey: ['admin-summary'] });
+              queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
+            }
 
-            const notifPayload = parsed.data || parsed;
             addToast({
               id: notifPayload._id || notifPayload.id,
               title: notifPayload.title,
@@ -107,8 +131,6 @@ export function NotificationListener() {
         } catch {
           queryClient.invalidateQueries({ queryKey: ['myNotifications'] });
           queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-          queryClient.invalidateQueries({ queryKey: ['admin-summary'] });
-          queryClient.invalidateQueries({ queryKey: ['adminNotifications'] });
         }
       };
 
@@ -128,7 +150,7 @@ export function NotificationListener() {
         eventSource.close();
       }
     };
-  }, [isAuthenticated, token, queryClient, user]);
+  }, [isAuthenticated, token, queryClient, user, isAdmin]);
 
   // 2. Active Fallback Polling (Every 60 seconds) as SSE delivers real-time updates
   useEffect(() => {
