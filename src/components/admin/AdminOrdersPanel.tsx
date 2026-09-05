@@ -19,6 +19,7 @@ import {
   X,
   Send,
   Printer,
+  ShieldCheck,
   RotateCcw,
   Banknote,
 } from 'lucide-react';
