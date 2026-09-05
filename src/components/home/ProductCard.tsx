@@ -42,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
     : (product.brand || 'NiaKylie Signature');
 
   return (
-    <div className="group relative bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden flex flex-col justify-between">
+    <div className="group relative bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-card hover:shadow-hover transition-all duration-300 overflow-hidden flex flex-col justify-between min-w-0">
       {/* Product Image Container */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-slate-100">
         <a href={`/product/${product.slug || product.id || product._id}`}>
@@ -56,8 +56,8 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Badges Overlay */}
         <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 flex flex-col space-y-1 z-10">
           {product.isBestSeller && (
-            <span className="bg-amber-400 text-slate-950 text-[8px] sm:text-[9px] font-black px-1.5 sm:px-2 py-0.5 rounded-md shadow-md uppercase tracking-wider border border-amber-300 w-max">
-              🔥 BEST SELLER
+            <span className="bg-amber-400 text-slate-950 text-[7px] sm:text-[9px] font-black px-1 sm:px-2 py-0.5 rounded-md shadow-md uppercase tracking-wide sm:tracking-wider border border-amber-300 w-max max-w-[calc(100%-8px)] truncate">
+              BEST SELLER
             </span>
           )}
           {discount > 0 && (
@@ -134,7 +134,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </a>
 
         {/* Pricing */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 pt-0.5 sm:pt-1">
+        <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 pt-0.5 sm:pt-1 min-w-0">
           <span className="text-xs sm:text-sm font-extrabold text-brand-slate-dark">
             ₹{product.price.toLocaleString('en-IN')}
           </span>

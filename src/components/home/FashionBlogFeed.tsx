@@ -14,32 +14,32 @@ export function FashionBlogFeed({ blogs }: FashionBlogFeedProps) {
   if (!blogList || blogList.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <span className="text-xs uppercase font-extrabold text-brand-crimson tracking-widest flex items-center space-x-1">
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>NIAKYLIE FASHION JOURNAL</span>
+    <section className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <div className="flex items-center justify-between mb-5 sm:mb-8 gap-2">
+        <div className="min-w-0">
+          <span className="text-[10px] sm:text-xs uppercase font-extrabold text-brand-crimson tracking-wider sm:tracking-widest flex items-center space-x-1">
+            <BookOpen className="w-3.5 h-3.5 flex-shrink-0" />
+            <span className="truncate">NIAKYLIE FASHION JOURNAL</span>
           </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-brand-slate-dark font-display tracking-tight mt-1">
+          <h2 className="text-xl sm:text-3xl font-extrabold text-brand-slate-dark font-display tracking-tight mt-1 leading-snug">
             Style Trends & Artisan Heritage
           </h2>
         </div>
 
         <a
           href="/blogs"
-          className="hidden sm:inline-flex items-center space-x-1 text-xs font-extrabold text-brand-crimson hover:underline"
+          className="hidden sm:inline-flex items-center space-x-1 text-xs font-extrabold text-brand-crimson hover:underline flex-shrink-0"
         >
           <span>READ ALL ARTICLES</span>
           <ArrowRight className="w-3.5 h-3.5 ml-1" />
         </a>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-6">
         {blogList.slice(0, 3).map((blog: any) => (
           <article
             key={blog.id || blog._id}
-            className="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-card hover:shadow-hover transition-all duration-300 flex flex-col justify-between"
+            className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-100 shadow-card hover:shadow-hover transition-all duration-300 flex flex-col justify-between"
           >
             <div>
               <div className="aspect-[16/10] w-full overflow-hidden bg-slate-100 relative">
@@ -48,13 +48,13 @@ export function FashionBlogFeed({ blogs }: FashionBlogFeedProps) {
                   alt={blog.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-brand-slate-dark text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-sm">
+                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-brand-slate-dark text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-sm max-w-[70%] truncate">
                   {blog.category}
                 </span>
               </div>
 
-              <div className="p-5 space-y-2">
-                <div className="flex items-center space-x-3 text-[11px] text-slate-400">
+              <div className="p-4 sm:p-5 space-y-2">
+                <div className="flex items-center space-x-2 sm:space-x-3 text-[10px] sm:text-[11px] text-slate-400 flex-wrap">
                   <span>{blog.publishedAt}</span>
                   <span>•</span>
                   <span className="flex items-center space-x-1">
@@ -64,21 +64,21 @@ export function FashionBlogFeed({ blogs }: FashionBlogFeedProps) {
                 </div>
 
                 <a href={`/blog/${blog.slug}`} className="block">
-                  <h3 className="font-extrabold text-base text-brand-slate-dark group-hover:text-brand-crimson transition-colors line-clamp-2 leading-snug">
+                  <h3 className="font-extrabold text-sm sm:text-base text-brand-slate-dark group-hover:text-brand-crimson transition-colors line-clamp-2 leading-snug">
                     {blog.title}
                   </h3>
                 </a>
 
-                <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
                   {blog.summary}
                 </p>
               </div>
             </div>
 
-            <div className="p-5 pt-0">
+            <div className="p-4 sm:p-5 pt-0">
               <a
                 href={`/blog/${blog.slug}`}
-                className="inline-flex items-center text-xs font-extrabold text-brand-crimson group-hover:text-brand-crimson-dark transition-colors"
+                className="inline-flex items-center text-[11px] sm:text-xs font-extrabold text-brand-crimson group-hover:text-brand-crimson-dark transition-colors"
               >
                 <span>Read Full Article</span>
                 <ArrowRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
