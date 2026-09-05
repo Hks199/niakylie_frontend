@@ -22,6 +22,14 @@ import { checkIsAdmin } from './utils/roleUtils';
 export function App() {
   const { isAuthenticated, user } = useAuthStore();
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  // Wait for Zustand persist to rehydrate so account/admin reloads don't flash as logged-out
+  const [authReady, setAuthReady] = useState(() => useAuthStore.persist.hasHydrated());
+
+  useEffect(() => {
+    const unsub = useAuthStore.persist.onFinishHydration(() => setAuthReady(true));
+    if (useAuthStore.persist.hasHydrated()) setAuthReady(true);
+    return unsub;
+  }, []);
 
   useEffect(() => {
     // Always fetch shopping cart on app mount so cart state persists across page reloads
@@ -74,6 +82,13 @@ export function App() {
 
     // Admin dashboard — check role inline without ProtectedRoute wrapper
     if (isAdminRoute) {
+      if (!authReady) {
+        return (
+          <div className="flex items-center justify-center py-24 text-xs font-semibold text-slate-500">
+            Loading…
+          </div>
+        );
+      }
       if (!isAuthenticated || !isAdmin) {
         return <AdminLoginPage />;
       }
@@ -86,6 +101,13 @@ export function App() {
     if (isWishlist) return <WishlistPage />;
 
     if (isAccount) {
+      if (!authReady) {
+        return (
+          <div className="flex items-center justify-center py-24 text-xs font-semibold text-slate-500">
+            Loading account…
+          </div>
+        );
+      }
       if (!isAuthenticated) {
         return (
           <div className="max-w-md mx-auto my-16 p-8 bg-white border border-gray-100 rounded-3xl shadow-lg text-center space-y-4">

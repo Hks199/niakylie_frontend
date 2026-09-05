@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, ChevronDown, Loader2, HelpCircle, MessageSquare, ThumbsUp, ThumbsDown, Mail, Phone, ArrowRight } from 'lucide-react';
 import { cmsApi, FaqItem } from '../api/cms';
@@ -6,16 +6,53 @@ import { cmsApi, FaqItem } from '../api/cms';
 const CATEGORIES = ['All', 'General', 'Orders', 'Shipping', 'Returns', 'Payments'] as const;
 type Category = typeof CATEGORIES[number];
 
+function getCategoryFromUrl(): Category {
+  const fromUrl = new URLSearchParams(window.location.search).get('category');
+  if (fromUrl && (CATEGORIES as readonly string[]).some((c) => c.toLowerCase() === fromUrl.toLowerCase())) {
+    return (CATEGORIES.find((c) => c.toLowerCase() === fromUrl.toLowerCase()) || 'All') as Category;
+  }
+  return 'All';
+}
+
 export function FaqPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState<Category>('All');
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState(
+    () => new URLSearchParams(window.location.search).get('q') || ''
+  );
+  const [activeCategory, setActiveCategory] = useState<Category>(() => getCategoryFromUrl());
+  const [openId, setOpenId] = useState<string | null>(
+    () => new URLSearchParams(window.location.search).get('faq') || null
+  );
   const [feedbackState, setFeedbackState] = useState<Record<string, 'yes' | 'no'>>({});
 
   const { data: faqs = [], isLoading } = useQuery({
     queryKey: ['faqs'],
     queryFn: () => cmsApi.getFaqs(),
   });
+
+  const writeFaqUrl = (category: Category, q: string, faqId: string | null) => {
+    const url = new URL(window.location.href);
+    if (category === 'All') url.searchParams.delete('category');
+    else url.searchParams.set('category', category);
+    if (!q.trim()) url.searchParams.delete('q');
+    else url.searchParams.set('q', q.trim());
+    if (!faqId) url.searchParams.delete('faq');
+    else url.searchParams.set('faq', faqId);
+    const next = url.pathname + url.search;
+    if (window.location.pathname + window.location.search !== next) {
+      window.history.pushState({}, '', next);
+      window.dispatchEvent(new Event('popstate'));
+    }
+  };
+
+  useEffect(() => {
+    const syncFromUrl = () => {
+      setActiveCategory(getCategoryFromUrl());
+      setSearchQuery(new URLSearchParams(window.location.search).get('q') || '');
+      setOpenId(new URLSearchParams(window.location.search).get('faq'));
+    };
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
 
   const filtered = useMemo(() => {
     return faqs.filter((faq: FaqItem) => {
@@ -30,6 +67,11 @@ export function FaqPage() {
 
   const handleFeedback = (faqId: string, val: 'yes' | 'no') => {
     setFeedbackState((prev) => ({ ...prev, [faqId]: val }));
+  };
+
+  const selectCategory = (cat: Category) => {
+    setActiveCategory(cat);
+    writeFaqUrl(cat, searchQuery, openId);
   };
 
   return (
@@ -63,13 +105,23 @@ export function FaqPage() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const q = e.target.value;
+                  setSearchQuery(q);
+                  const url = new URL(window.location.href);
+                  if (!q.trim()) url.searchParams.delete('q');
+                  else url.searchParams.set('q', q.trim());
+                  window.history.replaceState({}, '', url.pathname + url.search);
+                }}
                 placeholder="Search e.g. return policy, shipping time..."
                 className="w-full bg-white/95 text-slate-800 placeholder-slate-400 rounded-xl sm:rounded-2xl pl-9 sm:pl-12 pr-4 py-2.5 sm:py-4 text-xs sm:text-sm font-medium outline-none border-2 border-transparent focus:border-brand-crimson shadow-xl transition-all"
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => {
+                    setSearchQuery('');
+                    writeFaqUrl(activeCategory, '', openId);
+                  }}
                   className="absolute right-3.5 sm:right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full w-5 h-5 flex items-center justify-center"
                 >
                   ✕
@@ -87,7 +139,7 @@ export function FaqPage() {
               return (
                 <button
                   key={cat}
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => selectCategory(cat)}
                   className={`px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs font-extrabold uppercase tracking-wider transition-all duration-200 ${
                     isActive
                       ? 'bg-brand-crimson text-white shadow-lg shadow-brand-crimson/25 scale-105'
@@ -127,7 +179,12 @@ export function FaqPage() {
               </p>
             </div>
             <button
-              onClick={() => { setSearchQuery(''); setActiveCategory('All'); }}
+              onClick={() => {
+                setSearchQuery('');
+                setActiveCategory('All');
+                setOpenId(null);
+                writeFaqUrl('All', '', null);
+              }}
               className="inline-flex items-center space-x-2 bg-brand-crimson text-white text-[11px] sm:text-xs font-bold px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shadow-md hover:bg-brand-crimson-dark transition-colors uppercase tracking-wider"
             >
               Reset Search & Filters
@@ -150,7 +207,11 @@ export function FaqPage() {
                   }`}
                 >
                   <button
-                    onClick={() => setOpenId(isOpen ? null : faqId)}
+                    onClick={() => {
+                      const next = isOpen ? null : faqId;
+                      setOpenId(next);
+                      writeFaqUrl(activeCategory, searchQuery, next);
+                    }}
                     className="w-full flex items-center justify-between p-3.5 sm:p-6 text-left group"
                   >
                     <div className="flex items-center space-x-2.5 sm:space-x-3 pr-2 sm:pr-4 min-w-0">

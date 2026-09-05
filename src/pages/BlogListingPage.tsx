@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Eye, Clock, Loader2, Sparkles, ArrowRight, BookOpen, Instagram, Facebook, Phone, Globe } from 'lucide-react';
 import { cmsApi, BlogPost } from '../api/cms';
@@ -16,12 +16,43 @@ const CATEGORIES = [
 ];
 
 export function BlogListingPage() {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get('category');
+    if (fromUrl && CATEGORIES.some((c) => c.toLowerCase() === fromUrl.toLowerCase())) {
+      return CATEGORIES.find((c) => c.toLowerCase() === fromUrl.toLowerCase()) || 'All';
+    }
+    return 'All';
+  });
 
   const { data: blogs = [], isLoading } = useQuery({
     queryKey: ['blogs'],
     queryFn: () => cmsApi.getBlogs(),
   });
+
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const fromUrl = new URLSearchParams(window.location.search).get('category');
+      if (fromUrl && CATEGORIES.some((c) => c.toLowerCase() === fromUrl.toLowerCase())) {
+        setSelectedCategory(
+          CATEGORIES.find((c) => c.toLowerCase() === fromUrl.toLowerCase()) || 'All'
+        );
+      } else {
+        setSelectedCategory('All');
+      }
+    };
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
+
+  const selectCategory = (category: string) => {
+    setSelectedCategory(category);
+    const url = new URL(window.location.href);
+    if (category === 'All') url.searchParams.delete('category');
+    else url.searchParams.set('category', category);
+    const next = url.pathname + url.search;
+    window.history.pushState({}, '', next);
+    window.dispatchEvent(new Event('popstate'));
+  };
 
   const navigate = (slug: string) => {
     window.history.pushState(null, '', `/blogs/${slug}`);
@@ -84,7 +115,7 @@ export function BlogListingPage() {
             return (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => selectCategory(cat)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-extrabold transition-all duration-200 ${
                   isActive
                     ? 'bg-brand-crimson text-white shadow-md scale-105'

@@ -39,12 +39,35 @@ export function NotificationsPage() {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const isAdmin = checkIsAdmin(user);
-  const [filterType, setFilterType] = useState<string>('all');
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [filterType, setFilterType] = useState(() => {
+    const f = new URLSearchParams(window.location.search).get('filter');
+    return f && ['all', 'unread', 'order_update', 'offer'].includes(f) ? f : 'all';
+  });
+  const [page, setPage] = useState(() => {
+    const p = Number(new URLSearchParams(window.location.search).get('page') || '1');
+    return p > 0 ? p : 1;
+  });
+  const [limit, setLimit] = useState(() => {
+    const l = Number(new URLSearchParams(window.location.search).get('limit') || '10');
+    return [5, 10, 20, 50].includes(l) ? l : 10;
+  });
   const [prefSuccess, setPrefSuccess] = useState('');
   const [prefError, setPrefError] = useState('');
   const [permissionStatus, setPermissionStatus] = useState<string>('default');
+
+  const writeNotifUrl = (filter: string, pageNum: number, pageLimit: number) => {
+    const url = new URL(window.location.href);
+    if (filter === 'all') url.searchParams.delete('filter');
+    else url.searchParams.set('filter', filter);
+    if (pageNum <= 1) url.searchParams.delete('page');
+    else url.searchParams.set('page', String(pageNum));
+    if (pageLimit === 10) url.searchParams.delete('limit');
+    else url.searchParams.set('limit', String(pageLimit));
+    const next = url.pathname + url.search;
+    if (window.location.pathname + window.location.search !== next) {
+      window.history.replaceState({}, '', next);
+    }
+  };
 
   // Check browser notification permission status on mount
   useEffect(() => {
@@ -54,6 +77,10 @@ export function NotificationsPage() {
       setPermissionStatus('unsupported');
     }
   }, []);
+
+  useEffect(() => {
+    writeNotifUrl(filterType, page, limit);
+  }, [filterType, page, limit]);
 
   const queryParams = useMemo(() => {
     const params: { page: number; limit: number; isRead?: boolean; type?: string } = {

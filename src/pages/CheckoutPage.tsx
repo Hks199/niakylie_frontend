@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckoutStepper } from '../components/checkout/CheckoutStepper';
 import { AddressStep } from '../components/checkout/AddressStep';
 import { OrderSummaryStep } from '../components/checkout/OrderSummaryStep';
@@ -6,13 +6,74 @@ import { PaymentStep } from '../components/checkout/PaymentStep';
 import { CheckoutSidebar } from '../components/checkout/CheckoutSidebar';
 import { useCartStore } from '../store/useCartStore';
 
+const ADDRESS_STORAGE_KEY = 'niakylie_checkout_address';
+const SHIPPING_STORAGE_KEY = 'niakylie_checkout_shipping';
+
+function getStepFromUrl(): number {
+  const step = Number(new URLSearchParams(window.location.search).get('step') || '1');
+  return step >= 1 && step <= 3 ? step : 1;
+}
+
+function writeCheckoutUrl(step: number) {
+  const url = new URL(window.location.href);
+  if (step <= 1) url.searchParams.delete('step');
+  else url.searchParams.set('step', String(step));
+  const next = url.pathname + url.search;
+  if (window.location.pathname + window.location.search !== next) {
+    window.history.pushState({}, '', next);
+    window.dispatchEvent(new Event('popstate'));
+  }
+}
+
 export function CheckoutPage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedAddressId, setSelectedAddressId] = useState('');
-  const [shippingType, setShippingType] = useState<'standard' | 'express'>('standard');
+  const [currentStep, setCurrentStep] = useState(() => getStepFromUrl());
+  const [selectedAddressId, setSelectedAddressId] = useState(
+    () => sessionStorage.getItem(ADDRESS_STORAGE_KEY) || ''
+  );
+  const [shippingType, setShippingType] = useState<'standard' | 'express'>(
+    () => (sessionStorage.getItem(SHIPPING_STORAGE_KEY) as 'standard' | 'express') || 'standard'
+  );
   const { cartTotals, appliedCoupon } = useCartStore();
 
+  // Keep step in sync with browser back/forward
+  useEffect(() => {
+    const syncFromUrl = () => {
+      let step = getStepFromUrl();
+      const addressId = sessionStorage.getItem(ADDRESS_STORAGE_KEY) || '';
+      // Steps 2–3 require an address; otherwise fall back to step 1
+      if (step > 1 && !addressId) {
+        step = 1;
+        writeCheckoutUrl(1);
+      }
+      setCurrentStep(step);
+      setSelectedAddressId(addressId);
+      const shipping = sessionStorage.getItem(SHIPPING_STORAGE_KEY) as 'standard' | 'express' | null;
+      if (shipping) setShippingType(shipping);
+    };
+    window.addEventListener('popstate', syncFromUrl);
+    syncFromUrl();
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
+
+  const goToStep = (step: number) => {
+    const next = step >= 1 && step <= 3 ? step : 1;
+    setCurrentStep(next);
+    writeCheckoutUrl(next);
+  };
+
+  const handleSelectAddress = (id: string) => {
+    setSelectedAddressId(id);
+    sessionStorage.setItem(ADDRESS_STORAGE_KEY, id);
+  };
+
+  const handleShippingChange = (type: 'standard' | 'express') => {
+    setShippingType(type);
+    sessionStorage.setItem(SHIPPING_STORAGE_KEY, type);
+  };
+
   const handleOrderSuccess = (orderId: string) => {
+    sessionStorage.removeItem(ADDRESS_STORAGE_KEY);
+    sessionStorage.removeItem(SHIPPING_STORAGE_KEY);
     window.location.href = `/order-success/${orderId}`;
   };
 
@@ -22,26 +83,23 @@ export function CheckoutPage() {
         Secure Checkout
       </h1>
 
-      {/* Stepper Progress Bar */}
       <CheckoutStepper currentStep={currentStep} />
 
-      {/* 2-Column Checkout Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
-        {/* Left: Step Content (8 cols) */}
         <div className="lg:col-span-8 bg-white border border-gray-100 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-sm min-w-0">
           {currentStep === 1 && (
             <AddressStep
               selectedAddressId={selectedAddressId}
-              onSelectAddress={setSelectedAddressId}
-              onNext={() => setCurrentStep(2)}
+              onSelectAddress={handleSelectAddress}
+              onNext={() => goToStep(2)}
             />
           )}
           {currentStep === 2 && (
             <OrderSummaryStep
               shippingType={shippingType}
-              onShippingChange={setShippingType}
-              onNext={() => setCurrentStep(3)}
-              onBack={() => setCurrentStep(1)}
+              onShippingChange={handleShippingChange}
+              onNext={() => goToStep(3)}
+              onBack={() => goToStep(1)}
             />
           )}
           {currentStep === 3 && (
@@ -49,12 +107,11 @@ export function CheckoutPage() {
               selectedAddressId={selectedAddressId}
               shippingType={shippingType}
               onSuccess={handleOrderSuccess}
-              onBack={() => setCurrentStep(2)}
+              onBack={() => goToStep(2)}
             />
           )}
         </div>
 
-        {/* Right: Price Summary Sidebar (4 cols) */}
         <div className="lg:col-span-4">
           <CheckoutSidebar
             totals={cartTotals}

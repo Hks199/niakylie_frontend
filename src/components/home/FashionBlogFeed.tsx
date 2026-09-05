@@ -63,7 +63,7 @@ export function FashionBlogFeed({ blogs }: FashionBlogFeedProps) {
                   </span>
                 </div>
 
-                <a href={`/blog/${blog.slug}`} className="block">
+                <a href={`/blogs/${blog.slug}`} className="block">
                   <h3 className="font-extrabold text-sm sm:text-base text-brand-slate-dark group-hover:text-brand-crimson transition-colors line-clamp-2 leading-snug">
                     {blog.title}
                   </h3>
@@ -77,7 +77,7 @@ export function FashionBlogFeed({ blogs }: FashionBlogFeedProps) {
 
             <div className="p-4 sm:p-5 pt-0">
               <a
-                href={`/blog/${blog.slug}`}
+                href={`/blogs/${blog.slug}`}
                 className="inline-flex items-center text-[11px] sm:text-xs font-extrabold text-brand-crimson group-hover:text-brand-crimson-dark transition-colors"
               >
                 <span>Read Full Article</span>

@@ -45,7 +45,11 @@ export function AdminLoginPage({ onLoginSuccess }: AdminLoginPageProps) {
     if (onLoginSuccess) {
       onLoginSuccess();
     } else {
-      window.history.pushState({}, '', '/admin');
+      // Stay on the intended admin section after reload/login (e.g. /admin/orders)
+      const path = window.location.pathname.replace(/\/+$/, '');
+      const target =
+        path.startsWith('/admin/') && path !== '/admin/login' ? path : '/admin';
+      window.history.pushState({}, '', target);
       window.dispatchEvent(new Event('popstate'));
     }
   };

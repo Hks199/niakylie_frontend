@@ -34,6 +34,22 @@ import { AdminCouponsPanel } from '../components/admin/AdminCouponsPanel';
 import { AdminAnnouncementsPanel } from '../components/admin/AdminAnnouncementsPanel';
 import { DashboardSummary } from '../types/admin';
 
+const VALID_ADMIN_TABS = NAV_ITEMS.map((item) => item.id);
+
+function getAdminTabFromPath(pathname: string): string {
+  const normalized = pathname.replace(/\/+$/, '') || '/admin';
+  const segments = normalized.split('/').filter(Boolean);
+  // ["admin"] → dashboard | ["admin", "orders"] → orders
+  if (segments.length < 2) return 'dashboard';
+  const tab = segments[1];
+  if (!tab || tab === 'dashboard' || tab === 'login') return 'dashboard';
+  return VALID_ADMIN_TABS.includes(tab) ? tab : 'dashboard';
+}
+
+function adminPathForTab(tab: string): string {
+  return tab === 'dashboard' ? '/admin' : `/admin/${tab}`;
+}
+
 const DEFAULT_KPIS: DashboardSummary = {
   totalRevenue: 2485900,
   totalOrders: 1420,
@@ -49,7 +65,7 @@ const DEFAULT_KPIS: DashboardSummary = {
 
 export function AdminDashboardPage() {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTabState] = useState(() => getAdminTabFromPath(window.location.pathname));
   const [isClearingCache, setIsClearingCache] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -57,6 +73,26 @@ export function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const notifRef = useRef<HTMLDivElement>(null);
+
+  const setActiveTab = (tab: string) => {
+    const nextTab = VALID_ADMIN_TABS.includes(tab) ? tab : 'dashboard';
+    setActiveTabState(nextTab);
+    const nextPath = adminPathForTab(nextTab);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+      window.dispatchEvent(new Event('popstate'));
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  // Keep tab in sync with browser back/forward
+  useEffect(() => {
+    const syncFromUrl = () => {
+      setActiveTabState(getAdminTabFromPath(window.location.pathname));
+    };
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, []);
 
   const { data: kpis, isLoading, refetch } = useQuery({
     queryKey: ['admin-summary'],
@@ -185,7 +221,8 @@ export function AdminDashboardPage() {
     setIsNotificationsOpen(false);
   };
 
-  if (isLoading && !kpis) {
+  // Only block the dashboard shell on first KPI load; other tabs render immediately from the URL
+  if (activeTab === 'dashboard' && isLoading && !kpis) {
     return (
       <div className="flex flex-col items-center justify-center py-32 space-y-3">
         <Loader2 className="w-8 h-8 animate-spin text-brand-crimson" />
