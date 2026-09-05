@@ -44,13 +44,10 @@ const DEFAULT_HERO_BANNERS: Banner[] = [
 ];
 
 export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
-  // Stabilize display banners list so there are always at least 3 slides
+  // Use real banners whenever present; only fall back when the list is empty
   const displayBanners = useMemo(() => {
-    if (banners && banners.length >= 2) {
+    if (banners && banners.length > 0) {
       return banners;
-    }
-    if (banners && banners.length === 1) {
-      return [...banners, ...DEFAULT_HERO_BANNERS];
     }
     return DEFAULT_HERO_BANNERS;
   }, [banners]);
