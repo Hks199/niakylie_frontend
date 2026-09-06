@@ -212,73 +212,112 @@ export const ordersApi = {
     }
   },
 
-  getUserOrders: async (): Promise<Order[]> => {
+  getUserOrders: async (params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<{ data: Order[]; total: number; page: number; limit: number; totalPages: number }> => {
+    const page = Math.max(1, params?.page || 1);
+    const limit = Math.max(1, params?.limit || 10);
+
+    const mapOrder = (item: any): Order => {
+      const orderId = item.orderNumber || item.orderId || item._id || item.id;
+      const totalAmount = item.pricing?.grandTotal ?? item.grandTotal ?? item.totals?.total ?? 0;
+
+      const estDate = item.shippingInfo?.estimatedDelivery
+        ? new Date(item.shippingInfo.estimatedDelivery).toLocaleDateString('en-IN', {
+            weekday: 'short',
+            day: 'numeric',
+            month: 'short',
+          })
+        : '3-5 Business Days';
+
+      return {
+        ...item,
+        id: orderId,
+        orderId,
+        status: item.orderStatus || item.status || 'CONFIRMED',
+        paymentStatus: item.paymentInfo?.status || item.paymentStatus || 'PAID',
+        paymentMethod: item.paymentInfo?.method || item.paymentMethod || 'COD',
+        deliveryAddress: item.shippingAddress || item.deliveryAddress || {},
+        estimatedDelivery: item.estimatedDelivery || estDate,
+        shippingInfo: item.shippingInfo,
+        returnInfo: item.returnInfo,
+        items: (item.items || []).map((it: any) => ({
+          id: it.productId || it._id || it.sku,
+          productId: it.productId,
+          variantId: it.variantId,
+          sku: it.sku,
+          name: it.name || it.title || 'NiaKylie Fashion Item',
+          price: it.unitPrice || it.price || 0,
+          quantity: it.quantity || 1,
+          color: it.color,
+          size: it.size,
+          image: formatImageUrl(
+            it.image ||
+              (typeof it.productId === 'object'
+                ? it.productId?.thumbnail || it.productId?.images?.[0]
+                : undefined)
+          ),
+        })),
+        createdAt: item.createdAt || new Date().toISOString(),
+        totals: {
+          subtotal: item.pricing?.subtotal ?? item.totals?.subtotal ?? 0,
+          discount: item.pricing?.totalDiscount ?? item.totals?.discount ?? 0,
+          couponDiscount: item.pricing?.couponDiscount ?? item.totals?.couponDiscount ?? 0,
+          onlinePaymentDiscount:
+            item.pricing?.onlinePaymentDiscount ?? item.totals?.onlinePaymentDiscount ?? 0,
+          shippingFee: item.pricing?.shippingFee ?? item.totals?.shippingFee ?? 0,
+          tax: item.pricing?.tax ?? item.totals?.tax ?? 0,
+          total: totalAmount,
+        },
+      };
+    };
+
     try {
       let res: any;
       try {
-        res = await apiClient.get('/orders/my');
+        res = await apiClient.get('/orders/my', { params: { page, limit } });
       } catch (e) {
         try {
-          res = await apiClient.get('/orders');
+          res = await apiClient.get('/orders', { params: { page, limit } });
         } catch (e2) {
           // ignore
         }
       }
 
+      // Paginated shape: { data, total, page, limit, totalPages }
+      if (res && Array.isArray(res.data) && typeof res.total === 'number') {
+        return {
+          data: res.data.map(mapOrder),
+          total: res.total,
+          page: res.page || page,
+          limit: res.limit || limit,
+          totalPages: res.totalPages || Math.ceil(res.total / limit) || 1,
+        };
+      }
+
+      // Legacy array response fallback
       const rawList = Array.isArray(res)
         ? res
         : Array.isArray(res?.data)
         ? res.data
         : Array.isArray(res?.data?.data)
         ? res.data.data
-        : (res?.items || []);
+        : res?.items || [];
 
-      return rawList.map((item: any) => {
-        const orderId = item.orderNumber || item.orderId || item._id || item.id;
-        const totalAmount = item.pricing?.grandTotal ?? item.grandTotal ?? item.totals?.total ?? 0;
-        
-        const estDate = item.shippingInfo?.estimatedDelivery 
-          ? new Date(item.shippingInfo.estimatedDelivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
-          : '3-5 Business Days';
-
-        return {
-          ...item,
-          id: orderId,
-          orderId,
-          status: item.orderStatus || item.status || 'CONFIRMED',
-          paymentStatus: item.paymentInfo?.status || item.paymentStatus || 'PAID',
-          paymentMethod: item.paymentInfo?.method || item.paymentMethod || 'COD',
-          deliveryAddress: item.shippingAddress || item.deliveryAddress || {},
-          estimatedDelivery: item.estimatedDelivery || estDate,
-          shippingInfo: item.shippingInfo,
-          returnInfo: item.returnInfo,
-          items: (item.items || []).map((it: any) => ({
-            id: it.productId || it._id || it.sku,
-            productId: it.productId,
-            variantId: it.variantId,
-            sku: it.sku,
-            name: it.name || it.title || 'NiaKylie Fashion Item',
-            price: it.unitPrice || it.price || 0,
-            quantity: it.quantity || 1,
-            color: it.color,
-            size: it.size,
-            image: formatImageUrl(it.image || (typeof it.productId === 'object' ? (it.productId?.thumbnail || it.productId?.images?.[0]) : undefined)),
-          })),
-          createdAt: item.createdAt || new Date().toISOString(),
-          totals: {
-            subtotal: item.pricing?.subtotal ?? item.totals?.subtotal ?? 0,
-            discount: item.pricing?.totalDiscount ?? item.totals?.discount ?? 0,
-            couponDiscount: item.pricing?.couponDiscount ?? item.totals?.couponDiscount ?? 0,
-            onlinePaymentDiscount: item.pricing?.onlinePaymentDiscount ?? item.totals?.onlinePaymentDiscount ?? 0,
-            shippingFee: item.pricing?.shippingFee ?? item.totals?.shippingFee ?? 0,
-            tax: item.pricing?.tax ?? item.totals?.tax ?? 0,
-            total: totalAmount,
-          },
-        };
-      });
+      const mapped = rawList.map(mapOrder);
+      const total = mapped.length;
+      const start = (page - 1) * limit;
+      return {
+        data: mapped.slice(start, start + limit),
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit) || 1,
+      };
     } catch (error) {
       console.warn('Failed to fetch user orders from backend API:', error);
-      return [];
+      return { data: [], total: 0, page, limit, totalPages: 1 };
     }
   },
 
