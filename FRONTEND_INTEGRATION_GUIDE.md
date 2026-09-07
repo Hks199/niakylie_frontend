@@ -8,16 +8,16 @@ This guide details how to connect your React + Tailwind CSS frontend (or Next.js
 
 | Environment | Base API URL | Swagger Documentation |
 |---|---|---|
-| **Local Development** | `http://localhost:3000/api/v1` | `http://localhost:3000/api/docs` |
+| **Local Development** | `https://api.niakylie.com/api/v1` | `http://localhost:3000/api/docs` |
 | **Production** | `https://api.niakylie.com/api/v1` | `https://api.niakylie.com/api/docs` |
 
 ### Frontend Environment Variable (`.env.local`)
 ```env
 # Vite
-VITE_API_BASE_URL=http://localhost:3000/api/v1
+VITE_API_BASE_URL=https://api.niakylie.com/api/v1
 
 # Next.js
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.niakylie.com/api/v1
 ```
 
 ---
@@ -47,7 +47,7 @@ Here is the exact Axios client configuration to include in your frontend codebas
 ```typescript
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.niakylie.com/api/v1';
 
 // Get or initialize guest session ID
 const getGuestId = (): string => {
