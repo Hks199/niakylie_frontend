@@ -1,4 +1,5 @@
 import { useCategories } from '../../hooks/useCategories';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 export function CategoryBubbleBar() {
   const { allCategories, isLoading } = useCategories({ status: true });
@@ -34,7 +35,7 @@ export function CategoryBubbleBar() {
               rawImg && rawImg !== 'undefined' && rawImg !== 'null' && rawImg.trim() !== ''
                 ? rawImg.startsWith('http')
                   ? rawImg
-                  : `http://localhost:3000${rawImg}`
+                  : formatImageUrl(rawImg)
                 : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=250&q=80';
 
             return (

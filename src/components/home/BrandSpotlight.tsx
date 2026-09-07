@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { brandsApi } from '../../api/brands';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 const FALLBACK_BRANDS = [
   {
@@ -51,7 +52,7 @@ export function BrandSpotlight() {
         tagline: b.description || 'Exclusive Handcrafted Couture',
         discount: 'DESIGNER EDIT',
         imageUrl: b.logo
-          ? (b.logo.startsWith('http') ? b.logo : `http://localhost:3000${b.logo}`)
+          ? formatImageUrl(b.logo)
           : FALLBACK_BRANDS[idx % FALLBACK_BRANDS.length].imageUrl,
         slug: b.slug,
       }))

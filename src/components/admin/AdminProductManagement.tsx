@@ -25,6 +25,7 @@ import { adminApi } from '../../api/admin';
 import { categoriesApi } from '../../api/categories';
 import { brandsApi } from '../../api/brands';
 import { AdminProduct, ProductVariant } from '../../types/adminProduct';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface ProductVariantInput {
   color: string;
@@ -694,7 +695,7 @@ export function AdminProductManagement() {
                       const imageSrc = rawImg
                         ? rawImg.startsWith('http')
                           ? rawImg
-                          : `http://localhost:3000${rawImg}`
+                          : formatImageUrl(rawImg)
                         : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=60&q=80';
 
                       const offerPrice = mainVariant?.offerPrice ?? (prod as any).price ?? 1999;
@@ -977,7 +978,7 @@ export function AdminProductManagement() {
                 </h4>
                 <div className="flex items-center space-x-2 overflow-x-auto scrollbar-none pb-2">
                   {previewProduct.images.map((img: string, i: number) => {
-                    const src = img.startsWith('http') ? img : `http://localhost:3000${img}`;
+                    const src = formatImageUrl(img);
                     return (
                       <img
                         key={i}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Sparkles, Clock, ArrowRight, Tag } from 'lucide-react';
 import { Banner } from '../../types/banner';
 import { apiClient } from '../../api/client';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface OfferBannerGridProps {
   banners?: Banner[];
@@ -37,7 +38,7 @@ export function OfferBannerGrid({ banners = [] }: OfferBannerGridProps) {
 
   const resolveBannerImg = (path?: string) => {
     if (!path) return 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80';
-    return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+    return formatImageUrl(path);
   };
 
   const hasDynamicBanners = banners && banners.length > 0;

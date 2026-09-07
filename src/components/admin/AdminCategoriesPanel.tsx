@@ -23,6 +23,7 @@ import {
 import { categoriesApi } from '../../api/categories';
 import { Category } from '../../types/category';
 import { CreateCategoryModal } from './CreateCategoryModal';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface CategoryFormData {
   name: string;
@@ -493,7 +494,7 @@ export function AdminCategoriesPanel() {
                       <td className="py-3 pl-2 flex items-center space-x-3">
                         {cat.image ? (
                           <img
-                            src={cat.image.startsWith('http') ? cat.image : `http://localhost:3000${cat.image}`}
+                            src={formatImageUrl(cat.image)}
                             alt={cat.name}
                             onError={(e) => {
                               (e.currentTarget as HTMLImageElement).src =

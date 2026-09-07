@@ -1,5 +1,6 @@
 import { Truck, Zap } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface OrderSummaryStepProps {
   shippingType: 'standard' | 'express';
@@ -42,7 +43,7 @@ export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBac
           const title = item.name || item.title || product.name || product.title || 'Fashion Garment';
           const rawImg = item.image || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
           const image = rawImg
-            ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+            ? formatImageUrl(rawImg)
             : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=100&q=80';
 
           return (

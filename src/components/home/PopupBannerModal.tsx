@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Sparkles, ArrowRight } from 'lucide-react';
 import { Banner } from '../../types/banner';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface PopupBannerModalProps {
   banners: Banner[];
@@ -24,7 +25,7 @@ export function PopupBannerModal({ banners }: PopupBannerModalProps) {
 
   const resolveBannerImg = (path?: string) => {
     if (!path) return '';
-    return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+    return formatImageUrl(path);
   };
 
   return (

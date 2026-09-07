@@ -1,5 +1,6 @@
 import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 export function CartDrawer() {
   const { isCartOpen, setIsCartOpen, cartItems, cartTotals, itemCount, updateQuantity, removeItem, isLoading } =
@@ -43,7 +44,7 @@ export function CartDrawer() {
               const title = item.name || item.title || (product as any)?.name || (product as any)?.title || 'Fashion Garment';
               const rawImg = item.image || (variant as any)?.imageUrl || (product as any)?.thumbnail || (Array.isArray((product as any)?.images) ? (product as any)?.images[0] : (product as any)?.images) || '';
               const image = rawImg
-                ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+                ? formatImageUrl(rawImg)
                 : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
               const size = item.size || (variant as any)?.size || 'Free Size';
               const color = item.color || (variant as any)?.color || 'Standard';

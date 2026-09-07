@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Cart, CartItem, CartTotals, AddToCartPayload } from '../types';
 import { apiClient } from '../api/client';
 import { useWishlistStore } from './useWishlistStore';
+import { formatImageUrl } from '../utils/imageUtils';
 
 const initialTotals: CartTotals = {
   subtotal: 0,
@@ -54,7 +55,7 @@ const normalizeCartResponse = (rawCart: any) => {
 
     const rawImg = item.image || pObj.thumbnail || (Array.isArray(pObj.images) ? pObj.images[0] : '') || '';
     const image = rawImg
-      ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+      ? formatImageUrl(rawImg)
       : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
 
     const pTitle = item.name || item.title || pObj.name || pObj.title || 'Fashion Garment';

@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Image as ImageIcon, Plus, Trash2, Edit2, X, RefreshCw, AlertCircle, Check, Search, ToggleLeft, ToggleRight, ExternalLink, Calendar } from 'lucide-react';
 import { bannersApi } from '../../api/banners';
 import { Banner, BannerType, BannerPosition } from '../../types/banner';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface BannerFormData {
   title: string;
@@ -219,7 +220,7 @@ export function AdminBannersPanel() {
 
   const resolveImageUrl = (path?: string) => {
     if (!path) return '';
-    return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+    return formatImageUrl(path);
   };
 
   return (

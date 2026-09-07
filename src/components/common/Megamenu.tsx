@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useCategories } from '../../hooks/useCategories';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 export interface MegamenuCategory {
   title: string;
@@ -63,9 +64,7 @@ export function Megamenu() {
         ? {
             title: root.name,
             subtitle: root.description || 'Exclusive Collection',
-            imageUrl: (root.banner || root.image)!.startsWith('http')
-              ? (root.banner || root.image)!
-              : `http://localhost:3000${root.banner || root.image}`,
+            imageUrl: formatImageUrl(root.banner || root.image),
             linkUrl: `/category/${root.slug}`,
             discountTag: 'EXPLORE',
           }

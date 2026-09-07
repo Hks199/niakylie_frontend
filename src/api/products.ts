@@ -1,5 +1,6 @@
 import { apiClient } from './client';
 import { Product } from '../types';
+import { formatImageUrl } from '../utils/imageUtils';
 
 export interface ProductQueryParams {
   page?: number;
@@ -137,13 +138,11 @@ export function normalizeProduct(p: any): Product {
 
   const rawImage = (Array.isArray(targetObj.images) && targetObj.images[0]) || targetObj.thumbnail;
   const imageVal = rawImage
-    ? rawImage.startsWith('http')
-      ? rawImage
-      : `http://localhost:3000${rawImage}`
+    ? formatImageUrl(rawImage)
     : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
 
   const allImages = Array.isArray(p.images) && p.images.length > 0
-    ? p.images.map((img: string) => (img.startsWith('http') ? img : `http://localhost:3000${img}`))
+    ? p.images.map((img: string) => formatImageUrl(img))
     : [imageVal];
 
   const rawVariants = Array.isArray(p.variants) ? p.variants : [];
@@ -152,7 +151,7 @@ export function normalizeProduct(p: any): Product {
     const vOffer = v.offerPrice ?? v.price ?? p.price ?? 2999;
     const vMrp = v.mrp ?? v.originalPrice ?? p.originalPrice ?? vOffer * 1.5;
     const vImages = Array.isArray(v.images) && v.images.length > 0
-      ? v.images.map((img: string) => (img.startsWith('http') ? img : `http://localhost:3000${img}`))
+      ? v.images.map((img: string) => formatImageUrl(img))
       : allImages;
 
     return {

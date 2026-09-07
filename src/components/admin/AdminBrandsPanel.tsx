@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Award, Plus, Trash2, Edit2, X, RefreshCw, AlertCircle, Check, Image as ImageIcon, Search } from 'lucide-react';
 import { brandsApi } from '../../api/brands';
 import { Brand } from '../../types/brand';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface BrandFormData {
   name: string;
@@ -253,7 +254,7 @@ export function AdminBrandsPanel() {
                   const logoUrl = b.logo
                     ? b.logo.startsWith('http')
                       ? b.logo
-                      : `http://localhost:3000${b.logo}`
+                      : formatImageUrl(b.logo)
                     : null;
 
                   return (

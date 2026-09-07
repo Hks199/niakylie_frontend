@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { RefreshCw, Package, Users, AlertCircle } from 'lucide-react';
 import { adminApi } from '../../api/admin';
 import { InventoryAlertItem } from '../../types/admin';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface AdminDataTablesProps {
   showInventoryAlerts?: boolean;
@@ -25,7 +26,7 @@ const resolveProductImage = (item: any): string => {
   if (imgPath.startsWith('http://') || imgPath.startsWith('https://') || imgPath.startsWith('data:') || imgPath.startsWith('blob:')) {
     return imgPath;
   }
-  return `http://localhost:3000${imgPath.startsWith('/') ? imgPath : '/' + imgPath}`;
+  return formatImageUrl(imgPath);
 };
 
 export function AdminDataTables({

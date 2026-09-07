@@ -1,6 +1,7 @@
 import { Trash2, Heart } from 'lucide-react';
 import { CartItem } from '../../types';
 import { useCartStore } from '../../store/useCartStore';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface CartItemListProps {
   items: CartItem[];
@@ -23,7 +24,7 @@ export function CartItemList({ items }: CartItemListProps) {
         
         const rawImg = item.image || product.thumbnail || (Array.isArray(product.images) ? product.images[0] : product.images) || '';
         const image = rawImg
-          ? (rawImg.startsWith('http') || rawImg.startsWith('data:') ? rawImg : `http://localhost:3000${rawImg.startsWith('/') ? '' : '/'}${rawImg}`)
+          ? formatImageUrl(rawImg)
           : 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80';
         const size = item.size || variant.size || 'Free Size';
         const color = item.color || variant.color || 'Standard';

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 import { Banner } from '../../types';
+import { formatImageUrl } from '../../utils/imageUtils';
 
 interface HeroBannerCarouselProps {
   banners?: Banner[];
@@ -84,7 +85,7 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
 
   const resolveBannerImg = (path?: string) => {
     if (!path || path === 'undefined' || path === 'null' || path.trim() === '') return '';
-    return path.startsWith('http') ? path : `http://localhost:3000${path}`;
+    return formatImageUrl(path);
   };
 
   const desktopImg =

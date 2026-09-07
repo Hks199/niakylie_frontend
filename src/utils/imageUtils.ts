@@ -12,7 +12,7 @@ export function formatImageUrl(url?: string | null): string {
   const cleanUrl = url.trim();
 
   // If already absolute URL or base64 data URI
-  if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('data:')) {
+  if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://') || cleanUrl.startsWith('data:') || cleanUrl.startsWith('blob:')) {
     return cleanUrl;
   }
 
