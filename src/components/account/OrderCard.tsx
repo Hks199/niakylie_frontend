@@ -17,6 +17,9 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; bg: string; text: stri
   OUT_FOR_DELIVERY: { label: 'Out for Delivery', bg: 'bg-orange-100',  text: 'text-orange-800' },
   DELIVERED:        { label: 'Delivered',        bg: 'bg-emerald-100', text: 'text-emerald-800'},
   CANCELLED:        { label: 'Cancelled',        bg: 'bg-rose-100',    text: 'text-rose-800'   },
+  RETURN_REQUESTED: { label: 'Return Requested', bg: 'bg-orange-100', text: 'text-orange-800' },
+  RETURNED:         { label: 'Returned',         bg: 'bg-gray-100',   text: 'text-gray-700'   },
+  REFUNDED:         { label: 'Refunded',         bg: 'bg-teal-100',   text: 'text-teal-800'   },
 };
 
 export function OrderCard({ order, onViewDetails, onCancelled }: OrderCardProps) {

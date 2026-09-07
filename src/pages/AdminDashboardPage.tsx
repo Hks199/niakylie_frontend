@@ -15,7 +15,6 @@ import {
   Clock,
   CheckCircle2,
   Star,
-  Ban,
 } from 'lucide-react';
 import { adminApi } from '../api/admin';
 import { notificationsApi, AppNotification } from '../api/notifications';
