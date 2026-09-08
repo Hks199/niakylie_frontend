@@ -15,6 +15,7 @@ export interface MegamenuCategory {
     title: string;
     subtitle: string;
     imageUrl: string;
+    fallbackImageUrl?: string;
     linkUrl: string;
     discountTag?: string;
   };
@@ -65,6 +66,7 @@ export function Megamenu() {
             title: root.name,
             subtitle: root.description || 'Exclusive Collection',
             imageUrl: formatImageUrl(root.banner || root.image),
+            fallbackImageUrl: root.image ? formatImageUrl(root.image) : undefined,
             linkUrl: `/category/${root.slug}`,
             discountTag: 'EXPLORE',
           }
@@ -127,6 +129,14 @@ export function Megamenu() {
                         src={menu.featuredCard.imageUrl}
                         alt={menu.featuredCard.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(event) => {
+                          const fallbackUrl = menu.featuredCard?.fallbackImageUrl;
+                          if (fallbackUrl && event.currentTarget.src !== fallbackUrl) {
+                            event.currentTarget.src = fallbackUrl;
+                          } else {
+                            event.currentTarget.style.display = 'none';
+                          }
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/30 to-transparent p-4 flex flex-col justify-end text-white">
                         {menu.featuredCard.discountTag && (
