@@ -10,7 +10,7 @@ import { SimilarProducts } from '../components/pdp/SimilarProducts';
 import { productsApi } from '../api/products';
 import { reviewsApi } from '../api/reviews';
 import { apiClient } from '../api/client';
-import { useCartStore, useWishlistStore } from '../store';
+import { useAuthStore, useCartStore, useWishlistStore } from '../store';
 import { ProductVariant } from '../types';
 import { useCategories } from '../hooks/useCategories';
 import { buildBreadcrumbTrail } from '../utils/breadcrumb';
@@ -24,6 +24,7 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
   const [copiedPromo, setCopiedPromo] = useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(undefined);
   const { addToCart } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
   const { allCategories } = useCategories();
 
@@ -120,6 +121,10 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
 
   const handleAddToCart = async () => {
     if (isOutOfStock) return;
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('auth:require-login'));
+      return;
+    }
     setIsAdding(true);
     try {
       await addToCart({

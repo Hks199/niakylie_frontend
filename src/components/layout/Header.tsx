@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, Heart, ShoppingBag, Bell } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { AnnouncementBar } from '../common/AnnouncementBar';
@@ -19,6 +19,12 @@ export function Header() {
   const { user } = useAuthStore();
   const { itemCount, setIsCartOpen } = useCartStore();
   const { wishlistItems } = useWishlistStore();
+
+  useEffect(() => {
+    const handleRequireLogin = () => setIsAuthModalOpen(true);
+    window.addEventListener('auth:require-login', handleRequireLogin);
+    return () => window.removeEventListener('auth:require-login', handleRequireLogin);
+  }, []);
 
   const { data: unreadData } = useQuery({
     queryKey: ['unreadNotificationsCount'],

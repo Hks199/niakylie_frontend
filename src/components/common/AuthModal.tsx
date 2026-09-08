@@ -205,7 +205,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'login' }: AuthModalP
 
       {/* Modal Dialog */}
       <div className="flex min-h-full items-center justify-center p-2.5 sm:p-4 text-center">
-        <div className="relative w-full max-w-[310px] sm:max-w-md transform overflow-hidden rounded-2xl sm:rounded-3xl bg-white text-left align-middle shadow-2xl transition-all animate-in zoom-in-95 duration-200 border border-gray-100">
+        <div className="relative w-full max-w-[calc(100vw-20px)] sm:max-w-md transform overflow-hidden rounded-2xl sm:rounded-3xl bg-white text-left align-middle shadow-2xl transition-all animate-in zoom-in-95 duration-200 border border-gray-100">
           {/* Close button */}
           <button
             onClick={handleClose}

@@ -3,6 +3,7 @@ import { Heart, ShoppingBag, Star, Check } from 'lucide-react';
 import { Product } from '../../types';
 import { useCartStore } from '../../store/useCartStore';
 import { useWishlistStore } from '../../store/useWishlistStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +12,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCartStore();
+  const { isAuthenticated } = useAuthStore();
   const { toggleWishlist, isInWishlist } = useWishlistStore();
 
   const isWishlisted = isInWishlist(product.id || product._id || '');
@@ -18,6 +20,11 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!isAuthenticated) {
+      window.dispatchEvent(new CustomEvent('auth:require-login'));
+      return;
+    }
 
     const variantId = product.variants?.[0]?.id || product.variants?.[0]?._id;
     await addToCart({
