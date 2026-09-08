@@ -2,6 +2,7 @@ import { apiClient } from './client';
 import { addressesApi } from './addresses';
 import { CartItem } from '../types';
 import { formatImageUrl } from '../utils/imageUtils';
+import { NIAKYLIE_LOGO_BASE64 } from '../utils/logoBase64';
 
 export interface OrderItem {
   productId: string;
@@ -403,9 +404,13 @@ export const ordersApi = {
     try {
       const invoiceData = await ordersApi.getInvoice(id);
       if (invoiceData && invoiceData.htmlTemplate) {
+        const htmlTemplate = invoiceData.htmlTemplate.replace(
+          /(<img\b[^>]*\bsrc=["'])[^"']+(["'][^>]*>)/i,
+          `$1${NIAKYLIE_LOGO_BASE64}$2`,
+        );
         const printWindow = window.open('', '_blank');
         if (printWindow) {
-          printWindow.document.write(invoiceData.htmlTemplate);
+          printWindow.document.write(htmlTemplate);
           printWindow.document.close();
         }
       } else {

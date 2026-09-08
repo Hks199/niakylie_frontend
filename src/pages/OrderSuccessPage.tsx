@@ -38,12 +38,17 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
 
   const handleDownloadReceipt = async () => {
     let htmlContent = '';
-    const logoUrl = `${window.location.origin}/asset/niakylie_logo.png`;
+    // Embed the logo so mobile print/PDF viewers do not lose a remote image while loading.
+    const logoUrl = NIAKYLIE_LOGO_BASE64;
 
     try {
       const invoiceData = await ordersApi.getInvoice(orderId || displayOrderId);
       if (invoiceData && invoiceData.htmlTemplate) {
         htmlContent = invoiceData.htmlTemplate;
+        htmlContent = htmlContent.replace(
+          /(<img\b[^>]*\bsrc=["'])[^"']+(["'][^>]*>)/i,
+          `$1${logoUrl}$2`,
+        );
         if (!htmlContent.includes('<base')) {
           htmlContent = htmlContent.replace('<head>', `<head><base href="${window.location.origin}/" />`);
         }
