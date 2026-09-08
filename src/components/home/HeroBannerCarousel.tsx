@@ -8,50 +8,8 @@ interface HeroBannerCarouselProps {
   banners?: Banner[];
 }
 
-const DEFAULT_HERO_BANNERS: Banner[] = [
-  {
-    _id: 'default-1',
-    title: 'Exquisite Handcrafted Sarees',
-    subtitle: 'Discover timeless elegance with our handcrafted Pure Silk, Kanjivaram & Banarasi sarees.',
-    imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80',
-    discountBadge: 'NEW COLLECTION 2026',
-    ctaText: 'SHOP SAREES NOW',
-    linkUrl: '/collections',
-    type: 'HOMEPAGE',
-    isActive: true,
-  },
-  {
-    _id: 'default-2',
-    title: 'Royal Bridal Saree Edition',
-    subtitle: 'Elevate your wedding festivities with authentic Zari embroidery & luxurious heritage weaves.',
-    imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1600&q=80',
-    discountBadge: 'FLAT 25% OFF',
-    ctaText: 'DISCOVER BRIDAL',
-    linkUrl: '/collections',
-    type: 'HOMEPAGE',
-    isActive: true,
-  },
-  {
-    _id: 'default-3',
-    title: 'Festive Chanderi & Organza',
-    subtitle: 'Lightweight luxury for every occasion. Experience graceful silhouettes & modern pastels.',
-    imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=80',
-    discountBadge: 'FESTIVE SPECIAL',
-    ctaText: 'EXPLORE DESIGNS',
-    linkUrl: '/collections',
-    type: 'HOMEPAGE',
-    isActive: true,
-  },
-];
-
 export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
-  // Use real banners whenever present; only fall back when the list is empty
-  const displayBanners = useMemo(() => {
-    if (banners && banners.length > 0) {
-      return banners;
-    }
-    return DEFAULT_HERO_BANNERS;
-  }, [banners]);
+  const displayBanners = useMemo(() => banners ?? [], [banners]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -82,6 +40,8 @@ export function HeroBannerCarousel({ banners }: HeroBannerCarouselProps) {
   }, [displayBanners.length, currentIndex]);
 
   const currentBanner = displayBanners[currentIndex] || displayBanners[0];
+
+  if (!currentBanner) return null;
 
   const resolveBannerImg = (path?: string) => {
     if (!path || path === 'undefined' || path === 'null' || path.trim() === '') return '';

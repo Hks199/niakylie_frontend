@@ -7,41 +7,6 @@ import {
   ReorderBannerItem,
 } from '../types/banner';
 
-const DEFAULT_BANNERS: Banner[] = [
-  {
-    _id: 'banner-01',
-    title: 'Royal Banarasi Festive Edit',
-    subtitle: 'Unveil Handcrafted Silk Sarees with Pure Zari Drapery',
-    type: BannerType.HOMEPAGE,
-    position: BannerPosition.TOP,
-    imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=80',
-    mobileImageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
-    linkUrl: '/category/sarees',
-    linkLabel: 'Explore Royal Saree Edit',
-    displayOrder: 1,
-    isActive: true,
-    isDeleted: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    _id: 'banner-02',
-    title: 'Bridal Lehengas & Couture',
-    subtitle: 'Flat 30% Off on Signature Wedding Trousseau Specials',
-    type: BannerType.HOMEPAGE,
-    position: BannerPosition.TOP,
-    imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1600&q=80',
-    mobileImageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
-    linkUrl: '/category/lehengas',
-    linkLabel: 'Shop Bridal Edit',
-    displayOrder: 2,
-    isActive: true,
-    isDeleted: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
 /**
  * Safely extract banner array from various backend response shapes
  */
@@ -69,7 +34,7 @@ function normalizeBanner(b: any): Banner {
     subtitle: b.subtitle || '',
     type: b.type || BannerType.HOMEPAGE,
     position: b.position || BannerPosition.TOP,
-    imageUrl: b.imageUrl || b.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1400&q=80',
+    imageUrl: b.imageUrl || b.image || '',
     mobileImageUrl: b.mobileImageUrl || b.mobileImage || '',
     linkUrl: b.linkUrl || '/collections',
     linkLabel: b.linkLabel || 'Shop Collection',
@@ -91,10 +56,10 @@ export const bannersApi = {
       const response = await apiClient.get<any>('/banners', { params });
       const rawList = extractBannerList(response);
       const normalized = rawList.map(normalizeBanner);
-      return normalized.length > 0 ? normalized : DEFAULT_BANNERS;
+      return normalized;
     } catch (error) {
-      console.warn('GET /banners failed, using fallback mock banners:', error);
-      return DEFAULT_BANNERS;
+      console.warn('GET /banners failed:', error);
+      return [];
     }
   },
 
@@ -116,9 +81,9 @@ export const bannersApi = {
       const response = await apiClient.get<any>('/banners/admin/all', { params });
       const rawList = extractBannerList(response);
       const normalized = rawList.map(normalizeBanner);
-      return normalized.length > 0 ? normalized : DEFAULT_BANNERS;
+      return normalized;
     } catch (error) {
-      console.warn('GET /banners/admin/all failed, returning public active banners fallback:', error);
+      console.warn('GET /banners/admin/all failed:', error);
       return bannersApi.getActiveBanners(params);
     }
   },
