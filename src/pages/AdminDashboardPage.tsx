@@ -31,7 +31,6 @@ import { AdminBrandsPanel } from '../components/admin/AdminBrandsPanel';
 import { AdminFaqManagement } from '../components/admin/AdminFaqManagement';
 import { AdminCouponsPanel } from '../components/admin/AdminCouponsPanel';
 import { AdminAnnouncementsPanel } from '../components/admin/AdminAnnouncementsPanel';
-import { DashboardSummary } from '../types/admin';
 
 const VALID_ADMIN_TABS = NAV_ITEMS.map((item) => item.id);
 
@@ -48,19 +47,6 @@ function getAdminTabFromPath(pathname: string): string {
 function adminPathForTab(tab: string): string {
   return tab === 'dashboard' ? '/admin' : `/admin/${tab}`;
 }
-
-const DEFAULT_KPIS: DashboardSummary = {
-  totalRevenue: 2485900,
-  totalOrders: 1420,
-  averageOrderValue: 1750,
-  totalCustomers: 890,
-  newCustomers: 64,
-  totalProducts: 180,
-  inventoryAlerts: {
-    outOfStockCount: 3,
-    lowStockCount: 12,
-  },
-};
 
 export function AdminDashboardPage() {
   const queryClient = useQueryClient();
@@ -116,7 +102,15 @@ export function AdminDashboardPage() {
     retry: 1,
   });
 
-  const activeKpis = kpis || DEFAULT_KPIS;
+  const activeKpis = kpis || {
+    totalRevenue: 0,
+    totalOrders: 0,
+    averageOrderValue: 0,
+    totalCustomers: 0,
+    newCustomers: 0,
+    totalProducts: 0,
+    inventoryAlerts: { outOfStockCount: 0, lowStockCount: 0 },
+  };
   const outOfStockCount = activeKpis.inventoryAlerts?.outOfStockCount || 0;
   const lowStockCount = activeKpis.inventoryAlerts?.lowStockCount || 0;
   const urgentAlertsCount = outOfStockCount + lowStockCount;

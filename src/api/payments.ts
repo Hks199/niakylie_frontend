@@ -25,58 +25,19 @@ export interface OnlinePaymentDiscountConfig {
 
 export const paymentsApi = {
   createRazorpayOrder: async (amount: number): Promise<RazorpayOrderResponse> => {
-    try {
-      return await apiClient.post<RazorpayOrderResponse>('/payments/razorpay/create-order', { amount });
-    } catch (error) {
-      // Mock fallback
-      return {
-        id: `rpay_${Date.now()}`,
-        amount: amount * 100, // Razorpay uses paise
-        currency: 'INR',
-        keyId: 'rzp_test_mock_key',
-      };
-    }
+    return await apiClient.post<RazorpayOrderResponse>('/payments/razorpay/create-order', { amount });
   },
 
   verifyRazorpay: async (payload: RazorpayVerifyPayload): Promise<{ success: boolean }> => {
-    try {
-      return await apiClient.post('/payments/razorpay/verify', payload);
-    } catch (error) {
-      return { success: true }; // Fallback assume verified for offline dev
-    }
+    return await apiClient.post('/payments/razorpay/verify', payload);
   },
 
   getOnlineDiscountConfig: async (): Promise<OnlinePaymentDiscountConfig> => {
-    try {
-      return await apiClient.get<OnlinePaymentDiscountConfig>('/payments/online-discount');
-    } catch (error) {
-      // Default fallback if offline
-      return {
-        isEnabled: false,
-        discountType: 'PERCENTAGE',
-        discountValue: 5,
-        minOrderAmount: 0,
-        maxDiscountCap: 500,
-        badgeText: 'EXTRA 5% OFF ON ONLINE PAYMENTS',
-        description: 'Pay via UPI or Cards to get extra instant discount',
-      };
-    }
+    return await apiClient.get<OnlinePaymentDiscountConfig>('/payments/online-discount');
   },
 
   getAdminOnlineDiscountConfig: async (): Promise<OnlinePaymentDiscountConfig> => {
-    try {
-      return await apiClient.get<OnlinePaymentDiscountConfig>('/payments/online-discount/admin');
-    } catch (error) {
-      return {
-        isEnabled: false,
-        discountType: 'PERCENTAGE',
-        discountValue: 5,
-        minOrderAmount: 0,
-        maxDiscountCap: 500,
-        badgeText: 'EXTRA 5% OFF ON ONLINE PAYMENTS',
-        description: 'Pay via UPI or Cards to get extra instant discount',
-      };
-    }
+    return await apiClient.get<OnlinePaymentDiscountConfig>('/payments/online-discount/admin');
   },
 
   updateOnlineDiscountConfig: async (payload: Partial<OnlinePaymentDiscountConfig>): Promise<OnlinePaymentDiscountConfig> => {

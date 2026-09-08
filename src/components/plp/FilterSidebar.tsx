@@ -20,14 +20,6 @@ interface FilterSidebarProps {
   isMobile?: boolean;
 }
 
-const FALLBACK_BRANDS_LIST = [
-  'NiaKylie Signature',
-  'Biba',
-  'Ritu Kumar',
-  'Anita Dongre',
-  'FabIndia',
-];
-
 const COLOR_SWATCHES = [
   { name: 'Red', hex: '#E63946' },
   { name: 'Gold', hex: '#D4AF37' },
@@ -67,7 +59,7 @@ export function FilterSidebar({ filters, onFilterChange, isMobile = false }: Fil
   });
 
   const apiBrandsList = brandsResponse?.data?.map((b) => b.name) || [];
-  const activeBrandsList = apiBrandsList.length > 0 ? apiBrandsList : FALLBACK_BRANDS_LIST;
+  const activeBrandsList = apiBrandsList;
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));

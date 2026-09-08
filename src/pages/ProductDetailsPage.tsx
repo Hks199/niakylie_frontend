@@ -63,32 +63,10 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     queryFn: () => productsApi.getProductBySlug(slug),
   });
 
-  // Fallback product if loading or API offline
-  const activeProduct = product || {
-    id: 'p1',
-    title: 'Crimson Red Banarasi Silk Saree',
-    slug: 'crimson-red-banarasi-silk-saree',
-    brand: 'NiaKylie Signature',
-    description:
-      'Immerse yourself in timeless Indian royalty with this handcrafted Banarasi silk drapery featuring soft Zari floral brocade weaving across the body.',
-    price: 2999,
-    originalPrice: 5999,
-    discountPercentage: 50,
-    rating: 4.8,
-    reviewCount: 142,
-    thumbnail: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
-    images: [
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1000&q=80',
-    ],
-    variants: [
-      { id: 'v1-s', sku: 'BS-RED-S', size: 'Free Size', color: 'Crimson Red', colorHex: '#E63946', price: 2999, stock: 10 },
-      { id: 'v1-g', sku: 'BS-GLD-S', size: 'Free Size', color: 'Royal Gold', colorHex: '#D4AF37', price: 2999, stock: 6 },
-    ],
-    categoryId: 'sarees',
-  };
+  if (!product) {
+    return <div className="flex items-center justify-center py-24 text-sm font-semibold text-slate-500">Product unavailable</div>;
+  }
+  const activeProduct = product;
 
   const targetProductId = activeProduct.id || activeProduct._id || slug;
   const { data: reviewsData } = useQuery({

@@ -3,41 +3,6 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 import { brandsApi } from '../../api/brands';
 import { formatImageUrl } from '../../utils/imageUtils';
 
-const FALLBACK_BRANDS = [
-  {
-    name: 'NiaKylie Signature',
-    filterBrandName: 'NiaKylie Signature',
-    tagline: 'Pure Zari Handloom Heritage',
-    discount: 'UP TO 50% OFF',
-    imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80',
-    slug: 'niakylie-signature',
-  },
-  {
-    name: 'Biba Luxury Edit',
-    filterBrandName: 'Biba',
-    tagline: 'Contemporary Ethnic Suits',
-    discount: 'MIN 40% OFF',
-    imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=400&q=80',
-    slug: 'biba',
-  },
-  {
-    name: 'Ritu Kumar Couture',
-    filterBrandName: 'Ritu Kumar',
-    tagline: 'Royal Bridal & Festives',
-    discount: 'NEW SEASON',
-    imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=400&q=80',
-    slug: 'ritu-kumar',
-  },
-  {
-    name: 'Anita Dongre Grassroot',
-    filterBrandName: 'Anita Dongre',
-    tagline: 'Sustainable Silk Artistry',
-    discount: 'FLAT 30% OFF',
-    imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=400&q=80',
-    slug: 'anita-dongre',
-  },
-];
-
 export function BrandSpotlight() {
   const { data: brandsResponse } = useQuery({
     queryKey: ['brand-spotlight'],
@@ -45,18 +10,16 @@ export function BrandSpotlight() {
   });
 
   const apiBrands = brandsResponse?.data || [];
-  const displayBrands = apiBrands.length > 0
-    ? apiBrands.map((b, idx) => ({
+  const displayBrands = apiBrands.map((b) => ({
         name: b.name,
         filterBrandName: b.name,
         tagline: b.description || 'Exclusive Handcrafted Couture',
         discount: 'DESIGNER EDIT',
         imageUrl: b.logo
           ? formatImageUrl(b.logo)
-          : FALLBACK_BRANDS[idx % FALLBACK_BRANDS.length].imageUrl,
+          : '',
         slug: b.slug,
-      }))
-    : FALLBACK_BRANDS;
+      }));
 
   return (
     <section className="bg-slate-900 text-white py-10 sm:py-16 px-3.5 sm:px-6 lg:px-8">

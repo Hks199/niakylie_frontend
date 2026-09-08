@@ -20,14 +20,7 @@ export function HomePage() {
   const offerBanners = allBanners.filter((b) => b.type === 'OFFER' || b.type === 'FESTIVAL');
   const popupBanners = allBanners.filter((b) => b.type === 'POPUP');
 
-  // 2. Fetch All Products (General Catalog)
-  const { data: allProductsData } = useQuery({
-    queryKey: ['products', 'all-homepage'],
-    queryFn: () => productsApi.getProducts({ limit: 12 }),
-  });
-  const allProducts = allProductsData?.items || [];
-
-  // 3. Fetch Featured Products
+  // Fetch Featured Products
   const { data: featuredData } = useQuery({
     queryKey: ['products', 'featured'],
     queryFn: () => productsApi.getProducts({ isFeatured: true, limit: 8 }),
@@ -45,13 +38,9 @@ export function HomePage() {
     queryFn: () => productsApi.getProducts({ isBestSeller: true, limit: 8 }),
   });
 
-  // Fallback to all products if specific flags (isFeatured / isTrending / isBestSeller) return empty arrays
-  const featuredProducts =
-    featuredData?.items && featuredData.items.length > 0 ? featuredData.items : allProducts;
-  const trendingProducts =
-    trendingData?.items && trendingData.items.length > 0 ? trendingData.items : allProducts;
-  const bestSellerProducts =
-    bestSellerData?.items && bestSellerData.items.length > 0 ? bestSellerData.items : allProducts;
+  const featuredProducts = featuredData?.items || [];
+  const trendingProducts = trendingData?.items || [];
+  const bestSellerProducts = bestSellerData?.items || [];
 
   // 6. Fetch Blogs
   const { data: blogsRaw = [] } = useQuery({

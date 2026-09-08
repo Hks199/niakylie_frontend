@@ -97,51 +97,6 @@ export interface Order {
   };
 }
 
-const MOCK_ORDERS: Order[] = [
-  {
-    id: 'ORD-NK-00012345',
-    orderId: 'ORD-NK-00012345',
-    status: 'DELIVERED',
-    paymentStatus: 'PAID',
-    paymentMethod: 'razorpay',
-    items: [],
-    deliveryAddress: { name: 'Ananya Roy', city: 'Mumbai', state: 'Maharashtra' },
-    estimatedDelivery: 'Thu, 10 Aug',
-    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    courierName: 'BlueDart Express',
-    trackingNumber: 'BD8729340123',
-    trackingUrl: 'https://bluedart.com/track',
-    totals: { subtotal: 3999, discount: 1000, couponDiscount: 500, shippingFee: 0, tax: 200, total: 2699 },
-  },
-  {
-    id: 'ORD-NK-00012346',
-    orderId: 'ORD-NK-00012346',
-    status: 'SHIPPED',
-    paymentStatus: 'PAID',
-    paymentMethod: 'razorpay',
-    items: [],
-    deliveryAddress: { name: 'Ananya Roy', city: 'Mumbai', state: 'Maharashtra' },
-    estimatedDelivery: 'Sat, 16 Aug',
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    courierName: 'Delhivery',
-    trackingNumber: 'DEL9812034567',
-    trackingUrl: 'https://delhivery.com/track',
-    totals: { subtotal: 5999, discount: 2000, couponDiscount: 0, shippingFee: 0, tax: 300, total: 4299 },
-  },
-  {
-    id: 'ORD-NK-00012347',
-    orderId: 'ORD-NK-00012347',
-    status: 'CONFIRMED',
-    paymentStatus: 'PAID',
-    paymentMethod: 'cod',
-    items: [],
-    deliveryAddress: { name: 'Ananya Roy', city: 'Mumbai', state: 'Maharashtra' },
-    estimatedDelivery: 'Tue, 19 Aug',
-    createdAt: new Date().toISOString(),
-    totals: { subtotal: 1999, discount: 500, couponDiscount: 0, shippingFee: 149, tax: 100, total: 1748 },
-  },
-];
-
 export const ordersApi = {
   createOrder: async (payload: CreateOrderPayload): Promise<Order> => {
     let shippingAddress = payload.shippingAddress;
@@ -373,8 +328,6 @@ export const ordersApi = {
       };
     } catch (error) {
       console.warn('Failed to fetch order details:', error);
-      const found = MOCK_ORDERS.find((o) => o.id === id || o.orderId === id);
-      if (found) return found;
       throw error;
     }
   },

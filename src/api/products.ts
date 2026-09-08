@@ -28,93 +28,6 @@ export interface ProductsResponse {
   totalPages: number;
 }
 
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 'p1',
-    _id: 'p1',
-    title: 'Crimson Red Banarasi Silk Saree',
-    name: 'Crimson Red Banarasi Silk Saree',
-    slug: 'crimson-red-banarasi-silk-saree',
-    brand: 'NiaKylie Signature',
-    price: 2999,
-    originalPrice: 5999,
-    discountPercentage: 50,
-    rating: 4.8,
-    reviewCount: 142,
-    thumbnail: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80',
-    categoryId: 'sarees',
-    variants: [
-      { id: 'v1-s', sku: 'BS-RED-S', size: 'Free Size', color: 'Red', price: 2999, stock: 10 },
-    ],
-    isFeatured: true,
-    isTrending: true,
-    createdAt: '2026-08-01',
-  },
-  {
-    id: 'p2',
-    _id: 'p2',
-    title: 'Royal Mustard Anarkali Suit Set',
-    name: 'Royal Mustard Anarkali Suit Set',
-    slug: 'royal-mustard-anarkali-suit-set',
-    brand: 'Biba',
-    price: 2499,
-    originalPrice: 4999,
-    discountPercentage: 50,
-    rating: 4.6,
-    reviewCount: 98,
-    thumbnail: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80',
-    categoryId: 'kurta-sets',
-    variants: [
-      { id: 'v2-m', sku: 'ANR-MST-M', size: 'M', color: 'Gold', price: 2499, stock: 5 },
-    ],
-    isFeatured: true,
-    isTrending: false,
-    createdAt: '2026-08-02',
-  },
-  {
-    id: 'p3',
-    _id: 'p3',
-    title: 'Emerald Velvet Bridal Lehenga',
-    name: 'Emerald Velvet Bridal Lehenga',
-    slug: 'emerald-velvet-bridal-lehenga',
-    brand: 'NiaKylie Signature',
-    price: 8999,
-    originalPrice: 17999,
-    discountPercentage: 50,
-    rating: 4.9,
-    reviewCount: 215,
-    thumbnail: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=600&q=80',
-    categoryId: 'lehengas',
-    variants: [
-      { id: 'v3-m', sku: 'LHG-EMR-M', size: 'M', color: 'Green', price: 8999, stock: 3 },
-    ],
-    isFeatured: true,
-    isTrending: true,
-    createdAt: '2026-08-05',
-  },
-  {
-    id: 'p4',
-    _id: 'p4',
-    title: 'Pastel Floral Organza Saree',
-    name: 'Pastel Floral Organza Saree',
-    slug: 'pastel-floral-organza-saree',
-    brand: 'Ritu Kumar',
-    price: 3499,
-    originalPrice: 6999,
-    discountPercentage: 50,
-    rating: 4.7,
-    reviewCount: 76,
-    thumbnail: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80',
-    categoryId: 'sarees',
-    variants: [
-      { id: 'v4-fs', sku: 'ORG-PST-FS', size: 'Free Size', color: 'Pink', price: 3499, stock: 8 },
-    ],
-    isFeatured: false,
-    isTrending: true,
-    createdAt: '2026-08-04',
-  },
-];
-
 function extractProductList(res: any): any[] {
   if (!res) return [];
   if (Array.isArray(res)) return res;
@@ -246,37 +159,7 @@ export const productsApi = {
       const rawList = extractProductList(response);
       const normalizedItems = rawList.map(normalizeProduct);
 
-      const hasFilterParams = Boolean(
-        params?.search ||
-        params?.category ||
-        params?.categoryId ||
-        params?.brand ||
-        params?.brandId ||
-        params?.minPrice ||
-        params?.maxPrice ||
-        params?.color ||
-        params?.discount ||
-        params?.rating ||
-        params?.isFeatured ||
-        params?.isTrending ||
-        params?.isBestSeller
-      );
-
-      const getBrandStr = (b: any): string => (typeof b === 'string' ? b : b?.name || '');
-
-      let finalItems = normalizedItems;
-      if (normalizedItems.length === 0) {
-        if (params?.brand) {
-          const bInput = params.brand.toLowerCase();
-          const matched = MOCK_PRODUCTS.filter((p) => {
-            const bStr = getBrandStr(p.brand).toLowerCase();
-            return bStr.includes(bInput) || bInput.includes(bStr);
-          });
-          finalItems = matched.length > 0 ? matched : [];
-        } else if (!hasFilterParams) {
-          finalItems = MOCK_PRODUCTS;
-        }
-      }
+      const finalItems = normalizedItems;
 
       const total = response?.meta?.total ?? response?.total ?? finalItems.length;
       const page = params?.page || 1;
@@ -290,22 +173,8 @@ export const productsApi = {
         totalPages,
       };
     } catch (error) {
-      console.warn('GET /products failed, returning fallback mock products:', error);
-      let items = MOCK_PRODUCTS;
-      if (params?.brand) {
-        const bInput = params.brand.toLowerCase();
-        const matched = MOCK_PRODUCTS.filter((p) => {
-          const bStr = (typeof p.brand === 'string' ? p.brand : (p.brand as any)?.name || '').toLowerCase();
-          return bStr.includes(bInput) || bInput.includes(bStr);
-        });
-        if (matched.length > 0) items = matched;
-      }
-      return {
-        items,
-        total: items.length,
-        page: 1,
-        totalPages: 1,
-      };
+      console.warn('GET /products failed:', error);
+      return { items: [], total: 0, page: params?.page || 1, totalPages: 0 };
     }
   },
 
@@ -314,8 +183,7 @@ export const productsApi = {
       const res = await apiClient.get<any>(`/products/${slug}`);
       return normalizeProduct(res);
     } catch (error) {
-      const found = MOCK_PRODUCTS.find((p) => p.slug === slug || p.id === slug || p._id === slug);
-      return found || MOCK_PRODUCTS[0];
+      throw error;
     }
   },
 

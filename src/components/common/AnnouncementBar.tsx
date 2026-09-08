@@ -2,32 +2,8 @@ import { useState, useEffect } from 'react';
 import { Tag, Truck, Sparkles, Gift, Flame, X, ChevronRight } from 'lucide-react';
 import { apiClient } from '../../api/client';
 
-const DEFAULT_ANNOUNCEMENTS = [
-  {
-    _id: '1',
-    text: 'FLAT 50% OFF FESTIVE SALE | Use Code: FESTIVE50',
-    icon: 'Tag',
-    badge: 'Limited Time',
-    link: '#sale',
-  },
-  {
-    _id: '2',
-    text: 'FREE EXPRESS SHIPPING on all orders over ₹999!',
-    icon: 'Truck',
-    badge: 'Free Shipping',
-    link: '#shipping',
-  },
-  {
-    _id: '3',
-    text: 'New Ethnic & Silk Saree Collection 2026 Live Now',
-    icon: 'Sparkles',
-    badge: 'Just Arrived',
-    link: '#collection',
-  },
-];
-
 export function AnnouncementBar() {
-  const [announcements, setAnnouncements] = useState<any[]>(DEFAULT_ANNOUNCEMENTS);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -44,12 +20,10 @@ export function AnnouncementBar() {
           : Array.isArray(res?.announcements)
           ? res.announcements
           : [];
-        if (list.length > 0) {
-          setAnnouncements(list);
-        }
+        setAnnouncements(list);
       })
       .catch((err) => {
-        console.log('Announcements live fetch offline, using default list:', err);
+        console.log('Announcements fetch failed:', err);
       });
     return () => {
       isMounted = false;

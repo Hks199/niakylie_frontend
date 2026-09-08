@@ -32,7 +32,7 @@ export interface FaqItem {
   isActive?: boolean;
 }
 
-const MOCK_PAGES: Record<string, CmsPage> = {
+export const UNUSED_LEGACY_PAGES: Record<string, CmsPage> = {
   'contact-us': {
     slug: 'contact-us',
     title: 'Contact Us - NiaKylie Official Support',
@@ -525,7 +525,7 @@ const MOCK_PAGES: Record<string, CmsPage> = {
   },
 };
 
-const MOCK_FAQS: FaqItem[] = [
+export const UNUSED_LEGACY_FAQS: FaqItem[] = [
   { id: 'f1', category: 'General', question: 'What makes NiaKylie sarees authentic?', answer: 'Every NiaKylie garment carries a QR-coded Certificate of Authenticity, verifiable on our platform, guaranteeing genuine handloom or handcrafted origin from registered GI-tagged weavers.' },
   { id: 'f2', category: 'General', question: 'How do I find my correct size?', answer: 'Visit our Size Guide (available on every product page) for detailed measurement charts. We recommend measuring your bust, waist, and hip and comparing against our chart for the best fit.' },
   { id: 'f3', category: 'Orders', question: 'Can I modify or cancel my order?', answer: 'Orders can be cancelled or modified within 2 hours of placement. Visit My Account → My Orders and click "Cancel Order". After 2 hours, the order enters processing and cannot be modified.' },
@@ -538,7 +538,7 @@ const MOCK_FAQS: FaqItem[] = [
   { id: 'f10', category: 'Payments', question: 'Is my payment information secure?', answer: 'Absolutely. NiaKylie does not store any card or UPI credentials. All payments are processed via Razorpay, which is a PCI-DSS Level 1 certified payment gateway with 256-bit SSL encryption.' },
 ];
 
-const MOCK_BLOGS: BlogPost[] = [
+export const UNUSED_LEGACY_BLOGS: BlogPost[] = [
   {
     id: 'b1',
     slug: 'how-to-style-saree-modern-look',
@@ -869,14 +869,7 @@ export const cmsApi = {
     try {
       return await apiClient.get<CmsPage>(`/cms/pages/${slug}`);
     } catch (error) {
-      const page = MOCK_PAGES[slug];
-      if (page) return page;
-      return {
-        slug,
-        title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-        lastUpdated: '2026-01-01',
-        content: '<p>Content coming soon. Please check back later.</p>',
-      };
+      throw error;
     }
   },
 
@@ -899,9 +892,9 @@ export const cmsApi = {
           isActive: f.isActive !== false,
         }));
       }
-      return MOCK_FAQS;
+      return [];
     } catch (error) {
-      return MOCK_FAQS;
+      return [];
     }
   },
 
@@ -923,7 +916,7 @@ export const cmsApi = {
         isActive: f.isActive !== false,
       }));
     } catch (error) {
-      return MOCK_FAQS;
+      return [];
     }
   },
 
@@ -948,9 +941,9 @@ export const cmsApi = {
       if (res && Array.isArray(res.blogs)) return res.blogs;
       if (res && Array.isArray(res.items)) return res.items;
       if (res && Array.isArray(res.data)) return res.data;
-      return MOCK_BLOGS;
+      return [];
     } catch (error) {
-      return MOCK_BLOGS;
+      return [];
     }
   },
 
@@ -958,7 +951,7 @@ export const cmsApi = {
     try {
       return await apiClient.get<BlogPost>(`/cms/blogs/${slug}`);
     } catch (error) {
-      return MOCK_BLOGS.find((b) => b.slug === slug) || null;
+      return null;
     }
   },
 
