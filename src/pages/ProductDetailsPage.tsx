@@ -64,6 +64,13 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     retry: 1,
   });
 
+  const targetProductId = product?.id || product?._id || slug;
+  const { data: reviewsData } = useQuery({
+    queryKey: ['product-reviews', targetProductId],
+    queryFn: () => reviewsApi.getProductReviews(targetProductId),
+    enabled: !!product,
+  });
+
   // Scroll to top when navigating to a new product
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -102,12 +109,6 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     );
   }
   const activeProduct = product;
-
-  const targetProductId = activeProduct.id || activeProduct._id || slug;
-  const { data: reviewsData } = useQuery({
-    queryKey: ['product-reviews', targetProductId],
-    queryFn: () => reviewsApi.getProductReviews(targetProductId),
-  });
 
   const displayRating =
     reviewsData?.summary?.averageRating ??
