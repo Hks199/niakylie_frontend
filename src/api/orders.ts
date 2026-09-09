@@ -114,7 +114,7 @@ export const ordersApi = {
             phone: found.phone || '+919876543210',
           };
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     if (!shippingAddress) {
@@ -181,10 +181,10 @@ export const ordersApi = {
 
       const estDate = item.shippingInfo?.estimatedDelivery
         ? new Date(item.shippingInfo.estimatedDelivery).toLocaleDateString('en-IN', {
-            weekday: 'short',
-            day: 'numeric',
-            month: 'short',
-          })
+          weekday: 'short',
+          day: 'numeric',
+          month: 'short',
+        })
         : '3-5 Business Days';
 
       return {
@@ -210,9 +210,9 @@ export const ordersApi = {
           size: it.size,
           image: formatImageUrl(
             it.image ||
-              (typeof it.productId === 'object'
-                ? it.productId?.thumbnail || it.productId?.images?.[0]
-                : undefined)
+            (typeof it.productId === 'object'
+              ? it.productId?.thumbnail || it.productId?.images?.[0]
+              : undefined)
           ),
         })),
         createdAt: item.createdAt || new Date().toISOString(),
@@ -256,10 +256,10 @@ export const ordersApi = {
       const rawList = Array.isArray(res)
         ? res
         : Array.isArray(res?.data)
-        ? res.data
-        : Array.isArray(res?.data?.data)
-        ? res.data.data
-        : res?.items || [];
+          ? res.data
+          : Array.isArray(res?.data?.data)
+            ? res.data.data
+            : res?.items || [];
 
       const mapped = rawList.map(mapOrder);
       const total = mapped.length;
@@ -287,8 +287,8 @@ export const ordersApi = {
       }
       const orderId = res.orderNumber || res.orderId || res._id || res.id;
       const totalAmount = res.pricing?.grandTotal ?? res.grandTotal ?? res.totals?.total ?? 0;
-      
-      const estDate = res.shippingInfo?.estimatedDelivery 
+
+      const estDate = res.shippingInfo?.estimatedDelivery
         ? new Date(res.shippingInfo.estimatedDelivery).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
         : '3-5 Business Days';
 
@@ -357,14 +357,66 @@ export const ordersApi = {
     try {
       const invoiceData = await ordersApi.getInvoice(id);
       if (invoiceData && invoiceData.htmlTemplate) {
-        const htmlTemplate = invoiceData.htmlTemplate.replace(
-          /(<img\b[^>]*\bsrc=["'])[^"']+(["'][^>]*>)/i,
-          `$1${NIAKYLIE_LOGO_BASE64}$2`,
-        );
+        let htmlTemplate = invoiceData.htmlTemplate;
+        if (htmlTemplate.includes('<img')) {
+          htmlTemplate = htmlTemplate.replace(
+            /(<img\b[^>]*\bsrc=["'])[^"']+(["'][^>]*>)/i,
+            `$1${NIAKYLIE_LOGO_BASE64}$2`,
+          );
+        } else {
+          const logoImg = `<img id="receipt-logo" src="${NIAKYLIE_LOGO_BASE64}" alt="NiaKylie Logo" style="height: 60px; max-width: 220px; width: auto; object-fit: contain; display: block; margin-bottom: 6px;" />`;
+          if (htmlTemplate.includes('<div class="brand">')) {
+            htmlTemplate = htmlTemplate.replace('<div class="brand">', `${logoImg}<div class="brand">`);
+          } else if (htmlTemplate.includes('<body>')) {
+            htmlTemplate = htmlTemplate.replace('<body>', `<body>${logoImg}`);
+          }
+        }
+
+        if (!htmlTemplate.includes('window.print()')) {
+          htmlTemplate = htmlTemplate.replace(
+            '</body>',
+            `<script>
+              window.onload = function() {
+                var logo = document.getElementById('receipt-logo');
+                function doPrint() { setTimeout(function() { window.print(); }, 400); }
+                if (logo && logo.complete && logo.naturalWidth > 0) {
+                  if ('decode' in logo) { logo.decode().then(doPrint).catch(doPrint); } else { doPrint(); }
+                } else if (logo) {
+                  logo.onload = doPrint;
+                  logo.onerror = doPrint;
+                } else { doPrint(); }
+              };
+            </script></body>`
+          );
+        }
+
         const printWindow = window.open('', '_blank');
-        if (printWindow) {
+        if (printWindow && !printWindow.closed) {
           printWindow.document.write(htmlTemplate);
           printWindow.document.close();
+        } else {
+          // Fallback for mobile devices where window.open is blocked by browser
+          const iframe = document.createElement('iframe');
+          iframe.style.position = 'fixed';
+          iframe.style.right = '0';
+          iframe.style.bottom = '0';
+          iframe.style.width = '0';
+          iframe.style.height = '0';
+          iframe.style.border = '0';
+          document.body.appendChild(iframe);
+          const doc = iframe.contentWindow?.document || iframe.contentDocument;
+          if (doc) {
+            doc.open();
+            doc.write(htmlTemplate);
+            doc.close();
+            setTimeout(() => {
+              iframe.contentWindow?.focus();
+              iframe.contentWindow?.print();
+              setTimeout(() => {
+                document.body.removeChild(iframe);
+              }, 3000);
+            }, 500);
+          }
         }
       } else {
         const url = `https://api.niakylie.com/api/v1/checkout/orders/${id}/invoice`;

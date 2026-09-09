@@ -45,10 +45,19 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
       const invoiceData = await ordersApi.getInvoice(orderId || displayOrderId);
       if (invoiceData && invoiceData.htmlTemplate) {
         htmlContent = invoiceData.htmlTemplate;
-        htmlContent = htmlContent.replace(
-          /(<img\b[^>]*\bsrc=["'])[^"']+(["'][^>]*>)/i,
-          `$1${logoUrl}$2`,
-        );
+        if (htmlContent.includes('<img')) {
+          htmlContent = htmlContent.replace(
+            /(<img\b[^>]*\bsrc=["'])[^"']+(["'][^>]*>)/i,
+            `$1${logoUrl}$2`,
+          );
+        } else {
+          const logoImg = `<img id="receipt-logo" src="${logoUrl}" alt="NiaKylie Logo" style="height: 60px; max-width: 220px; width: auto; object-fit: contain; display: block; margin-bottom: 6px;" />`;
+          if (htmlContent.includes('<div class="brand">')) {
+            htmlContent = htmlContent.replace('<div class="brand">', `${logoImg}<div class="brand">`);
+          } else if (htmlContent.includes('<body>')) {
+            htmlContent = htmlContent.replace('<body>', `<body>${logoImg}`);
+          }
+        }
         if (!htmlContent.includes('<base')) {
           htmlContent = htmlContent.replace('<head>', `<head><base href="${window.location.origin}/" />`);
         }
@@ -237,7 +246,7 @@ export function OrderSuccessPage({ orderId = '' }: OrderSuccessPageProps) {
 
           <div class="header">
             <div>
-              <img id="receipt-logo" src="${logoUrl}" onerror="this.onerror=null; this.src='${NIAKYLIE_LOGO_BASE64}';" alt="NiaKylie Logo" style="height: 60px; max-width: 220px; width: auto; object-fit: contain; display: block; margin-bottom: 6px;" />
+              <img id="receipt-logo" src="${logoUrl}" alt="NiaKylie Logo" style="height: 60px; max-width: 220px; width: auto; object-fit: contain; display: block; margin-bottom: 6px;" />
 
               <div class="brand-tag">Luxury Ethnic Couture</div>
             </div>
