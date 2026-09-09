@@ -12,17 +12,23 @@ interface AdminDataTablesProps {
 
 const resolveProductImage = (item: any): string => {
   if (!item) return formatImageUrl(null);
-  const imgPath =
-    item.image ||
-    item.imageUrl ||
-    (Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null) ||
-    item.productImage ||
-    item.thumbnail ||
-    item.product?.image ||
-    item.product?.imageUrl ||
-    (Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null);
 
-  return formatImageUrl(imgPath);
+  const candidates = [
+    item.image,
+    item.imageUrl,
+    Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : null,
+    item.productImage,
+    item.thumbnail,
+    item.product?.image,
+    item.product?.imageUrl,
+    Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null,
+  ];
+
+  const validPath = candidates.find(
+    (c) => typeof c === 'string' && c.trim() !== '' && !c.includes('undefined') && !c.includes('null'),
+  );
+
+  return formatImageUrl(validPath || null);
 };
 
 export function AdminDataTables({
