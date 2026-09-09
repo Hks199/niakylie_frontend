@@ -11,7 +11,7 @@ interface AdminDataTablesProps {
 }
 
 const resolveProductImage = (item: any): string => {
-  if (!item) return '';
+  if (!item) return formatImageUrl(null);
   const imgPath =
     item.image ||
     item.imageUrl ||
@@ -22,10 +22,6 @@ const resolveProductImage = (item: any): string => {
     item.product?.imageUrl ||
     (Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null);
 
-  if (!imgPath || typeof imgPath !== 'string') return '';
-  if (imgPath.startsWith('http://') || imgPath.startsWith('https://') || imgPath.startsWith('data:') || imgPath.startsWith('blob:')) {
-    return imgPath;
-  }
   return formatImageUrl(imgPath);
 };
 
@@ -126,24 +122,15 @@ export function AdminDataTables({
                       <tr key={item.sku} className="hover:bg-slate-50/80 transition-colors">
                         <td className="py-2.5 pl-1">
                           <div className="flex items-center space-x-2.5">
-                            {itemImg ? (
-                              <img
-                                src={itemImg}
-                                alt={item.productName}
-                                className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'none';
-                                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                                  if (fallback) fallback.style.display = 'flex';
-                                }}
-                              />
-                            ) : null}
-                            <div
-                              className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 text-[9px] sm:text-xs font-extrabold flex-shrink-0"
-                              style={{ display: itemImg ? 'none' : 'flex' }}
-                            >
-                              NK
-                            </div>
+                            <img
+                              src={itemImg}
+                              alt={item.productName || 'Product'}
+                              className="w-7 h-7 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0"
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = formatImageUrl(null);
+                              }}
+                            />
                             <div className="min-w-0">
                               <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate max-w-[100px] sm:max-w-none">
                                 {item.productName}
@@ -230,24 +217,15 @@ export function AdminDataTables({
                         <span className="text-[10px] sm:text-xs font-black text-slate-400 w-4 text-center flex-shrink-0">
                           #{index + 1}
                         </span>
-                        {prodImg ? (
-                          <img
-                            src={prodImg}
-                            alt={prod.productName}
-                            className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                              const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                              if (fallback) fallback.style.display = 'flex';
-                            }}
-                          />
-                        ) : null}
-                        <div
-                          className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl bg-slate-200 flex items-center justify-center font-bold text-slate-500 text-[10px] sm:text-xs flex-shrink-0"
-                          style={{ display: prodImg ? 'none' : 'flex' }}
-                        >
-                          NK
-                        </div>
+                        <img
+                          src={prodImg}
+                          alt={prod.productName || 'Product'}
+                          className="w-7 h-9 sm:w-10 sm:h-12 rounded-lg sm:rounded-xl object-cover border border-gray-200 flex-shrink-0"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = formatImageUrl(null);
+                          }}
+                        />
                         <div className="min-w-0">
                           <p className="text-[11px] sm:text-xs font-extrabold text-brand-slate-dark truncate">{prod.productName}</p>
                           <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate">{prod.sku}</p>
