@@ -67,10 +67,12 @@ export function App() {
     currentPath.startsWith('/category') ||
     currentPath.startsWith('/search');
 
-  const slug = isPDP ? currentPath.replace('/product/', '') : undefined;
-  const orderId = isOrderSuccess ? currentPath.replace('/order-success/', '') : undefined;
-  const blogSlug = isBlogDetail ? currentPath.replace('/blogs/', '') : undefined;
-  const cmsSlug = isCmsPage ? currentPath.replace('/pages/', '') : undefined;
+  // Use only pathname (no query string) for slug extraction
+  const cleanPath = window.location.pathname;
+  const slug = isPDP ? cleanPath.replace('/product/', '').split('?')[0] : undefined;
+  const orderId = isOrderSuccess ? cleanPath.replace('/order-success/', '').split('?')[0] : undefined;
+  const blogSlug = isBlogDetail ? cleanPath.replace('/blogs/', '').split('?')[0] : undefined;
+  const cmsSlug = isCmsPage ? cleanPath.replace('/pages/', '').split('?')[0] : undefined;
 
   const isHideStoreNav = isAdminLogin || isAdminRoute;
 

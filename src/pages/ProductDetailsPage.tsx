@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ShoppingBag, Heart, Star, Share2, Check, ChevronRight, Tag, Copy, Sparkles } from 'lucide-react';
 import { ProductGallery } from '../components/pdp/ProductGallery';
@@ -58,13 +58,48 @@ export function ProductDetailsPage({ slug = 'crimson-red-banarasi-silk-saree' }:
     },
   });
 
-  const { data: product } = useQuery({
+  const { data: product, isLoading: isProductLoading, isError: isProductError } = useQuery({
     queryKey: ['product', slug],
     queryFn: () => productsApi.getProductBySlug(slug),
+    retry: 1,
   });
 
-  if (!product) {
-    return <div className="flex items-center justify-center py-24 text-sm font-semibold text-slate-500">Product unavailable</div>;
+  // Scroll to top when navigating to a new product
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [slug]);
+
+  if (isProductLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="h-4 w-48 bg-slate-200 rounded-full animate-pulse mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
+          <div className="lg:col-span-7">
+            <div className="aspect-[3/4] w-full bg-slate-200 rounded-2xl animate-pulse" />
+          </div>
+          <div className="lg:col-span-5 space-y-4">
+            <div className="h-3 w-24 bg-slate-200 rounded-full animate-pulse" />
+            <div className="h-8 w-3/4 bg-slate-200 rounded-xl animate-pulse" />
+            <div className="h-4 w-32 bg-slate-200 rounded-full animate-pulse" />
+            <div className="h-16 w-full bg-slate-200 rounded-2xl animate-pulse" />
+            <div className="h-24 w-full bg-slate-200 rounded-2xl animate-pulse" />
+            <div className="flex space-x-3">
+              <div className="h-12 flex-1 bg-slate-200 rounded-2xl animate-pulse" />
+              <div className="h-12 w-12 bg-slate-200 rounded-2xl animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isProductError || !product) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 space-y-4">
+        <p className="text-sm font-semibold text-slate-500">Product not found or unavailable.</p>
+        <a href="/products" className="text-xs font-extrabold text-brand-crimson hover:underline uppercase tracking-wider">← Browse All Products</a>
+      </div>
+    );
   }
   const activeProduct = product;
 
