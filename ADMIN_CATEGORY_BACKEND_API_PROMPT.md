@@ -478,19 +478,19 @@ export class CategoriesService {
 
 ### 1. Test Fetch Paginated Categories (`limit=500`)
 ```bash
-curl -X GET "http://localhost:3000/api/v1/categories?limit=500" \
+curl -X GET "https://api.niakylie.com/api/v1/categories?limit=500" \
   -H "Cache-Control: no-cache"
 ```
 
 ### 2. Test Fetch 2-Level Tree
 ```bash
-curl -X GET "http://localhost:3000/api/v1/categories/tree" \
+curl -X GET "https://api.niakylie.com/api/v1/categories/tree" \
   -H "Cache-Control: no-cache"
 ```
 
 ### 3. Test Create Category with File Upload
 ```bash
-curl -X POST "http://localhost:3000/api/v1/categories" \
+curl -X POST "https://api.niakylie.com/api/v1/categories" \
   -F "name=Ethnic Sarees" \
   -F "slug=ethnic-sarees" \
   -F "description=Premium ethnic sarees catalog" \
@@ -501,10 +501,10 @@ curl -X POST "http://localhost:3000/api/v1/categories" \
 
 ### 4. Test Toggle Active Status
 ```bash
-curl -X PATCH "http://localhost:3000/api/v1/categories/60d5ecb8b392d40015f8a001/toggle-active"
+curl -X PATCH "https://api.niakylie.com/api/v1/categories/60d5ecb8b392d40015f8a001/toggle-active"
 ```
 
 ### 5. Test Cascading Soft Delete
 ```bash
-curl -X DELETE "http://localhost:3000/api/v1/categories/60d5ecb8b392d40015f8a001"
+curl -X DELETE "https://api.niakylie.com/api/v1/categories/60d5ecb8b392d40015f8a001"
 ```

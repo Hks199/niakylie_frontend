@@ -419,7 +419,7 @@ export const ordersApi = {
           }
         }
       } else {
-        const url = `http://localhost:3000/api/v1/checkout/orders/${id}/invoice`;
+        const url = `https://api.niakylie.com/api/v1/checkout/orders/${id}/invoice`;
         window.open(url, '_blank');
       }
     } catch (error) {
