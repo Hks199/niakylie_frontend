@@ -1,6 +1,7 @@
 import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import { CartTotals } from '../../types';
 import { CouponSection } from '../cart/CouponSection';
+import { getShippingFee } from '../../utils/shipping';
 
 interface CheckoutSidebarProps {
   totals: CartTotals;
@@ -10,10 +11,10 @@ interface CheckoutSidebarProps {
 
 export function CheckoutSidebar({ totals, appliedCoupon, shippingType }: CheckoutSidebarProps) {
   const { subtotal, discount, couponDiscount, onlinePaymentDiscount, tax } = totals as any;
-  const shippingFee = shippingType === 'express' ? 149 : 0;
+  const shippingFee = getShippingFee(subtotal, shippingType);
   const totalMRP = subtotal + discount;
   const activeOnlineDiscount = onlinePaymentDiscount || 0;
-  const grandTotal = Math.max(0, subtotal - couponDiscount - activeOnlineDiscount + shippingFee);
+  const grandTotal = Math.max(0, subtotal - couponDiscount - activeOnlineDiscount + shippingFee + (tax || 0));
 
   return (
     <div className="space-y-3 sm:space-y-4 sticky top-24">

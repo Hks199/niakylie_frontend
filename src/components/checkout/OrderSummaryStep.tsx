@@ -1,6 +1,7 @@
 import { Truck, Zap } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { formatImageUrl } from '../../utils/imageUtils';
+import { getShippingFee } from '../../utils/shipping';
 
 interface OrderSummaryStepProps {
   shippingType: 'standard' | 'express';
@@ -29,7 +30,7 @@ const SHIPPING_OPTIONS = [
 ];
 
 export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBack }: OrderSummaryStepProps) {
-  const { cartItems } = useCartStore();
+  const { cartItems, cartTotals } = useCartStore();
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -71,6 +72,7 @@ export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBac
         {SHIPPING_OPTIONS.map((opt) => {
           const Icon = opt.icon;
           const isSelected = shippingType === opt.id;
+          const shippingFee = getShippingFee(cartTotals.subtotal, opt.id);
           return (
             <button
               key={opt.id}
@@ -88,8 +90,8 @@ export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBac
                   <p className="text-[9px] sm:text-[10px] text-slate-400">{opt.desc}</p>
                 </div>
               </div>
-              <span className={`text-xs sm:text-sm font-extrabold ${opt.price === 0 ? 'text-emerald-600' : 'text-brand-slate-dark'}`}>
-                {opt.priceLabel}
+              <span className={`text-xs sm:text-sm font-extrabold ${shippingFee === 0 ? 'text-emerald-600' : 'text-brand-slate-dark'}`}>
+                {shippingFee === 0 ? 'FREE' : `₹${shippingFee}`}
               </span>
             </button>
           );

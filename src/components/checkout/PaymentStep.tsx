@@ -4,6 +4,7 @@ import { paymentsApi, OnlinePaymentDiscountConfig } from '../../api/payments';
 import { ordersApi, CreateOrderPayload } from '../../api/orders';
 import { useCartStore } from '../../store/useCartStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { getShippingFee } from '../../utils/shipping';
 
 interface PaymentStepProps {
   selectedAddressId: string;
@@ -69,7 +70,12 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
   }
 
   const activeDiscountApplied = isOnlinePayment ? onlineDiscountAmount : 0;
-  const finalTotalAmount = Math.max(0, cartTotals.total - activeDiscountApplied);
+  const shippingFee = getShippingFee(cartTotals.subtotal, shippingType);
+  const orderTotalBeforeOnlineDiscount = Math.max(
+    0,
+    cartTotals.subtotal - (cartTotals.couponDiscount || 0) + shippingFee + (cartTotals.tax || 0)
+  );
+  const finalTotalAmount = Math.max(0, orderTotalBeforeOnlineDiscount - activeDiscountApplied);
 
   const formattedAmount = new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -81,7 +87,7 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
     style: 'currency',
     currency: 'INR',
     maximumFractionDigits: 0,
-  }).format(cartTotals.total);
+  }).format(orderTotalBeforeOnlineDiscount);
 
   const formattedDiscountAmount = new Intl.NumberFormat('en-IN', {
     style: 'currency',

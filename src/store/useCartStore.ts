@@ -3,6 +3,7 @@ import { Cart, CartItem, CartTotals, AddToCartPayload } from '../types';
 import { apiClient } from '../api/client';
 import { useWishlistStore } from './useWishlistStore';
 import { formatImageUrl } from '../utils/imageUtils';
+import { getShippingFee } from '../utils/shipping';
 
 const initialTotals: CartTotals = {
   subtotal: 0,
@@ -104,7 +105,7 @@ const normalizeCartResponse = (rawCart: any) => {
   const computedMrp = cartItems.reduce((sum: number, i: any) => sum + i.originalPrice * i.quantity, 0);
   const totalMrp = Number(rawCart.totalMrp || computedMrp);
   const couponDiscount = Number(rawCart.couponDiscount ?? 0);
-  const shippingFee = subtotal >= 1000 || subtotal === 0 ? 0 : 99;
+  const shippingFee = getShippingFee(subtotal);
   const tax = 0;
   const total = Math.max(0, subtotal - couponDiscount + shippingFee);
 

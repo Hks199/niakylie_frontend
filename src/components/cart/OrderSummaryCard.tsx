@@ -11,7 +11,7 @@ export function OrderSummaryCard({ totals, appliedCoupon, onProceedToCheckout }:
   const { subtotal, discount, couponDiscount, shippingFee, tax, total } = totals;
 
   const totalMRP = subtotal + discount;
-  const isFreeShipping = shippingFee === 0 || subtotal >= 999;
+  const isFreeShipping = shippingFee === 0;
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl p-3.5 sm:p-6 space-y-4 sm:space-y-6 shadow-sm">
