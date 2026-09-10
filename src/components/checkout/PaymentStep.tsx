@@ -41,7 +41,6 @@ const PAYMENT_OPTIONS = [
 export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack }: PaymentStepProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('upi');
   const [upiSubOption, setUpiSubOption] = useState<'qr' | 'gpay' | 'phonepe' | 'paytm' | 'vpa'>('qr');
-  const [upiId, setUpiId] = useState('success@razorpay');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [discountConfig, setDiscountConfig] = useState<OnlinePaymentDiscountConfig | null>(null);
@@ -90,10 +89,6 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
     maximumFractionDigits: 0,
   }).format(onlineDiscountAmount);
 
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(
-    `upi://pay?pa=success@razorpay&pn=NiaKylie%20Fashion&mc=5311&am=${finalTotalAmount}&cu=INR`
-  )}`;
-
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) {
       setError('Please select a delivery address.');
@@ -106,66 +101,53 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
     try {
       let extraPayload: Partial<CreateOrderPayload> = {};
 
-      if (paymentMethod === 'upi') {
-        // Direct UPI payment processing
+      if (paymentMethod !== 'cod') {
         const rzpOrder = await paymentsApi.createRazorpayOrder(finalTotalAmount);
-        
-        // Use real or generated Razorpay credentials for order verification
-        extraPayload = {
-          razorpayOrderId: rzpOrder.id || `order_${Date.now()}`,
-          razorpayPaymentId: `pay_upi_${Date.now()}`,
-          razorpaySignature: `sig_upi_${Date.now()}`,
-        };
-      } else if (paymentMethod === 'razorpay') {
-        // Standard Razorpay widget for Cards & NetBanking
-        const rzpOrder = await paymentsApi.createRazorpayOrder(finalTotalAmount);
-
-        if (typeof (window as any).Razorpay !== 'undefined') {
-          await new Promise<void>((resolve, reject) => {
-            const customerName = user
-              ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Valued Customer'
-              : 'Valued Customer';
-            const customerEmail = user?.email || 'customer@niakylie.com';
-            const rawPhone = (user as any)?.phone || '9876543210';
-            const customerPhone = rawPhone.replace(/\D/g, '').slice(-10) || '9876543210';
-
-            const options: any = {
-              key: rzpOrder.keyId,
-              amount: rzpOrder.amount,
-              currency: rzpOrder.currency || 'INR',
-              name: 'NiaKylie Fashion',
-              description: 'Luxury Ethnic Couture Purchase',
-              prefill: {
-                name: customerName,
-                email: customerEmail,
-                contact: customerPhone,
-              },
-              notes: { merchant_order_id: rzpOrder.id },
-              theme: { color: '#E63946' },
-              handler: async (response: any) => {
-                extraPayload = {
-                  razorpayOrderId: response.razorpay_order_id || rzpOrder.id,
-                  razorpayPaymentId: response.razorpay_payment_id || `pay_${Date.now()}`,
-                  razorpaySignature: response.razorpay_signature || `sig_${Date.now()}`,
-                };
-                resolve();
-              },
-              modal: { ondismiss: () => reject(new Error('Payment cancelled')) },
-            };
-
-            if (rzpOrder.id && !rzpOrder.id.startsWith('order_rzp_')) {
-              options.order_id = rzpOrder.id;
-            }
-
-            const rzp = new (window as any).Razorpay(options);
-            rzp.on('payment.failed', (resp: any) => {
-              reject(new Error(resp?.error?.description || 'Payment failed'));
-            });
-            rzp.open();
-          });
-        } else {
-          extraPayload = { razorpayOrderId: rzpOrder.id };
+        if (typeof (window as any).Razorpay === 'undefined') {
+          throw new Error('Secure payment checkout could not load. Please check your internet connection and try again.');
         }
+
+        const response = await new Promise<any>((resolve, reject) => {
+          const customerName = user
+            ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Valued Customer'
+            : 'Valued Customer';
+          const customerEmail = user?.email || '';
+          const rawPhone = (user as any)?.phone || '';
+          const customerPhone = rawPhone.replace(/\D/g, '').slice(-10);
+          const isUpi = paymentMethod === 'upi';
+          const options: any = {
+            key: rzpOrder.keyId,
+            amount: rzpOrder.amount,
+            currency: rzpOrder.currency || 'INR',
+            name: 'NiaKylie Fashion',
+            description: 'NiaKylie order payment',
+            order_id: rzpOrder.id,
+            prefill: { name: customerName, email: customerEmail, ...(customerPhone ? { contact: customerPhone } : {}) },
+            theme: { color: '#E63946' },
+            ...(isUpi ? {
+              config: {
+                display: {
+                  blocks: { upi: { name: 'Pay via UPI', instruments: [{ method: 'upi' }] } },
+                  sequence: ['block.upi'],
+                  preferences: { show_default_blocks: false },
+                },
+              },
+            } : {}),
+            handler: resolve,
+            modal: { ondismiss: () => reject(new Error('Payment cancelled')) },
+          };
+
+          const checkout = new (window as any).Razorpay(options);
+          checkout.on('payment.failed', (event: any) => reject(new Error(event?.error?.description || 'Payment failed')));
+          checkout.open();
+        });
+
+        extraPayload = {
+          razorpayOrderId: response.razorpay_order_id,
+          razorpayPaymentId: response.razorpay_payment_id,
+          razorpaySignature: response.razorpay_signature,
+        };
+        await paymentsApi.verifyRazorpay(extraPayload as Required<Pick<CreateOrderPayload, 'razorpayOrderId' | 'razorpayPaymentId' | 'razorpaySignature'>>);
       }
 
       const order = await ordersApi.createOrder({
@@ -296,7 +278,6 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                       type="button"
                       onClick={() => {
                         setUpiSubOption('gpay');
-                        setUpiId('gpay.success@razorpay');
                       }}
                       className={`p-3 rounded-xl border-2 flex items-center space-x-2 text-left transition-all ${
                         upiSubOption === 'gpay'
@@ -315,7 +296,6 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                       type="button"
                       onClick={() => {
                         setUpiSubOption('phonepe');
-                        setUpiId('phonepe.success@razorpay');
                       }}
                       className={`p-3 rounded-xl border-2 flex items-center space-x-2 text-left transition-all ${
                         upiSubOption === 'phonepe'
@@ -334,7 +314,6 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                       type="button"
                       onClick={() => {
                         setUpiSubOption('paytm');
-                        setUpiId('paytm.success@razorpay');
                       }}
                       className={`p-3 rounded-xl border-2 flex items-center space-x-2 text-left transition-all ${
                         upiSubOption === 'paytm'
@@ -376,12 +355,12 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                         <span>UPI Payment Barcode / QR Code</span>
                       </div>
                       
-                      <div className="bg-white p-4 rounded-2xl shadow-lg border-2 border-gray-200 hover:scale-105 transition-transform duration-300">
-                        <img src={qrCodeUrl} alt="UPI Payment QR Barcode" className="w-48 h-48 object-contain" />
+                      <div className="rounded-2xl border-2 border-gray-200 bg-white p-5 text-xs font-bold text-slate-600">
+                        The secure Razorpay checkout opens after you tap the payment button below.
                       </div>
 
                       <div>
-                        <p className="text-sm font-black text-brand-slate-dark">Scan Barcode to Pay {formattedAmount}</p>
+                        <p className="text-sm font-black text-brand-slate-dark">Pay {formattedAmount} securely through Razorpay</p>
                         <p className="text-xs text-slate-500 font-medium mt-1">
                           Open <span className="font-extrabold text-emerald-700">Google Pay</span>, <span className="font-extrabold text-purple-700">PhonePe</span>, <span className="font-extrabold text-sky-700">Paytm</span>, or <span className="font-extrabold text-orange-700">BHIM</span> & scan barcode
                         </p>
@@ -394,33 +373,14 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
                           <span>0% Additional Charges</span>
                         </div>
                         <p className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 p-2 rounded-lg mt-1 font-medium max-w-sm">
-                          ℹ️ <strong>Sandbox Mode Note:</strong> PhonePe & Google Pay apps reject real money debits on test VPAs. Click <strong>PAY VIA UPI →</strong> to complete your order test!
+                          <strong>Secure checkout:</strong> the payment button opens Razorpay, which presents the available UPI apps or a verified QR/collect flow for this order.
                         </p>
                       </div>
                     </div>
                   ) : (
-                    /* UPI ID Input View */
-                    <div className="space-y-2 pt-1">
-                      <label className="text-[11px] font-extrabold text-slate-600 block">
-                        Enter UPI ID / VPA Address
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          value={upiId}
-                          onChange={(e) => setUpiId(e.target.value)}
-                          placeholder="e.g. username@upi or mobile@ybl"
-                          className="w-full text-xs font-extrabold py-3 px-3.5 bg-slate-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-crimson focus:border-brand-crimson text-slate-800"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setUpiId('success@razorpay')}
-                          className="absolute right-2 top-2 text-[10px] font-extrabold bg-brand-crimson/10 hover:bg-brand-crimson/20 text-brand-crimson px-2.5 py-1 rounded-lg transition-all"
-                        >
-                          Auto Test VPA
-                        </button>
-                      </div>
-                    </div>
+                    <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-[11px] font-semibold text-emerald-800">
+                      Continue with payment to open Razorpay&apos;s secure UPI checkout. It will offer the installed UPI apps available on this device.
+                    </p>
                   )}
                 </div>
               )}
