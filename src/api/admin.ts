@@ -50,6 +50,29 @@ export interface AdminBanner {
   updatedAt: string;
 }
 
+export interface AdminUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  roles: string[];
+  isEmailVerified: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+  orderCount?: number;
+  totalSpent?: number;
+}
+
+export interface AdminUsersResponse {
+  users: AdminUser[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export const adminApi = {
   // ─── 1. DASHBOARD ANALYTICS ─────────────────────────────
   // GET /admin/dashboard/summary
@@ -67,6 +90,23 @@ export const adminApi = {
         inventoryAlerts: { outOfStockCount: 3, lowStockCount: 12 },
       };
     }
+  },
+
+  // GET /users/admin?page=1&limit=10&search=&isActive=all
+  getUsers: async (params?: { page?: number; limit?: number; search?: string; isActive?: boolean | 'all' }): Promise<AdminUsersResponse> => {
+    const page = Math.max(1, params?.page || 1);
+    const limit = Math.max(1, params?.limit || 10);
+    const queryParams = {
+      page,
+      limit,
+      ...(params?.search?.trim() ? { search: params.search.trim() } : {}),
+      ...(params?.isActive !== undefined && params.isActive !== 'all' ? { isActive: String(params.isActive) } : {}),
+    };
+    const response = await apiClient.get<any>('/users/admin', { params: queryParams });
+    const users = Array.isArray(response) ? response : response?.users || response?.items || response?.data || [];
+    const total = Number(response?.total ?? response?.totalItems ?? users.length);
+    const totalPages = Number(response?.totalPages ?? Math.max(1, Math.ceil(total / limit)));
+    return { users, total, page: Number(response?.page ?? page), limit: Number(response?.limit ?? limit), totalPages };
   },
 
   // GET /admin/dashboard/revenue

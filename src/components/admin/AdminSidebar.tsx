@@ -19,7 +19,7 @@ export const NAV_ITEMS = [
   { id: 'faqs', label: 'FAQ Management', icon: HelpCircle },
   { id: 'reviews', label: 'Review Moderation', icon: MessageSquare },
   { id: 'banners', label: 'Banners & Promotions', icon: Image },
-  { id: 'customers', label: 'Top Customers', icon: Users },
+  { id: 'customers', label: 'Users', icon: Users },
 ];
 
 export function AdminSidebar({ activeTab, onSelectTab, onCloseMobile }: AdminSidebarProps) {

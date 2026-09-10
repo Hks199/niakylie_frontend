@@ -17,7 +17,7 @@ export function formatImageUrl(url?: string | null): string {
   }
 
   // Handle backend relative uploads path (e.g., '/uploads/products/123.jpg')
-  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'https://api.niakylie.com/api/v1')
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1')
     .replace(/\/api\/v1\/?$/, '')
     .replace(/\/+$/, '');
 

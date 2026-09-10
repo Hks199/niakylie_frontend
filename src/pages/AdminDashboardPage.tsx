@@ -31,6 +31,7 @@ import { AdminBrandsPanel } from '../components/admin/AdminBrandsPanel';
 import { AdminFaqManagement } from '../components/admin/AdminFaqManagement';
 import { AdminCouponsPanel } from '../components/admin/AdminCouponsPanel';
 import { AdminAnnouncementsPanel } from '../components/admin/AdminAnnouncementsPanel';
+import { AdminUsersPanel } from '../components/admin/AdminUsersPanel';
 
 const VALID_ADMIN_TABS = NAV_ITEMS.map((item) => item.id);
 
@@ -642,7 +643,7 @@ export function AdminDashboardPage() {
           ) : activeTab === 'reviews' ? (
             <AdminReviewsPanel />
           ) : activeTab === 'customers' ? (
-            <AdminDataTables showInventoryAlerts={false} showTopProductsAndCustomers={true} />
+            <AdminUsersPanel />
           ) : activeTab === 'banners' ? (
             <AdminBannersPanel />
           ) : (
