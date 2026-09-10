@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CheckCircle2, ChevronLeft, ChevronRight, Mail, RefreshCw, Search, ShieldCheck, UserRound, XCircle } from 'lucide-react';
+import { CheckCircle2, ChevronLeft, ChevronRight, Mail, Phone, RefreshCw, Search, ShieldCheck, UserRound, XCircle } from 'lucide-react';
 import { adminApi } from '../../api/admin';
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50];
@@ -95,10 +95,11 @@ export function AdminUsersPanel() {
               <tbody className="divide-y divide-gray-50">
                 {users.map((user) => {
                   const isAdmin = user.roles?.some((role) => role.toUpperCase() === 'ADMIN');
+                  const initials = `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}` || '?';
                   return (
                     <tr key={user.id} className="text-xs text-slate-600 transition-colors hover:bg-slate-50/70">
-                      <td className="px-3 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-50 font-extrabold text-brand-crimson">{user.firstName[0]}{user.lastName[0]}</div><div><p className="font-extrabold text-brand-slate-dark">{user.firstName} {user.lastName}</p><p className="mt-0.5 flex items-center gap-1 text-[10px] text-slate-400">{isAdmin ? <ShieldCheck className="h-3 w-3" /> : <UserRound className="h-3 w-3" />}{isAdmin ? 'Administrator' : 'Customer'}</p></div></div></td>
-                      <td className="px-3 py-4"><p className="flex items-center gap-1.5 font-semibold"><Mail className="h-3.5 w-3.5 text-slate-400" />{user.email}</p><p className="mt-1 text-[10px] text-slate-400">{user.phone || 'Phone not provided'}</p></td>
+                      <td className="px-3 py-4"><div className="flex items-center gap-3"><div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose-50 font-extrabold text-brand-crimson">{initials}</div><div><p className="font-extrabold text-brand-slate-dark">{user.firstName} {user.lastName}</p><p className="mt-0.5 flex items-center gap-1 text-[10px] text-slate-400">{isAdmin ? <ShieldCheck className="h-3 w-3" /> : <UserRound className="h-3 w-3" />}{isAdmin ? 'Administrator' : 'Customer'}</p></div></div></td>
+                      <td className="px-3 py-4"><p className="flex items-center gap-1.5 font-semibold"><Mail className="h-3.5 w-3.5 text-slate-400" />{user.email}</p><p className="mt-1 flex items-center gap-1.5 text-[10px] text-slate-400"><Phone className="h-3 w-3" />{user.phone || 'Phone not provided'}</p></td>
                       <td className="px-3 py-4 font-bold text-brand-slate-dark">{user.orderCount ?? 0}</td>
                       <td className="px-3 py-4 font-bold text-brand-slate-dark">{formatCurrency(user.totalSpent)}</td>
                       <td className="px-3 py-4 text-[11px]">{formatDate(user.createdAt)}</td>

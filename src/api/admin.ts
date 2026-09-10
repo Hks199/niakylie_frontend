@@ -63,6 +63,16 @@ export interface AdminUser {
   updatedAt?: string;
   orderCount?: number;
   totalSpent?: number;
+  // Contact details are stored with delivery addresses in the user document.
+  addresses?: AdminUserAddress[];
+  address?: AdminUserAddress | AdminUserAddress[];
+}
+
+export interface AdminUserAddress {
+  phone?: string;
+  mobile?: string;
+  mobileNumber?: string;
+  isDefault?: boolean;
 }
 
 export interface AdminUsersResponse {
@@ -103,7 +113,31 @@ export const adminApi = {
       ...(params?.isActive !== undefined && params.isActive !== 'all' ? { isActive: String(params.isActive) } : {}),
     };
     const response = await apiClient.get<any>('/users/admin', { params: queryParams });
-    const users = Array.isArray(response) ? response : response?.users || response?.items || response?.data || [];
+    const rawUsers = Array.isArray(response) ? response : response?.users || response?.items || response?.data || [];
+    const users = (Array.isArray(rawUsers) ? rawUsers : []).map((rawUser: any): AdminUser => {
+      const addresses = Array.isArray(rawUser.addresses)
+        ? rawUser.addresses
+        : Array.isArray(rawUser.address)
+          ? rawUser.address
+          : rawUser.address
+            ? [rawUser.address]
+            : [];
+      const primaryAddress = addresses.find((address: AdminUserAddress) => address?.isDefault) || addresses[0];
+      const phone = rawUser.phone || primaryAddress?.phone || primaryAddress?.mobile || primaryAddress?.mobileNumber;
+
+      return {
+        ...rawUser,
+        id: rawUser.id || rawUser._id,
+        firstName: rawUser.firstName || rawUser.name?.split(' ')[0] || '',
+        lastName: rawUser.lastName || rawUser.name?.split(' ').slice(1).join(' ') || '',
+        roles: rawUser.roles || rawUser.role ? (Array.isArray(rawUser.roles) ? rawUser.roles : [rawUser.role || rawUser.roles]) : [],
+        phone,
+        addresses,
+        // Accept the API's aggregate names while exposing one stable UI model.
+        orderCount: Number(rawUser.orderCount ?? rawUser.totalOrders ?? rawUser.ordersCount ?? rawUser.orders ?? 0),
+        totalSpent: Number(rawUser.totalSpent ?? rawUser.totalAmountSpent ?? rawUser.totalPurchaseAmount ?? rawUser.spent ?? 0),
+      };
+    });
     const total = Number(response?.total ?? response?.totalItems ?? users.length);
     const totalPages = Number(response?.totalPages ?? Math.max(1, Math.ceil(total / limit)));
     return { users, total, page: Number(response?.page ?? page), limit: Number(response?.limit ?? limit), totalPages };
