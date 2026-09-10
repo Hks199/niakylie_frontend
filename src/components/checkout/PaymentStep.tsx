@@ -5,10 +5,12 @@ import { ordersApi, CreateOrderPayload } from '../../api/orders';
 import { useCartStore } from '../../store/useCartStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { getShippingFee } from '../../utils/shipping';
+import { ShippingConfig } from '../../utils/shipping';
 
 interface PaymentStepProps {
   selectedAddressId: string;
   shippingType: 'standard' | 'express';
+  shippingConfig: ShippingConfig;
   onSuccess: (orderId: string) => void;
   onBack: () => void;
 }
@@ -39,7 +41,7 @@ const PAYMENT_OPTIONS = [
   },
 ];
 
-export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack }: PaymentStepProps) {
+export function PaymentStep({ selectedAddressId, shippingType, shippingConfig, onSuccess, onBack }: PaymentStepProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('upi');
   const [upiSubOption, setUpiSubOption] = useState<'qr' | 'gpay' | 'phonepe' | 'paytm' | 'vpa'>('qr');
   const [loading, setLoading] = useState(false);
@@ -70,7 +72,7 @@ export function PaymentStep({ selectedAddressId, shippingType, onSuccess, onBack
   }
 
   const activeDiscountApplied = isOnlinePayment ? onlineDiscountAmount : 0;
-  const shippingFee = getShippingFee(cartTotals.subtotal, shippingType);
+  const shippingFee = getShippingFee(cartTotals.subtotal, shippingType, shippingConfig);
   const orderTotalBeforeOnlineDiscount = Math.max(
     0,
     cartTotals.subtotal - (cartTotals.couponDiscount || 0) + shippingFee + (cartTotals.tax || 0)

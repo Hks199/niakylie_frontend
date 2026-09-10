@@ -1,10 +1,15 @@
 import { X, ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { formatImageUrl } from '../../utils/imageUtils';
+import { getShippingFee } from '../../utils/shipping';
+import { useShippingConfig } from '../../hooks/useShippingConfig';
 
 export function CartDrawer() {
   const { isCartOpen, setIsCartOpen, cartItems, cartTotals, itemCount, updateQuantity, removeItem, isLoading } =
     useCartStore();
+  const shippingConfig = useShippingConfig();
+  const shippingFee = getShippingFee(cartTotals.subtotal, 'standard', shippingConfig);
+  const cartTotal = Math.max(0, cartTotals.subtotal - (cartTotals.couponDiscount || 0) + shippingFee + (cartTotals.tax || 0));
 
   if (!isCartOpen) return null;
 
@@ -157,13 +162,13 @@ export function CartDrawer() {
               <div className="flex justify-between">
                 <span>Estimated Shipping:</span>
                 <span className="text-emerald-600 font-bold">
-                  {cartTotals?.shippingFee === 0 ? 'FREE' : `₹${cartTotals?.shippingFee || 0}`}
+                  {shippingFee === 0 ? 'FREE' : `₹${shippingFee}`}
                 </span>
               </div>
               <div className="flex justify-between text-xs sm:text-sm font-extrabold text-brand-slate-dark pt-2 border-t border-gray-200">
                 <span>Total Amount:</span>
                 <span className="text-brand-crimson">
-                  ₹{(cartTotals?.total || cartTotals?.subtotal || 0).toLocaleString('en-IN')}
+                  ₹{cartTotal.toLocaleString('en-IN')}
                 </span>
               </div>
             </div>

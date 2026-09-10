@@ -35,7 +35,7 @@ Key Deliverables:
    - Background Light: #F5F5F6 & #FFFFFF
    - Typography: Inter or Outfit font family
 
-2. Create an Axios API Client (`src/api/client.ts`) connected to https://api.niakylie.com/api/v1:
+2. Create an Axios API Client (`src/api/client.ts`) connected to  https://api.niakylie.com/api/v1:
    - Request Interceptor: Attach JWT `Authorization: Bearer <token>` from Auth Store if present, and attach `x-guest-id` header from Guest Store for unauthenticated sessions.
    - Response Interceptor: Automatically extract response `.data.data` matching standard API shape `{ success: true, statusCode: 200, message: 'Success', data: ... }`. Standardize 401 Unauthorized handling by triggering auth logout.
 

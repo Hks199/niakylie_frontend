@@ -1,14 +1,18 @@
 import { ShieldCheck, Truck, RotateCcw, ArrowRight } from 'lucide-react';
 import { CartTotals } from '../../types';
+import { ShippingConfig, getShippingFee } from '../../utils/shipping';
 
 interface OrderSummaryCardProps {
   totals: CartTotals;
   appliedCoupon?: string | null;
   onProceedToCheckout?: () => void;
+  shippingConfig?: ShippingConfig;
 }
 
-export function OrderSummaryCard({ totals, appliedCoupon, onProceedToCheckout }: OrderSummaryCardProps) {
-  const { subtotal, discount, couponDiscount, shippingFee, tax, total } = totals;
+export function OrderSummaryCard({ totals, appliedCoupon, onProceedToCheckout, shippingConfig }: OrderSummaryCardProps) {
+  const { subtotal, discount, couponDiscount, tax } = totals;
+  const shippingFee = getShippingFee(subtotal, 'standard', shippingConfig);
+  const total = Math.max(0, subtotal - couponDiscount + shippingFee + tax);
 
   const totalMRP = subtotal + discount;
   const isFreeShipping = shippingFee === 0;

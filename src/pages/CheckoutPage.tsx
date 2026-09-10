@@ -5,6 +5,7 @@ import { OrderSummaryStep } from '../components/checkout/OrderSummaryStep';
 import { PaymentStep } from '../components/checkout/PaymentStep';
 import { CheckoutSidebar } from '../components/checkout/CheckoutSidebar';
 import { useCartStore } from '../store/useCartStore';
+import { useShippingConfig } from '../hooks/useShippingConfig';
 
 const ADDRESS_STORAGE_KEY = 'niakylie_checkout_address';
 const SHIPPING_STORAGE_KEY = 'niakylie_checkout_shipping';
@@ -33,6 +34,7 @@ export function CheckoutPage() {
   const [shippingType, setShippingType] = useState<'standard' | 'express'>(
     () => (sessionStorage.getItem(SHIPPING_STORAGE_KEY) as 'standard' | 'express') || 'standard'
   );
+  const shippingConfig = useShippingConfig();
   const { cartTotals, appliedCoupon } = useCartStore();
 
   // Keep step in sync with browser back/forward
@@ -97,6 +99,7 @@ export function CheckoutPage() {
           {currentStep === 2 && (
             <OrderSummaryStep
               shippingType={shippingType}
+              shippingConfig={shippingConfig}
               onShippingChange={handleShippingChange}
               onNext={() => goToStep(3)}
               onBack={() => goToStep(1)}
@@ -106,6 +109,7 @@ export function CheckoutPage() {
             <PaymentStep
               selectedAddressId={selectedAddressId}
               shippingType={shippingType}
+              shippingConfig={shippingConfig}
               onSuccess={handleOrderSuccess}
               onBack={() => goToStep(2)}
             />
@@ -117,6 +121,7 @@ export function CheckoutPage() {
             totals={cartTotals}
             appliedCoupon={appliedCoupon}
             shippingType={shippingType}
+            shippingConfig={shippingConfig}
           />
         </div>
       </div>

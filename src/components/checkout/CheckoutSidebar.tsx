@@ -2,16 +2,18 @@ import { ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import { CartTotals } from '../../types';
 import { CouponSection } from '../cart/CouponSection';
 import { getShippingFee } from '../../utils/shipping';
+import { ShippingConfig } from '../../utils/shipping';
 
 interface CheckoutSidebarProps {
   totals: CartTotals;
   appliedCoupon: string | null;
   shippingType: 'standard' | 'express';
+  shippingConfig: ShippingConfig;
 }
 
-export function CheckoutSidebar({ totals, appliedCoupon, shippingType }: CheckoutSidebarProps) {
+export function CheckoutSidebar({ totals, appliedCoupon, shippingType, shippingConfig }: CheckoutSidebarProps) {
   const { subtotal, discount, couponDiscount, onlinePaymentDiscount, tax } = totals as any;
-  const shippingFee = getShippingFee(subtotal, shippingType);
+  const shippingFee = getShippingFee(subtotal, shippingType, shippingConfig);
   const totalMRP = subtotal + discount;
   const activeOnlineDiscount = onlinePaymentDiscount || 0;
   const grandTotal = Math.max(0, subtotal - couponDiscount - activeOnlineDiscount + shippingFee + (tax || 0));

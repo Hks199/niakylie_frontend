@@ -94,7 +94,7 @@ export function NotificationListener() {
     const baseUrl =
       import.meta.env.VITE_API_BASE_URL ||
       import.meta.env.VITE_API_URL ||
-      'https://api.niakylie.com/api/v1';
+      ' https://api.niakylie.com/api/v1';
 
     const sseUrl = `${baseUrl}/notifications/stream?token=${encodeURIComponent(authToken)}`;
 

@@ -3,9 +3,11 @@ import { CouponSection } from '../components/cart/CouponSection';
 import { OrderSummaryCard } from '../components/cart/OrderSummaryCard';
 import { EmptyCart } from '../components/cart/EmptyCart';
 import { useCartStore } from '../store/useCartStore';
+import { useShippingConfig } from '../hooks/useShippingConfig';
 
 export function CartPage() {
   const { cartItems, cartTotals, appliedCoupon } = useCartStore();
+  const shippingConfig = useShippingConfig();
 
   const handleCheckout = () => {
     window.location.href = '/checkout';
@@ -30,6 +32,7 @@ export function CartPage() {
             <OrderSummaryCard
               totals={cartTotals}
               appliedCoupon={appliedCoupon}
+              shippingConfig={shippingConfig}
               onProceedToCheckout={handleCheckout}
             />
           </div>

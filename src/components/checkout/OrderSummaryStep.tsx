@@ -2,9 +2,11 @@ import { Truck, Zap } from 'lucide-react';
 import { useCartStore } from '../../store/useCartStore';
 import { formatImageUrl } from '../../utils/imageUtils';
 import { getShippingFee } from '../../utils/shipping';
+import { ShippingConfig } from '../../utils/shipping';
 
 interface OrderSummaryStepProps {
   shippingType: 'standard' | 'express';
+  shippingConfig: ShippingConfig;
   onShippingChange: (type: 'standard' | 'express') => void;
   onNext: () => void;
   onBack: () => void;
@@ -29,7 +31,7 @@ const SHIPPING_OPTIONS = [
   },
 ];
 
-export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBack }: OrderSummaryStepProps) {
+export function OrderSummaryStep({ shippingType, shippingConfig, onShippingChange, onNext, onBack }: OrderSummaryStepProps) {
   const { cartItems, cartTotals } = useCartStore();
 
   return (
@@ -72,7 +74,7 @@ export function OrderSummaryStep({ shippingType, onShippingChange, onNext, onBac
         {SHIPPING_OPTIONS.map((opt) => {
           const Icon = opt.icon;
           const isSelected = shippingType === opt.id;
-          const shippingFee = getShippingFee(cartTotals.subtotal, opt.id);
+          const shippingFee = getShippingFee(cartTotals.subtotal, opt.id, shippingConfig);
           return (
             <button
               key={opt.id}

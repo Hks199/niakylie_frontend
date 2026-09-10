@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { adminApi } from '../../api/admin';
 import { AdminOnlinePaymentDiscountCard } from './AdminOnlinePaymentDiscountCard';
+import { AdminShippingConfigCard } from './AdminShippingConfigCard';
 
 interface CouponModalForm {
   _id?: string;
@@ -349,6 +350,8 @@ export function AdminCouponsPanel() {
 
       {/* Online Payment Discount Settings Card */}
       <AdminOnlinePaymentDiscountCard />
+
+      <AdminShippingConfigCard />
 
       {/* Main Table Container */}
       <div className="bg-white border border-gray-100 rounded-xl sm:rounded-3xl shadow-sm overflow-hidden">
