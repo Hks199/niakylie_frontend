@@ -38,7 +38,7 @@ export function AdminShippingConfigCard() {
         freeShippingThreshold: Math.max(0, Number(config.freeShippingThreshold) || 0),
       });
       setConfig({ ...defaultShippingConfig, ...saved });
-      setMessage('Shipping fees saved. The updated values apply immediately in this browser.');
+      setMessage('Shipping fees saved. All customer carts and checkout pages now use these database values.');
     } catch (err: any) {
       const detail = err?.message || 'Shipping settings could not be saved.';
       setError(Array.isArray(detail) ? detail.join(', ') : detail);
