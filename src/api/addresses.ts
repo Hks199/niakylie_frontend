@@ -1,8 +1,6 @@
 import { apiClient } from './client';
 import { Address, AddressPayload, User } from '../types/auth';
  
-
-
 export const addressesApi = {
   /**
    * Fetch all saved delivery addresses.
