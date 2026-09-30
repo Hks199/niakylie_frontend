@@ -43,19 +43,6 @@ export const adminProductsApi = {
       const response = await apiClient.get<any>('/products', { params: cleanParams });
       let dataList = extractProductList(response);
 
-      // If passing query params returned 0 items, try unparameterized GET /products
-      if (dataList.length === 0 && Object.keys(cleanParams).length > 0) {
-        try {
-          const unparamResponse = await apiClient.get<any>('/products');
-          const unparamList = extractProductList(unparamResponse);
-          if (unparamList.length > 0) {
-            dataList = unparamList;
-          }
-        } catch (e) {
-          // ignore
-        }
-      }
-
       const total =
         (response && typeof response === 'object' && (response.total || response.count || response.meta?.total)) ||
         dataList.length;

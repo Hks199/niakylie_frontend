@@ -43,6 +43,8 @@ export interface Product {
   sizes?: string[];
   colors?: string[];
   variants?: ProductVariant[];
+  categoryIds?: (string | { _id?: string; name?: string; slug?: string })[];
+  categories?: { _id?: string; name?: string; slug?: string }[];
   categoryId?: string | { _id?: string; name?: string; slug?: string };
   isFeatured?: boolean;
   isTrending?: boolean;

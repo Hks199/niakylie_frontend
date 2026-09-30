@@ -25,6 +25,7 @@ import { adminApi } from '../../api/admin';
 import { categoriesApi } from '../../api/categories';
 import { brandsApi } from '../../api/brands';
 import { AdminProduct, ProductVariant } from '../../types/adminProduct';
+import { Category } from '../../types/category';
 import { formatImageUrl } from '../../utils/imageUtils';
 
 interface ProductVariantInput {
@@ -40,7 +41,7 @@ interface ProductFormData {
   name: string;
   shortDescription: string;
   description: string;
-  categoryId: string;
+  categoryIds: string[];
   brandId: string;
   material: string;
   pattern: string;
@@ -66,7 +67,7 @@ const DEFAULT_FORM: ProductFormData = {
   name: '',
   shortDescription: '',
   description: '',
-  categoryId: '',
+  categoryIds: [],
   brandId: '',
   material: 'Silk',
   pattern: 'Floral',
@@ -78,6 +79,11 @@ const DEFAULT_FORM: ProductFormData = {
   isBestSeller: false,
   variants: [{ ...DEFAULT_VARIANT }],
 };
+
+function getProductCategoryIds(product: any): string[] {
+  const refs = product.categoryIds?.length ? product.categoryIds : [product.categoryId || product.category];
+  return [...new Set<string>(refs.map((ref: any) => typeof ref === 'string' ? ref : ref?._id).filter(Boolean))];
+}
 
 export function AdminProductManagement() {
   const queryClient = useQueryClient();
@@ -109,10 +115,18 @@ export function AdminProductManagement() {
   // 1. Fetch live category list for search filter & upload dropdown
   const { data: categoriesResponse } = useQuery({
     queryKey: ['admin-categories-list'],
-    queryFn: () => categoriesApi.getCategories({ limit: 100 }),
+    queryFn: () => (async () => {
+      const first = await categoriesApi.getCategories({ limit: 100 });
+      const categories = [...first.data];
+      for (let page = 2; page <= (first.meta?.totalPages || 1); page++) {
+        const next = await categoriesApi.getCategories({ page, limit: 100 });
+        categories.push(...next.data);
+      }
+      return { ...first, data: categories };
+    })(),
   });
 
-  const categoriesList = Array.isArray(categoriesResponse)
+  const categoriesList: Category[] = Array.isArray(categoriesResponse)
     ? categoriesResponse
     : Array.isArray(categoriesResponse?.data)
     ? categoriesResponse.data
@@ -180,17 +194,13 @@ export function AdminProductManagement() {
 
   const handleOpenEditModal = (prod: any) => {
     setEditingProduct(prod);
-    const catId =
-      prod.categoryId?._id ||
-      prod.categoryId ||
-      (typeof prod.category === 'object' ? prod.category?._id : prod.category) ||
-      '';
+    const categoryIds = getProductCategoryIds(prod);
 
     setFormData({
       name: prod.name || prod.title || '',
       shortDescription: prod.shortDescription || '',
       description: prod.description || '',
-      categoryId: catId,
+      categoryIds,
       brandId: prod.brandId?._id || prod.brandId || '',
       material: prod.material || prod.attributes?.material || '',
       pattern: prod.pattern || prod.attributes?.pattern || '',
@@ -293,14 +303,14 @@ export function AdminProductManagement() {
       return;
     }
 
-    if (!formData.categoryId) {
-      setErrorMessage('Please select a Category.');
+    if (!formData.categoryIds.length) {
+      setErrorMessage('Please select at least one category or subcategory.');
       setIsSubmitting(false);
       return;
     }
 
     const isMongoId = (id: string) => /^[0-9a-fA-F]{24}$/.test(id);
-    if (!isMongoId(formData.categoryId)) {
+    if (!formData.categoryIds.every(isMongoId)) {
       setErrorMessage(
         'Selected Category ID must be a valid 24-character Mongo ObjectId. Create a live category first.'
       );
@@ -343,7 +353,7 @@ export function AdminProductManagement() {
       name: formData.name.trim(),
       description: formData.description.trim() || formData.shortDescription.trim() || formData.name.trim(),
       shortDescription: formData.shortDescription.trim() || undefined,
-      categoryId: formData.categoryId,
+      categoryIds: formData.categoryIds,
       brandId: formData.brandId.trim() || undefined,
       material: formData.material.trim() || undefined,
       pattern: formData.pattern.trim() || undefined,
@@ -685,11 +695,11 @@ export function AdminProductManagement() {
                           ? prod.variants.reduce((sum, v) => sum + (v.stock || 0), 0)
                           : 0;
 
-                      const categoryName =
-                        typeof prod.categoryId === 'object'
-                          ? prod.categoryId?.name
-                          : categoriesList.find((c: any) => (c._id || c.id) === prod.categoryId)?.name ||
-                            'General';
+                      const categoryName = getProductCategoryIds(prod).map((id) => {
+                        const ref = [...(prod.categories || []), ...(prod.categoryIds || []), prod.categoryId]
+                          .find((category) => typeof category === 'object' && category?._id === id);
+                        return (typeof ref === 'object' && ref?.name) || categoriesList.find((category) => category._id === id)?.name || 'Unavailable category';
+                      }).join(', ') || 'General';
 
                       const rawImg = prod.images?.[0] || prod.thumbnail;
                       const imageSrc = rawImg
@@ -1167,29 +1177,37 @@ export function AdminProductManagement() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">
-                    Category (Mongo ObjectId) <span className="text-rose-500">*</span>
-                  </label>
-                  <select
-                    name="categoryId"
-                    required
-                    value={formData.categoryId}
-                    onChange={handleInputChange}
-                    className="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-[11px] sm:text-xs font-semibold outline-none focus:border-brand-crimson"
-                  >
-                    <option value="">Select Category…</option>
-                    {categoriesList.map((cat: any) => {
-                      const catId = cat._id || cat.id;
-                      const isValidId = /^[0-9a-fA-F]{24}$/.test(catId);
+                <fieldset>
+                  <legend className="text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">
+                    Categories and subcategories <span className="text-rose-500">*</span>
+                  </legend>
+                  <p className="text-xs text-slate-500 mb-2">Select all that apply. {formData.categoryIds.length} selected.</p>
+                  <div className="max-h-48 overflow-y-auto rounded-xl border border-gray-200 bg-white p-2 space-y-1">
+                    {categoriesList.map((cat) => {
+                      const label = [...(cat.ancestors || []).map((ancestor) => ancestor.name), cat.name].join(' / ');
                       return (
-                        <option key={catId} value={catId}>
-                          {cat.name} {!isValidId ? '(Invalid Mock ID)' : `(${catId})`}
-                        </option>
+                        <label key={cat._id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-rose-50 cursor-pointer text-xs text-slate-700">
+                          <input type="checkbox" checked={formData.categoryIds.includes(cat._id)}
+                            disabled={isSubmitting}
+                            onChange={(event) => setFormData((previous) => ({ ...previous,
+                              categoryIds: event.target.checked ? [...previous.categoryIds, cat._id] : previous.categoryIds.filter((id) => id !== cat._id),
+                            }))}
+                            className="rounded border-gray-300 text-brand-crimson focus:ring-brand-crimson" />
+                          <span>{label}</span>
+                        </label>
                       );
                     })}
-                  </select>
-                </div>
+                    {formData.categoryIds.filter((id) => !categoriesList.some((cat) => cat._id === id)).map((id) => (
+                      <label key={id} className="flex items-center gap-2 p-2 text-xs text-slate-500">
+                        <input type="checkbox" checked disabled={isSubmitting} onChange={() => setFormData((previous) => ({
+                          ...previous, categoryIds: previous.categoryIds.filter((value) => value !== id),
+                        }))} />
+                        Unavailable category (remove to replace)
+                      </label>
+                    ))}
+                    {!categoriesList.length && <p className="p-2 text-xs text-slate-500">No categories loaded. Create a category or try again.</p>}
+                  </div>
+                </fieldset>
 
                 <div>
                   <label className="block text-[10px] sm:text-xs font-extrabold text-slate-700 mb-1 uppercase">

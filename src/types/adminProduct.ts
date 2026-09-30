@@ -41,6 +41,8 @@ export interface AdminProduct {
   description?: string;
   shortDescription?: string;
   categoryId: string | ProductCategoryRef;
+  categoryIds?: (string | ProductCategoryRef)[];
+  categories?: ProductCategoryRef[];
   brandId?: string | ProductBrandRef;
   variants: AdminProductVariant[];
   images: string[];
