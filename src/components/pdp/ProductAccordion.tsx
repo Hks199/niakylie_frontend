@@ -38,7 +38,7 @@ export function ProductAccordion({ product }: ProductAccordionProps) {
               <p>• <strong>Fabric / Material:</strong> {product.material || '100% Pure Premium Silk'}</p>
               <p>• <strong>Weave & Pattern:</strong> {product.pattern || 'Zari Brocade Handloom'}</p>
               <p>• <strong>Collection:</strong> {product.productCollection || 'Royal Heritage Festive 2026'}</p>
-              <p>• <strong>Care Instructions:</strong> Dry Clean Only</p>
+              {/* <p>• <strong>Care Instructions:</strong> Dry Clean Only</p> */}
             </div>
           </div>
         )}
